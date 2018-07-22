@@ -12,6 +12,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 @SpringUI
 public class MainUi extends UI {
@@ -24,11 +25,13 @@ public class MainUi extends UI {
 	protected void init(VaadinRequest request) {
 		VerticalLayout layout = new VerticalLayout();
 		layout.addComponent(new Label("Persons found:"));
+
 		List<Person> persons = dao.list();
-		for (Person p : persons) {
-			layout.addComponent(
-					new Label(p.getPrename() + " " + p.getSurname()));
-		}
+		PersonGrid grid = new PersonGrid();
+		grid.setItems(persons);
+		grid.setCaption("Person Grid");
+
+		layout.addComponent(grid);
 		setContent(layout);
 	}
 

@@ -13,9 +13,10 @@ public class PersonGrid extends Grid<Person> {
 			.getDateInstance(DateFormat.MEDIUM);
 
 	public PersonGrid() {
-		addColumn(Person::getPrename);
-		addColumn(Person::getSurname);
-		addColumn(Person::getBirth, b -> birthFormat.format(b));
+		addColumn(Person::getPrename).setCaption("Vorname");
+		addColumn(Person::getSurname).setCaption("Nachname");
+		addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "")
+				.setCaption("Geburtstag");
 	}
 
 }
