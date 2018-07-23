@@ -23,6 +23,7 @@ import de.kreth.clubhelperbackend.google.calendar.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 @SpringUI
@@ -32,6 +33,8 @@ public class MainUi extends UI {
 	@Autowired
 	PersonDao dao;
 	private ClubEventProvider dataProvider;
+	private PersonGrid personGrid;
+	private EventGrid eventGrid;
 
 	@Override
 	protected void init(VaadinRequest request) {
@@ -40,9 +43,13 @@ public class MainUi extends UI {
 		layout.addComponent(new Label("Persons found:"));
 
 		List<Person> persons = dao.list();
-		PersonGrid grid = new PersonGrid();
-		grid.setItems(persons);
-		grid.setCaption("Person Grid");
+		personGrid = new PersonGrid();
+		personGrid.setItems(persons);
+		personGrid.setCaption("Personen");
+		personGrid.setVisible(false);
+
+		eventGrid = new EventGrid();
+		eventGrid.setCaption("Termine");
 
 		dataProvider = new ClubEventProvider();
 		Calendar<ClubEvent> calendar = new Calendar<>(dataProvider)
@@ -50,7 +57,7 @@ public class MainUi extends UI {
 		calendar.setCaption("Events");
 		calendar.setHandler(this::onItemClick);
 
-		layout.addComponents(grid, calendar);
+		layout.addComponents(calendar, personGrid, eventGrid);
 		setContent(layout);
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
@@ -58,6 +65,7 @@ public class MainUi extends UI {
 			EventBusiness business = new EventBusiness();
 			List<ClubEvent> events = business.loadEvents(request);
 			dataProvider.setItems(events);
+			eventGrid.setItems(events);
 			System.out.println("Updated data: " + events);
 		});
 		exec.shutdown();

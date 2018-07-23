@@ -15,8 +15,13 @@ import com.google.api.services.calendar.model.EventDateTime;
 public class ClubEvent extends BasicItem {
 
 	private static final long serialVersionUID = -3600971939167437577L;
+	private String location;
 
 	ClubEvent() {
+	}
+
+	public String getLocation() {
+		return location;
 	}
 
 	public static ClubEvent parse(Event ev) {
@@ -29,6 +34,7 @@ public class ClubEvent extends BasicItem {
 		}
 		clubEvent.setEnd(toZoned(adjustExcludedEndDate(ev)));
 		clubEvent.setDescription(ev.getDescription());
+		clubEvent.location = ev.getLocation();
 
 		return clubEvent;
 	}
