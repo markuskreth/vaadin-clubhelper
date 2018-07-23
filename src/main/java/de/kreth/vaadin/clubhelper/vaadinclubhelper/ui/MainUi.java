@@ -15,7 +15,6 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -40,7 +39,6 @@ public class MainUi extends UI {
 	protected void init(VaadinRequest request) {
 
 		HorizontalLayout layout = new HorizontalLayout();
-		layout.addComponent(new Label("Persons found:"));
 
 		List<Person> persons = dao.list();
 		personGrid = new PersonGrid();
@@ -50,6 +48,7 @@ public class MainUi extends UI {
 
 		eventGrid = new EventGrid();
 		eventGrid.setCaption("Termine");
+		eventGrid.addItemClickListener(ev -> showDetails(ev.getItem()));
 
 		dataProvider = new ClubEventProvider();
 		Calendar<ClubEvent> calendar = new Calendar<>(dataProvider)
@@ -66,6 +65,7 @@ public class MainUi extends UI {
 			List<ClubEvent> events = business.loadEvents(request);
 			dataProvider.setItems(events);
 			eventGrid.setItems(events);
+			eventGrid.getDataProvider().refreshAll();
 			System.out.println("Updated data: " + events);
 		});
 		exec.shutdown();
@@ -73,7 +73,14 @@ public class MainUi extends UI {
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
 		ClubEvent ev = (ClubEvent) event.getCalendarItem();
-		Notification.show("Clicked: " + ev);
+		showDetails(ev);
+	}
+
+	private void showDetails(ClubEvent ev) {
+		eventGrid.setVisible(false);
+		personGrid.setVisible(true);
+
+		Notification.show("" + ev);
 	}
 
 	class ClubEventProvider extends BasicItemProvider<ClubEvent> {

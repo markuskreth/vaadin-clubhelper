@@ -24,6 +24,12 @@ public class ClubEvent extends BasicItem {
 		return location;
 	}
 
+	@Override
+	public String toString() {
+		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart()
+				+ ", location=" + location + "]";
+	}
+
 	public static ClubEvent parse(Event ev) {
 		ClubEvent clubEvent = new ClubEvent();
 		clubEvent.setCaption(ev.getSummary());
@@ -39,7 +45,7 @@ public class ClubEvent extends BasicItem {
 		return clubEvent;
 	}
 
-	private static ZonedDateTime toZoned(Date parse) {
+	public static ZonedDateTime toZoned(Date parse) {
 		if (parse != null) {
 			Instant instant = parse.toInstant();
 			return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
