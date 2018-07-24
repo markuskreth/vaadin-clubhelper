@@ -9,6 +9,7 @@ import java.util.Set;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SingleSelectionEvent;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
@@ -38,6 +39,7 @@ public class PersonGrid extends CustomComponent {
 	private final TextField textTitle;
 
 	private final ListDataProvider<Person> dataProvider;
+	private ClosedFunction closedFunction = null;
 
 	public PersonGrid(GroupDao groupDao) {
 
@@ -67,9 +69,20 @@ public class PersonGrid extends CustomComponent {
 				.setCaption("Geburtstag");
 		grid.setSelectionMode(SelectionMode.MULTI);
 
+		Button close = new Button("Schließen", ev -> {
+			PersonGrid.this.setVisible(false);
+			if (closedFunction != null) {
+				closedFunction.closed();
+			}
+		});
+
 		VerticalLayout panel = new VerticalLayout();
-		panel.addComponents(textTitle, filters, grid);
+		panel.addComponents(textTitle, filters, grid, close);
 		setCompositionRoot(panel);
+	}
+
+	public void onClosedFunction(ClosedFunction closedFunction) {
+		this.closedFunction = closedFunction;
 	}
 
 	private void onSelectedOnly(ValueChangeEvent<Boolean> ev) {
@@ -105,5 +118,9 @@ public class PersonGrid extends CustomComponent {
 
 	public void setItems(Person... items) {
 		grid.setItems(items);
+	}
+
+	public interface ClosedFunction {
+		void closed();
 	}
 }
