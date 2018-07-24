@@ -12,6 +12,7 @@ import org.vaadin.addon.calendar.Calendar;
 import org.vaadin.addon.calendar.item.BasicItemProvider;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.HorizontalLayout;
@@ -20,17 +21,24 @@ import com.vaadin.ui.UI;
 
 import de.kreth.clubhelperbackend.google.calendar.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
+@Theme("vaadin-clubhelpertheme")
 @SpringUI
 public class MainUi extends UI {
 
 	private static final long serialVersionUID = 7581634188909841919L;
+
 	@Autowired
-	PersonDao dao;
+	PersonDao personDao;
+
+	@Autowired
+	GroupDao groupDao;
+
 	private ClubEventProvider dataProvider;
 	private PersonGrid personGrid;
 	private EventGrid eventGrid;
@@ -40,8 +48,8 @@ public class MainUi extends UI {
 
 		HorizontalLayout layout = new HorizontalLayout();
 
-		List<Person> persons = dao.list();
-		personGrid = new PersonGrid();
+		List<Person> persons = personDao.list();
+		personGrid = new PersonGrid(groupDao);
 		personGrid.setItems(persons);
 		personGrid.setCaption("Personen");
 		personGrid.setVisible(false);
@@ -79,6 +87,8 @@ public class MainUi extends UI {
 	private void showDetails(ClubEvent ev) {
 		eventGrid.setVisible(false);
 		personGrid.setVisible(true);
+		personGrid.setCaption(ev.getCaption());
+		personGrid.setTitle(ev.getCaption());
 
 		Notification.show("" + ev);
 	}

@@ -1,23 +1,34 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the groupDef database table.
  * 
  */
-@Entity
-@Table(name="groupDef")
-@NamedQuery(name="GroupDef.findAll", query="SELECT g FROM GroupDef g")
+@Entity(name = "groupDef")
+@Table(name = "groupDef")
+@NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM groupDef g")
 public class GroupDef implements Serializable {
-	private static final long serialVersionUID = 1L;
+
+	public final static String QUERY_FINDALL = "GroupDef.findAll";
+
+	private static final long serialVersionUID = -2827542956463449518L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -31,8 +42,8 @@ public class GroupDef implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-one association to Persongroup
-	@OneToMany(mappedBy="groupDef")
+	// bi-directional many-to-one association to Persongroup
+	@OneToMany(mappedBy = "groupDef")
 	private List<Persongroup> persongroups;
 
 	public GroupDef() {
@@ -98,6 +109,11 @@ public class GroupDef implements Serializable {
 		persongroup.setGroupDef(null);
 
 		return persongroup;
+	}
+
+	@Override
+	public String toString() {
+		return "GroupDef [id=" + id + ", name=" + name + "]";
 	}
 
 }
