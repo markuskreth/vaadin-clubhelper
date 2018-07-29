@@ -19,4 +19,7 @@
   <property column="organizerDisplayName" generated="never" lazy="false"
    name="organizerDisplayName" type="string"/>
  </class>
+ <query name="ClubEvent.findAll">
+        <![CDATA[from ClubEvent]]>
+ </query>
 </hibernate-mapping>

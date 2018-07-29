@@ -1,10 +1,14 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import static org.junit.Assert.assertEquals;
+
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.junit.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -40,6 +44,11 @@ public class ClubEventDaoImplTest extends AbstractDatabaseTest {
 		Transaction tx = session.beginTransaction();
 		session.save(ev);
 		tx.commit();
+
+		Query<ClubEvent> query = session.createNamedQuery("ClubEvent.findAll",
+				ClubEvent.class);
+		List<ClubEvent> result = query.list();
+		assertEquals(1, result.size());
 	}
 
 	private ClubEvent creteEvent() {
