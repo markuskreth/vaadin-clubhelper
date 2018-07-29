@@ -5,7 +5,7 @@ import java.time.format.FormatStyle;
 
 import com.vaadin.ui.Grid;
 
-import de.kreth.clubhelperbackend.google.calendar.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
 public class EventGrid extends Grid<ClubEvent> {
 

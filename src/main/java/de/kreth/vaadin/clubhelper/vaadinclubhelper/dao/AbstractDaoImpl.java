@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractDaoImpl<T> implements IDao<T> {
 
@@ -20,8 +21,16 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	}
 
 	@Override
+	@Transactional
 	public void save(T obj) {
+		// EntityTransaction tx = em.getTransaction();
+		// tx.begin();
+		// try {
 		em.persist(obj);
+		// tx.commit();
+		// } catch (Exception e) {
+		// tx.rollback();
+		// }
 	}
 
 	@Override

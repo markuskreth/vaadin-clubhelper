@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SingleSelectionEvent;
@@ -27,6 +30,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
 public class PersonGrid extends CustomComponent {
 
 	private static final long serialVersionUID = -8148097982839343673L;
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final DateFormat birthFormat = DateFormat
 			.getDateInstance(DateFormat.MEDIUM);
@@ -55,7 +59,9 @@ public class PersonGrid extends CustomComponent {
 		comboGroups.setEmptySelectionCaption("Alle");
 		comboGroups.setItemCaptionGenerator(GroupDef::getName);
 		comboGroups.addSelectionListener(ev -> onGroupSelected(ev));
-		comboGroups.setItems(groupDao.list());
+		List<GroupDef> items = groupDao.list();
+		comboGroups.setItems(items);
+		log.info("Loaded Groups: {}", items);
 
 		HorizontalLayout filters = new HorizontalLayout();
 		filters.addComponents(checkIncluded, comboGroups);

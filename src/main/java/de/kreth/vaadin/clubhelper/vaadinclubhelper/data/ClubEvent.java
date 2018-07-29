@@ -1,4 +1,4 @@
-package de.kreth.clubhelperbackend.google.calendar;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -6,6 +6,8 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import javax.persistence.Transient;
 
 import org.vaadin.addon.calendar.item.BasicItem;
 
@@ -16,18 +18,84 @@ public class ClubEvent extends BasicItem {
 
 	private static final long serialVersionUID = -3600971939167437577L;
 	private String location;
+	private String iCalUID;
+
+	private String id;
+	private String organizerDisplayName;
 
 	ClubEvent() {
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setiCalUID(String iCalUID) {
+		this.iCalUID = iCalUID;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setOrganizerDisplayName(String organizerDisplayName) {
+		this.organizerDisplayName = organizerDisplayName;
+	}
+
+	public String getCaption() {
+		return super.getCaption();
+	}
+
+	@Override
+	public String getDescription() {
+
+		return super.getDescription();
+	}
+
+	@Override
+	public ZonedDateTime getEnd() {
+		return super.getEnd();
+	}
+
+	@Override
+	public ZonedDateTime getStart() {
+		return super.getStart();
+	}
+
+	@Override
+	public boolean isAllDay() {
+		return super.isAllDay();
 	}
 
 	public String getLocation() {
 		return location;
 	}
 
-	@Override
-	public String toString() {
+	public String getId() {
+		return id;
+	}
+
+	public String getiCalUID() {
+		return iCalUID;
+	}
+
+	public String getOrganizerDisplayName() {
+		return organizerDisplayName;
+	}
+
+	@Transient
+	public String toDisplayString() {
 		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart()
 				+ ", location=" + location + "]";
+	}
+
+	@Override
+	public String toString() {
+		return "ClubEvent [id=" + id + ", iCalUID=" + iCalUID + ", location="
+				+ location + ", organizerDisplayName=" + organizerDisplayName
+				+ ", getCaption()=" + getCaption() + ", getDescription()="
+				+ getDescription() + ", getEnd()=" + getEnd() + ", getStart()="
+				+ getStart() + ", isAllDay()=" + isAllDay() + "]";
 	}
 
 	public static ClubEvent parse(Event ev) {
@@ -41,6 +109,10 @@ public class ClubEvent extends BasicItem {
 		clubEvent.setEnd(toZoned(adjustExcludedEndDate(ev)));
 		clubEvent.setDescription(ev.getDescription());
 		clubEvent.location = ev.getLocation();
+		clubEvent.iCalUID = ev.getICalUID();
+		clubEvent.id = ev.getId();
+		clubEvent.organizerDisplayName = ev.getOrganizer().getDisplayName();
+		clubEvent.setAllDay(startIsDateOnly(ev));
 
 		return clubEvent;
 	}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+                                   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+ <class
+  name="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent" table="ClubEvent">
+  <id column="id" name="id" type="string"/>
+  <property column="caption" generated="never" lazy="false"
+   name="caption" type="string"/>
+  <property column="description" generated="never" lazy="false"
+   name="description" type="string"/>
+  <property column="iCalUID" generated="never" lazy="false"
+   name="iCalUID" type="string"/>
+  <property column="location" generated="never" lazy="false"
+   name="location" type="string"/>
+  <property column="start" generated="never" lazy="false" name="start" />
+  <property column="end" generated="never" lazy="false" name="end" />
+  <property column="allDay" generated="never" lazy="false" name="allDay" type="true_false"/>
+  <property column="organizerDisplayName" generated="never" lazy="false"
+   name="organizerDisplayName" type="string"/>
+ </class>
+</hibernate-mapping>

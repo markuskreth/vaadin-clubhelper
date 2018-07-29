@@ -20,7 +20,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
-import de.kreth.clubhelperbackend.google.calendar.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
 public class CalendarComponent extends CustomComponent {
 
