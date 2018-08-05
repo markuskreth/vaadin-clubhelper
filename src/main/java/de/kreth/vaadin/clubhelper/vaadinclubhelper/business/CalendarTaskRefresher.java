@@ -2,9 +2,12 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
 import java.util.List;
 
+import javax.validation.ConstraintViolationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,8 +30,18 @@ public class CalendarTaskRefresher {
 	public void synchronizeCalendarTasks() {
 		List<ClubEvent> events = business.loadEvents(null, true);
 		for (ClubEvent e : events) {
-			log.trace("try storing {}", e);
-			dao.save(e);
+			if (dao.get(e.getId()) != null) {
+				try {
+					log.trace("try inserting {}", e);
+					dao.save(e);
+				} catch (ConstraintViolationException | DataIntegrityViolationException ex) {
+					log.warn("Insert failed, updating {}", e);
+					dao.update(e);
+				}
+			} else {
+				log.trace("try updating {}", e);
+				dao.update(e);
+			}
 			log.debug("successfully stored {}", e);
 		}
 	}

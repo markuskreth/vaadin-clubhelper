@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class AbstractDaoImpl<T> implements IDao<T> {
 
 	@Autowired
-	EntityManager em;
+	protected EntityManager em;
 
 	private final Class<T> entityClass;
 
@@ -23,16 +23,20 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	@Override
 	@Transactional
 	public void save(T obj) {
-		// EntityTransaction tx = em.getTransaction();
-		// tx.begin();
-		// try {
 		em.persist(obj);
-		// tx.commit();
-		// } catch (Exception e) {
-		// tx.rollback();
-		// }
 	}
 
+	@Override
+	@Transactional
+	public T update(T obj) {
+		return em.merge(obj);
+	}
+	
+	@Override
+	public T get(Object primaryKey) {
+		return em.find(entityClass, primaryKey);
+	}
+	
 	@Override
 	public List<T> list() {
 
