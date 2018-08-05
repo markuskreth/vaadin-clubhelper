@@ -15581,3 +15581,19 @@ div.v-layout.v-horizontal.v-widget {
 	font-weight: bold;
 	font-size: large;
 }
+
+.vaadin-clubhelpertheme .v-calendar-next {
+	height: 50px;
+	width: 50px;
+	background: url(images/arrowRight.png);
+	background-size: cover;
+	cursor: pointer;
+}
+
+.vaadin-clubhelpertheme .v-calendar-back {
+	height: 50px;
+	width: 50px;
+	background: url(images/arrowLeft.png);
+	background-size: cover;
+	cursor: pointer;
+}
