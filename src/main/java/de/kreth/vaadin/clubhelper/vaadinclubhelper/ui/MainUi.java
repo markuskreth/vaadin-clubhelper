@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
+import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.shared.communication.PushMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
@@ -25,6 +27,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 @Theme("vaadin-clubhelpertheme")
 @SpringUI
+@Push(value=PushMode.MANUAL)
 public class MainUi extends UI {
 
 	private static final long serialVersionUID = 7581634188909841919L;
@@ -35,6 +38,9 @@ public class MainUi extends UI {
 
 	@Autowired
 	GroupDao groupDao;
+	
+	@Autowired
+	EventBusiness eventBusiness;
 
 	private PersonGrid personGrid;
 
@@ -67,10 +73,14 @@ public class MainUi extends UI {
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
 
-			EventBusiness business = new EventBusiness();
-			List<ClubEvent> events = business.loadEvents(request);
+			final List<ClubEvent> events = eventBusiness.loadEvents(request);
 			LOGGER.info("Loaded events: {}", events);
-			calendar.setItems(events);
+			final UI ui = calendar.getUI();
+			ui.access(() -> {
+				calendar.setItems(events);
+				ui.push();
+			});
+			
 		});
 		exec.shutdown();
 	}

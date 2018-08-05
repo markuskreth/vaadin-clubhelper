@@ -11,16 +11,21 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.vaadin.server.VaadinRequest;
 
 import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
+@Component
 public class EventBusiness {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private final List<ClubEvent> cache = new ArrayList<>();
+	
+	@Autowired
+	ClubEventDao dao;
 
 	public List<ClubEvent> loadEvents(VaadinRequest request) {
 		return loadEvents(request, false);
@@ -28,17 +33,21 @@ public class EventBusiness {
 
 	public synchronized List<ClubEvent> loadEvents(VaadinRequest request,
 			boolean forceRefresh) {
-		if (cache.isEmpty() == false && forceRefresh == false) {
-			log.trace("Returning cached events: {}", cache);
-			return Collections.unmodifiableList(cache);
+		
+		if (forceRefresh == false) {
+			List<ClubEvent> list = dao.list();
+			log.trace("Returning events from database: {}");
+			return list;
 		}
 
 		log.debug(
-				"Loading events from Google Calendar, cache size was: {}, forceRefresh={}",
-				cache.size(), forceRefresh);
-		cache.clear();
+				"Loading events from Google Calendar, forceRefresh={}",
+				forceRefresh);
 
 		BufferedWriter out = null;
+
+		List<ClubEvent> list = new ArrayList<>();
+		
 		try {
 			if (forceRefresh) {
 				File f = new File("google_events.json");
@@ -58,7 +67,7 @@ public class EventBusiness {
 				}
 
 				if ("cancelled".equals(ev.getStatus()) == false) {
-					cache.add(ClubEvent.parse(ev));
+					list.add(ClubEvent.parse(ev));
 				} else {
 					log.debug("Cancelled: {}", ev.getSummary());
 				}
@@ -75,6 +84,6 @@ public class EventBusiness {
 				log.error("Error writing File", e);
 			}
 		}
-		return Collections.unmodifiableList(cache);
+		return Collections.unmodifiableList(list);
 	}
 }

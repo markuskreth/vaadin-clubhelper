@@ -83,6 +83,7 @@ public class CalendarComponent extends CustomComponent {
 
 	public void setItems(Collection<ClubEvent> items) {
 		dataProvider.setItems(items);
+		calendar.markAsDirty();
 	}
 
 	class ClubEventProvider extends BasicItemProvider<ClubEvent> {

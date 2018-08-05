@@ -91,9 +91,9 @@ public class ClubEvent extends BasicItem {
 
 	@Override
 	public String toString() {
-		return "ClubEvent [id=" + id + ", iCalUID=" + iCalUID + ", location="
+		return "ClubEvent [id=" + id + ", getCaption()=" + getCaption() + ", iCalUID=" + iCalUID + ", location="
 				+ location + ", organizerDisplayName=" + organizerDisplayName
-				+ ", getCaption()=" + getCaption() + ", getDescription()="
+				+ ", getDescription()="
 				+ getDescription() + ", getEnd()=" + getEnd() + ", getStart()="
 				+ getStart() + ", isAllDay()=" + isAllDay() + "]";
 	}
