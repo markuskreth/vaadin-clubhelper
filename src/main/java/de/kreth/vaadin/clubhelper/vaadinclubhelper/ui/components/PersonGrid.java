@@ -51,6 +51,7 @@ public class PersonGrid extends CustomComponent {
 		textTitle.setStyleName("title_label");
 		textTitle.setCaption("Veranstaltung");
 		textTitle.setEnabled(false);
+		textTitle.setSizeFull();
 
 		checkIncluded = new CheckBox("Nur gemeldete");
 		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));

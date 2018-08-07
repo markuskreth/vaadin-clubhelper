@@ -65,8 +65,7 @@ public class MainUi extends UI {
 		contentLayout = new HorizontalLayout();
 		contentLayout.setSizeFull();
 		contentLayout.addComponents(calendar);
-		contentLayout.setExpandRatio(calendar, 1.0f);
-
+		
 		setContent(contentLayout);
 		setSizeFull();
 
@@ -88,8 +87,6 @@ public class MainUi extends UI {
 	private void detailClosed() {
 		LOGGER.debug("Closing detail view.");
 		contentLayout.removeComponent(personGrid);
-		calendar.setSizeFull();
-		contentLayout.setExpandRatio(calendar, 1.0f);
 	}
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
@@ -100,12 +97,10 @@ public class MainUi extends UI {
 	private void showDetails(ClubEvent ev) {
 		LOGGER.debug("Opening detail view for {}", ev);
 
-		contentLayout.setExpandRatio(calendar, .5f);
-		calendar.setWidth("50%");
-
 		contentLayout.addComponent(personGrid);
 		personGrid.setCaption(ev.getCaption());
 		personGrid.setTitle(ev.getCaption());
+		personGrid.setVisible(true);
 
 	}
 
