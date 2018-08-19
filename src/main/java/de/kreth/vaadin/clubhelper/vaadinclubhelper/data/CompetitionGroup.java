@@ -23,6 +23,14 @@ public class CompetitionGroup implements Serializable {
 	private int minBirthYear;
 	private int maxBirthYear = OPEN_END_MAX_YEAR;
 	
+	private CompetitionGroup() {
+	}
+	
+	CompetitionGroup(int oldest, int youngest) {
+		this.maxBirthYear = youngest;
+		this.minBirthYear = oldest;
+	}
+	
 	public int getOldestBirthYear() {
 		return minBirthYear;
 	}
@@ -46,7 +54,12 @@ public class CompetitionGroup implements Serializable {
 				competitionGroup.minBirthYear = OPEN_END_MIN_YEAR;
 			}
 		}
-		
+
+		if (competitionGroup.maxBirthYear < competitionGroup.minBirthYear) {
+			int tmp = competitionGroup.maxBirthYear;
+			competitionGroup.maxBirthYear = competitionGroup.minBirthYear;
+			competitionGroup.minBirthYear = tmp;
+		}
 		return competitionGroup;
 	}
 
@@ -66,5 +79,9 @@ public class CompetitionGroup implements Serializable {
 		public boolean isYoungestOnly(String line) {
 			return line.toLowerCase().contains(youngest);
 		}
+	}
+
+	public boolean isBirthyearInGroup(int birthYear) {
+		return maxBirthYear >= birthYear && minBirthYear <= birthYear;
 	}
 }
