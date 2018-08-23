@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +8,7 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Component;
 import com.vaadin.server.VaadinRequest;
 
 import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Component
 public class EventBusiness {
@@ -26,6 +29,8 @@ public class EventBusiness {
 	
 	@Autowired
 	ClubEventDao dao;
+
+	private ClubEvent current;
 
 	public List<ClubEvent> loadEvents(VaadinRequest request) {
 		return loadEvents(request, false);
@@ -85,5 +90,27 @@ public class EventBusiness {
 			}
 		}
 		return Collections.unmodifiableList(list);
+	}
+
+	public ClubEvent getCurrent() {
+		return current;
+	}
+	
+	public void setSelected(ClubEvent ev) {
+		this.current = ev;
+	}
+
+	public void changePersons(Set<Person> selected) {
+		if (current != null) {
+
+			Set<Person> store = current.getPersons();
+			if (store != null) {
+				store.clear();
+				store.addAll(selected);			
+			} else {
+				current.setPersons(selected);
+				dao.update(current);
+			}
+		}
 	}
 }

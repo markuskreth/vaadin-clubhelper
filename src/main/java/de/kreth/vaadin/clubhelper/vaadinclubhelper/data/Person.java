@@ -3,16 +3,9 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 /**
  * The persistent class for the person database table.
@@ -79,6 +72,14 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy = "person")
 	private List<Startpaesse> startpaesses;
 
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
+	@JoinTable(
+	        name = "clubevent_has_person", 
+	        joinColumns = { @JoinColumn(name = "person_id") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "clubevent_id") }
+	    )
+	private Set<ClubEvent> events;
+	
 	public Person() {
 	}
 
@@ -304,8 +305,64 @@ public class Person implements Serializable {
 	public Startpaesse removeStartpaess(Startpaesse startpaess) {
 		getStartpaesses().remove(startpaess);
 		startpaess.setPerson(null);
-
 		return startpaess;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((created == null) ? 0 : created.hashCode());
+		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((prename == null) ? 0 : prename.hashCode());
+		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		if (created == null) {
+			if (other.created != null)
+				return false;
+		} else if (!created.equals(other.created))
+			return false;
+		if (deleted == null) {
+			if (other.deleted != null)
+				return false;
+		} else if (!deleted.equals(other.deleted))
+			return false;
+		if (id != other.id)
+			return false;
+		if (prename == null) {
+			if (other.prename != null)
+				return false;
+		} else if (!prename.equals(other.prename))
+			return false;
+		if (surname == null) {
+			if (other.surname != null)
+				return false;
+		} else if (!surname.equals(other.surname))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Person [id=" + id + ", prename=" + prename + ", surname=" + surname + "]";
 	}
 
 }

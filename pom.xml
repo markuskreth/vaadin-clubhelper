@@ -7,7 +7,7 @@
 	<groupId>de.kreth.vaadin.clubhelper</groupId>
 	<artifactId>vaadin-clubhelper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>vaadin-clubhelper</name>
 	<description>Demo project for Spring Boot</description>
@@ -122,6 +122,16 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-testing</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

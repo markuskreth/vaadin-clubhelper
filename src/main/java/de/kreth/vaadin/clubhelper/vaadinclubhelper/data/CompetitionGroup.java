@@ -19,9 +19,12 @@ public class CompetitionGroup implements Serializable {
 	public static final int OPEN_END_MIN_YEAR = 0;
 
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[^a-zA-Z](\\d{2,4})");
+	private static final Pattern COMPULSORY_PATTERN = Pattern.compile("[PMW] ?\\d{1,2}\\s?$");
 	private static final Rules RULES = new Rules();
+	
 	private int minBirthYear;
 	private int maxBirthYear = OPEN_END_MAX_YEAR;
+	private String compulsory;
 	
 	private CompetitionGroup() {
 	}
@@ -60,6 +63,10 @@ public class CompetitionGroup implements Serializable {
 			competitionGroup.maxBirthYear = competitionGroup.minBirthYear;
 			competitionGroup.minBirthYear = tmp;
 		}
+		matcher = COMPULSORY_PATTERN.matcher(line);
+		if (matcher.find()) {
+			competitionGroup.compulsory = matcher.group().trim();
+		}
 		return competitionGroup;
 	}
 
@@ -83,5 +90,9 @@ public class CompetitionGroup implements Serializable {
 
 	public boolean isBirthyearInGroup(int birthYear) {
 		return maxBirthYear >= birthYear && minBirthYear <= birthYear;
+	}
+
+	public String getCompulsory() {
+		return compulsory;
 	}
 }

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.provider.ListDataProvider;
+import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.event.selection.SingleSelectionEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
@@ -19,6 +20,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.MultiSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -98,6 +100,32 @@ public class PersonGrid extends CustomComponent {
 		dataProvider.addFilter(p -> selected.contains(p));
 	}
 
+	public void onPersonSelect(SelectionListener<Person> listener) throws UnsupportedOperationException {
+		grid.addSelectionListener(listener);
+	}
+
+	public void selectItems(Person... items) {
+		MultiSelect<Person> asMultiSelect = grid.asMultiSelect();
+		asMultiSelect.deselectAll();
+		asMultiSelect.select(items);
+	}
+
+	public void deselectItems(Person... items) {
+		grid.asMultiSelect().deselect(items);
+	}
+
+	public void select(Person item) {
+		grid.select(item);
+	}
+
+	public void deselect(Person item) {
+		grid.deselect(item);
+	}
+
+	public void deselectAll() {
+		grid.deselectAll();
+	}
+
 	private void onGroupSelected(SingleSelectionEvent<GroupDef> ev) {
 		dataProvider.clearFilters();
 		final Set<GroupDef> groups = ev.getAllSelectedItems();
@@ -129,5 +157,9 @@ public class PersonGrid extends CustomComponent {
 
 	public interface ClosedFunction {
 		void closed();
+	}
+
+	public void selectItems(Collection<Person> persons) {
+		selectItems(persons.toArray(new Person[0]));
 	}
 }

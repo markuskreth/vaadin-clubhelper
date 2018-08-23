@@ -26,6 +26,15 @@ public abstract class AbstractDatabaseTest {
 	public void setUp() throws Exception {
 
 		// setup the session factory
+		Configuration configuration = createConfig();
+
+		sessionFactory = configuration.buildSessionFactory();
+
+		session = sessionFactory.openSession();
+
+	}
+
+	public Configuration createConfig() {
 		Configuration configuration = new Configuration();
 		configuration.addAnnotatedClass(Adress.class);
 		configuration.addAnnotatedClass(Attendance.class);
@@ -48,10 +57,7 @@ public abstract class AbstractDatabaseTest {
 		configuration.setProperty("hibernate.connection.url",
 				"jdbc:h2:mem:test");
 		configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-
-		sessionFactory = configuration.buildSessionFactory();
-		session = sessionFactory.openSession();
-
+		return configuration;
 	}
 
 }

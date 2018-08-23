@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Set;
 
 import javax.persistence.Transient;
 
@@ -22,6 +23,7 @@ public class ClubEvent extends BasicItem {
 
 	private String id;
 	private String organizerDisplayName;
+	private Set<Person> persons;
 
 	ClubEvent() {
 	}
@@ -83,6 +85,14 @@ public class ClubEvent extends BasicItem {
 		return organizerDisplayName;
 	}
 
+	public Set<Person> getPersons() {
+		return persons;
+	}
+	
+	public void setPersons(Set<Person> persons) {
+		this.persons = persons;
+	}
+	
 	@Transient
 	public String toDisplayString() {
 		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart()
@@ -115,6 +125,63 @@ public class ClubEvent extends BasicItem {
 		clubEvent.setAllDay(startIsDateOnly(ev));
 
 		return clubEvent;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((iCalUID == null) ? 0 : iCalUID.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((organizerDisplayName == null) ? 0 : organizerDisplayName.hashCode());
+		result = prime * result + ((persons == null) ? 0 : persons.hashCode());
+		result = prime * result + ((getStart() == null) ? 0 : getStart().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ClubEvent other = (ClubEvent) obj;
+		if (iCalUID == null) {
+			if (other.iCalUID != null)
+				return false;
+		} else if (!iCalUID.equals(other.iCalUID))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		} else if (!location.equals(other.location))
+			return false;
+		if (organizerDisplayName == null) {
+			if (other.organizerDisplayName != null)
+				return false;
+		} else if (!organizerDisplayName.equals(other.organizerDisplayName))
+			return false;
+		if (persons == null) {
+			if (other.persons != null)
+				return false;
+		} else if (!persons.equals(other.persons))
+			return false;
+		ZonedDateTime oStart = other.getStart();
+		ZonedDateTime start = getStart();
+		if (start == null) {
+			if (oStart != null)
+				return false;
+		} else if (!start.equals(oStart))
+			return false;
+		return true;
 	}
 
 	public static ZonedDateTime toZoned(Date parse) {
