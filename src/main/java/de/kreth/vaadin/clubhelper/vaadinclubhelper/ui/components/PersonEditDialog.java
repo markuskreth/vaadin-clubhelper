@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -25,12 +28,16 @@ public class PersonEditDialog extends Window {
 	private final Person person;
 
 	private final Binder<Person> binder;
+	private DateField birthday;
 
 	public PersonEditDialog(List<GroupDef> groups, Person person, PersonDao dao) {
 		this.person = person;
 
 		textPrename = new TextField();
 		textSureName = new TextField();
+		birthday = new DateField();
+		birthday.setCaption("Geburtstag");
+		
 		Panel groupPanel = new Panel("Gruppen");
 		VerticalLayout glay = new VerticalLayout();
 		groupPanel.setContent(glay);
@@ -49,6 +56,8 @@ public class PersonEditDialog extends Window {
 		binder = new Binder<>();
 		binder.forField(textPrename).bind(Person::getPrename, Person::setPrename);
 		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
+		binder.forField(birthday).withConverter(new LocalDateToDateConverter(ZoneId.systemDefault())).bind(Person::getBirth, Person::setBirth);
+		
 		binder.readBean(person);
 		
 		Button close = new Button("Schließen");
@@ -59,9 +68,9 @@ public class PersonEditDialog extends Window {
 			dao.update(person);
 		});
 		VerticalLayout layout = new VerticalLayout();
-		layout.addComponents(textPrename, textSureName, groupPanel, close, ok);
+		layout.addComponents(textPrename, textSureName, birthday, groupPanel, close, ok);
 		setContent(layout);
-		
+		center();
 	}
 
 	private void groupChanged(ValueChangeEvent<Boolean> ev) {
