@@ -6,6 +6,6 @@ public interface IDao<T> {
 
 	void save(T obj);
 	T update(T obj);
-	List<T> list();
+	List<T> listAll();
 	T get(Object primaryKey);
 }

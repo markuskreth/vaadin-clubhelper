@@ -40,7 +40,7 @@ public class EventBusiness {
 			boolean forceRefresh) {
 		
 		if (forceRefresh == false) {
-			List<ClubEvent> list = dao.list();
+			List<ClubEvent> list = dao.listAll();
 			log.trace("Returning events from database: {}");
 			return list;
 		}
@@ -105,12 +105,14 @@ public class EventBusiness {
 
 			Set<Person> store = current.getPersons();
 			if (store != null) {
-				store.clear();
+				log.debug("adding to existing person set.");
 				store.addAll(selected);			
 			} else {
+				log.debug("setting persons to event without person set.");
 				current.setPersons(selected);
-				dao.update(current);
 			}
+			dao.update(current);
+			log.info("Updated {} with participants: {}", current, selected);
 		}
 	}
 }

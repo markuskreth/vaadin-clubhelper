@@ -62,13 +62,13 @@ public class PersonGrid extends CustomComponent {
 		comboGroups.setEmptySelectionCaption("Alle");
 		comboGroups.setItemCaptionGenerator(GroupDef::getName);
 		comboGroups.addSelectionListener(ev -> onGroupSelected(ev));
-		List<GroupDef> items = groupDao.list();
-		comboGroups.setItems(items);
-		log.info("Loaded Groups: {}", items);
+		allGroups = groupDao.listAll();
+		comboGroups.setItems(allGroups);
+		log.info("Loaded Groups: {}", allGroups);
 
 		HorizontalLayout filters = new HorizontalLayout();
 		filters.addComponents(checkIncluded, comboGroups);
-		dataProvider = new ListDataProvider<>(new ArrayList<>());
+		dataProvider = new ListDataProvider<Person>(new ArrayList<>()).withConfigurableFilter();
 		grid = new Grid<>();
 		grid.setDataProvider(dataProvider);
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
@@ -76,6 +76,7 @@ public class PersonGrid extends CustomComponent {
 		grid.addColumn(Person::getBirth,
 				b -> b != null ? birthFormat.format(b) : "")
 				.setCaption("Geburtstag");
+		grid.addComponentColumn(this::buildDeleteButton);
 		grid.setSelectionMode(SelectionMode.MULTI);
 
 		Button close = new Button("Schließen", ev -> {

@@ -38,8 +38,7 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	}
 	
 	@Override
-	public List<T> list() {
-
+	public List<T> listAll() {
 		TypedQuery<T> query = em.createNamedQuery(
 				entityClass.getSimpleName() + ".findAll", entityClass);
 		return query.getResultList();
