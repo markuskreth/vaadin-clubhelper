@@ -111,4 +111,56 @@ public class Relative implements Serializable {
 		this.person2Bean = person2Bean;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((person1Bean == null) ? 0 : person1Bean.hashCode());
+		result = prime * result + ((person2Bean == null) ? 0 : person2Bean.hashCode());
+		result = prime * result + ((toPerson1Relation == null) ? 0 : toPerson1Relation.hashCode());
+		result = prime * result + ((toPerson2Relation == null) ? 0 : toPerson2Relation.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Relative other = (Relative) obj;
+		if (deleted == null) {
+			if (other.deleted != null)
+				return false;
+		} else if (!deleted.equals(other.deleted))
+			return false;
+		if (id != other.id)
+			return false;
+		if (person1Bean == null) {
+			if (other.person1Bean != null)
+				return false;
+		} else if (!person1Bean.equals(other.person1Bean))
+			return false;
+		if (person2Bean == null) {
+			if (other.person2Bean != null)
+				return false;
+		} else if (!person2Bean.equals(other.person2Bean))
+			return false;
+		if (toPerson1Relation == null) {
+			if (other.toPerson1Relation != null)
+				return false;
+		} else if (!toPerson1Relation.equals(other.toPerson1Relation))
+			return false;
+		if (toPerson2Relation == null) {
+			if (other.toPerson2Relation != null)
+				return false;
+		} else if (!toPerson2Relation.equals(other.toPerson2Relation))
+			return false;
+		return true;
+	}
+
 }

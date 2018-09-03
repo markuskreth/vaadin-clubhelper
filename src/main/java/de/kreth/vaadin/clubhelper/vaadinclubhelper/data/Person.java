@@ -56,9 +56,12 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy = "person")
 	private List<Contact> contacts;
 
-	// bi-directional many-to-one association to Persongroup
-	@OneToMany(mappedBy = "person")
-	private List<Persongroup> persongroups;
+	// bi-directional many-to-many association to Persongroup
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable (name = "persongroup", 
+	        joinColumns = { @JoinColumn(name = "person_id") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "group_id") })
+	private List<GroupDef> groups;
 
 	// bi-directional many-to-one association to Relative
 	@OneToMany(mappedBy = "person1Bean")
@@ -72,7 +75,7 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy = "person")
 	private List<Startpaesse> startpaesses;
 
-	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
+	@ManyToMany(cascade = { CascadeType.MERGE,  CascadeType.REFRESH, CascadeType.REMOVE,  CascadeType.DETACH }, fetch = FetchType.LAZY)
 	@JoinTable(
 	        name = "clubevent_has_person", 
 	        joinColumns = { @JoinColumn(name = "person_id") }, 
@@ -221,26 +224,20 @@ public class Person implements Serializable {
 		return contact;
 	}
 
-	public List<Persongroup> getPersongroups() {
-		return this.persongroups;
+	public List<GroupDef> getPersongroups() {
+		return this.groups;
 	}
 
-	public void setPersongroups(List<Persongroup> persongroups) {
-		this.persongroups = persongroups;
+	public void setPersongroups(List<GroupDef> persongroups) {
+		this.groups = persongroups;
 	}
 
-	public Persongroup addPersongroup(Persongroup persongroup) {
+	public void addPersongroup(GroupDef persongroup) {
 		getPersongroups().add(persongroup);
-		persongroup.setPerson(this);
-
-		return persongroup;
 	}
 
-	public Persongroup removePersongroup(Persongroup persongroup) {
+	public void removePersongroup(GroupDef persongroup) {
 		getPersongroups().remove(persongroup);
-		persongroup.setPerson(null);
-
-		return persongroup;
 	}
 
 	public List<Relative> getRelatives1() {

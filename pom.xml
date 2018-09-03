@@ -55,6 +55,11 @@
 			<artifactId>vaadin-push</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.vaadin.teemu</groupId>
+			<artifactId>switch</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 		</dependency>

@@ -113,4 +113,50 @@ public class Startpaesse implements Serializable {
 		return startpassStartrechte;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((person == null) ? 0 : person.hashCode());
+		result = prime * result + ((startpassNr == null) ? 0 : startpassNr.hashCode());
+		result = prime * result + ((startpassStartrechtes == null) ? 0 : startpassStartrechtes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Startpaesse other = (Startpaesse) obj;
+		if (deleted == null) {
+			if (other.deleted != null)
+				return false;
+		} else if (!deleted.equals(other.deleted))
+			return false;
+		if (id != other.id)
+			return false;
+		if (person == null) {
+			if (other.person != null)
+				return false;
+		} else if (!person.equals(other.person))
+			return false;
+		if (startpassNr == null) {
+			if (other.startpassNr != null)
+				return false;
+		} else if (!startpassNr.equals(other.startpassNr))
+			return false;
+		if (startpassStartrechtes == null) {
+			if (other.startpassStartrechtes != null)
+				return false;
+		} else if (!startpassStartrechtes.equals(other.startpassStartrechtes))
+			return false;
+		return true;
+	}
+
 }

@@ -25,7 +25,7 @@
 		<property column="organizerDisplayName" generated="never"
 			lazy="false" name="organizerDisplayName" type="string" />
 			
-        <set name="persons" table="clubevent_has_person" cascade="all" lazy="false">
+        <set name="persons" table="clubevent_has_person" cascade="save-update" lazy="false">
             <key column="clubevent_id"/>
             <many-to-many column="person_id" class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person" />
         </set>

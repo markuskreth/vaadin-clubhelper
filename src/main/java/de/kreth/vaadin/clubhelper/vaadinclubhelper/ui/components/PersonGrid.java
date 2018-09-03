@@ -3,16 +3,22 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.event.selection.SingleSelectionEvent;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -23,11 +29,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.MultiSelect;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
 
 public class PersonGrid extends CustomComponent {
 
@@ -44,8 +50,12 @@ public class PersonGrid extends CustomComponent {
 
 	private final TextField textTitle;
 
-	private final ListDataProvider<Person> dataProvider;
 	private ClosedFunction closedFunction = null;
+	private ConfigurableFilterDataProvider<Person, Void, SerializablePredicate<Person>> dataProvider;
+	private Boolean selectedOnlyFilter;
+	private Set<GroupDef> groupMemberFilter;
+	private List<GroupDef> allGroups;
+	private Consumer<Person> onPersonEdit;
 
 	public PersonGrid(GroupDao groupDao) {
 
@@ -91,14 +101,59 @@ public class PersonGrid extends CustomComponent {
 		setCompositionRoot(panel);
 	}
 
+    private Button buildDeleteButton(Person p) {
+        Button button = new Button(VaadinIcons.EDIT);
+        button.addStyleName(ValoTheme.BUTTON_SMALL);
+        button.addClickListener(e -> showPersonDetails(p));
+        return button;
+    }
+    
+	private void showPersonDetails(Person p) {
+		if (onPersonEdit != null) {
+			onPersonEdit.accept(p);
+		}
+	}
+
 	public void onClosedFunction(ClosedFunction closedFunction) {
 		this.closedFunction = closedFunction;
 	}
 
 	private void onSelectedOnly(ValueChangeEvent<Boolean> ev) {
-		dataProvider.clearFilters();
-		Set<Person> selected = grid.getSelectedItems();
-		dataProvider.addFilter(p -> selected.contains(p));
+		this.selectedOnlyFilter = ev.getValue();
+		updateFilter();
+	}
+
+	private void updateFilter() {
+		Predicate<Person> filter = p -> true;
+		if (selectedOnlyFilter!= null && selectedOnlyFilter.equals(Boolean.TRUE)) {
+			Set<Person> selected = grid.getSelectedItems();
+			filter = p -> selected.contains(p);
+		}
+		if (groupMemberFilter != null && groupMemberFilter.isEmpty() == false) {
+			final Set<Integer> groupIds = new HashSet<>();
+			groupMemberFilter.forEach(gm -> {
+				groupIds.add(gm.getId());
+			});
+			
+			filter = filter.and(p -> {
+				{
+					List<GroupDef> personGroups = p.getPersongroups();
+					for (GroupDef pg : personGroups) {
+						if (groupIds.contains(pg.getId())) {
+							return true;
+						}
+					}
+					return false;
+				}
+			});
+		}
+		
+		setFilter(filter);
+	}
+
+	public void setFilter(Predicate<Person> filter) {
+		dataProvider.setFilter(p -> filter.test(p));
+		grid.getDataProvider().refreshAll();
 	}
 
 	public void onPersonSelect(SelectionListener<Person> listener) throws UnsupportedOperationException {
@@ -128,17 +183,9 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	private void onGroupSelected(SingleSelectionEvent<GroupDef> ev) {
-		dataProvider.clearFilters();
-		final Set<GroupDef> groups = ev.getAllSelectedItems();
-		dataProvider.addFilter(p -> {
-			List<Persongroup> pgs = p.getPersongroups();
-			for (Persongroup pg : pgs) {
-				if (groups.contains(pg.getGroupDef())) {
-					return true;
-				}
-			}
-			return false;
-		});
+
+		groupMemberFilter = ev.getAllSelectedItems();
+		updateFilter();
 	}
 
 	public void setTitle(String value) {
@@ -161,6 +208,12 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	public void selectItems(Collection<Person> persons) {
+		log.debug("Selecting now: {}" + persons);
 		selectItems(persons.toArray(new Person[0]));
 	}
+
+	public void onPersonEdit(Consumer<Person> function) {
+		this.onPersonEdit = function;
+	}
+
 }

@@ -16,10 +16,8 @@ import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
@@ -27,6 +25,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 @Theme("vaadin-clubhelpertheme")
@@ -57,12 +56,13 @@ public class MainUi extends UI {
 
 		LOGGER.debug("Starting Vaadin UI with " + getClass().getName());
 
-		List<Person> persons = personDao.list();
+		List<Person> persons = personDao.listAll();
 		personGrid = new PersonGrid(groupDao);
 		personGrid.setItems(persons);
 		personGrid.setCaption("Personen");
 		personGrid.onClosedFunction(() -> detailClosed());
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
+		personGrid.onPersonEdit(p -> onPersonEdit(p));
 
 		this.calendar = new CalendarComponent();
 		calendar.setHandler(this::onItemClick);
@@ -74,16 +74,6 @@ public class MainUi extends UI {
 		setContent(contentLayout);
 		setSizeFull();
 
-//		final List<ClubEvent> events = eventBusiness.loadEvents(request);
-//		calendar.setItems(events);
-//		for (ClubEvent ev : events) {
-//			if (ev.getPersons() != null && ev.getPersons().size()>0) {
-//				System.out.println(ev.getCaption());
-//				for (Person p: ev.getPersons()) {
-//					System.out.println("\t" + p.getPrename() + "=" + persons.contains(p));
-//				}
-//			}
-//		}
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
 
@@ -97,11 +87,17 @@ public class MainUi extends UI {
 			
 		});
 		exec.shutdown();
+		LOGGER.info("Loaded UI and started fetch of Events");
 	}
 
+	private void onPersonEdit(Person p) {
+		PersonEditDialog dlg = new PersonEditDialog(groupDao.listAll(), p, personDao);
+		getUI().addWindow(dlg);
+	}
+	
 	private void personSelectionChange(SelectionEvent<Person> ev) {
 		Set<Person> selected = ev.getAllSelectedItems();
-		System.out.println("Selection changed to: " + selected);
+		LOGGER.debug("Selection changed to: {}", selected);
 		eventBusiness.changePersons(selected);
 	}
 
@@ -119,8 +115,10 @@ public class MainUi extends UI {
 		
 		personGrid.setCaption(ev.getCaption());
 		personGrid.setTitle(ev.getCaption());
-		personGrid.setVisible(true);
+		personGrid.setEnabled(false);
 		personGrid.selectItems(ev.getPersons());
+		personGrid.setVisible(true);
+		personGrid.setEnabled(true);
 		eventBusiness.setSelected(ev);
 	}
 
