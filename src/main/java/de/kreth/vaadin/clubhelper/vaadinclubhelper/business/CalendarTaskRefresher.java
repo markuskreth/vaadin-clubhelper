@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
 @Component
