@@ -2,6 +2,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
@@ -160,7 +162,8 @@ public class PersonGrid extends CustomComponent {
 		grid.addSelectionListener(listener);
 	}
 
-	public void selectItems(Person... items) {
+	private void selectItems(Person... items) {
+		log.debug("Selecting Persons: {}", Arrays.asList(items));
 		MultiSelect<Person> asMultiSelect = grid.asMultiSelect();
 		asMultiSelect.deselectAll();
 		asMultiSelect.select(items);
@@ -188,7 +191,7 @@ public class PersonGrid extends CustomComponent {
 		updateFilter();
 	}
 
-	public void setTitle(String value) {
+	private void setTitle(String value) {
 		if (value == null) {
 			value = "";
 		}
@@ -207,13 +210,14 @@ public class PersonGrid extends CustomComponent {
 		void closed();
 	}
 
-	public void selectItems(Collection<Person> persons) {
-		log.debug("Selecting now: {}" + persons);
-		selectItems(persons.toArray(new Person[0]));
-	}
-
 	public void onPersonEdit(Consumer<Person> function) {
 		this.onPersonEdit = function;
+	}
+
+	public void setEvent(ClubEvent ev) {
+		setCaption(ev.getCaption());
+		setTitle(ev.getCaption());
+		selectItems(ev.getPersons().toArray(new Person[0]));
 	}
 
 }

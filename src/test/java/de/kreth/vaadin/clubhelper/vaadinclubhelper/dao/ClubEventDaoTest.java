@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -28,8 +27,8 @@ public class ClubEventDaoTest extends AbstractDatabaseTest {
 	@Autowired
 	private ClubEventDao dao;
 
-	@Autowired
-	private TestEntityManager entityManager; 
+//	@Autowired
+//	private TestEntityManager entityManager; 
 
 	@Test
 	public void storeEvent() {

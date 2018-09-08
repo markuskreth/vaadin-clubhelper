@@ -66,6 +66,7 @@ public class PersonEditDialog extends Window {
 		ok.addClickListener(ev -> {
 			binder.writeBeanIfValid(person);
 			dao.update(person);
+			PersonEditDialog.this.close();
 		});
 		VerticalLayout layout = new VerticalLayout();
 		layout.addComponents(textPrename, textSureName, birthday, groupPanel, close, ok);

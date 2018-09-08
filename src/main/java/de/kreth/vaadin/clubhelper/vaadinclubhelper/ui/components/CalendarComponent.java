@@ -8,10 +8,8 @@ import java.util.Collection;
 
 import org.vaadin.addon.calendar.Calendar;
 import org.vaadin.addon.calendar.item.BasicItemProvider;
-import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardHandler;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.DateClickHandler;
-import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardHandler;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
@@ -51,14 +49,6 @@ public class CalendarComponent extends CustomComponent {
 		VerticalLayout layout = new VerticalLayout(monthName, calendar);
 		layout.setSizeFull();
 		setCompositionRoot(layout);
-	}
-
-	private void onNextMonth(ForwardEvent h) {
-		updateMonthText(h.getComponent().getStartDate());
-	}
-
-	private void onPrevMonth(BackwardEvent h) {
-		updateMonthText(h.getComponent().getStartDate());
 	}
 
 	private void updateMonthText(ZonedDateTime startDate) {

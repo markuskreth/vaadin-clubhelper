@@ -112,11 +112,10 @@ public class MainUi extends UI {
 
 		contentLayout.removeComponent(personGrid);
 		contentLayout.addComponent(personGrid);
-		
-		personGrid.setCaption(ev.getCaption());
-		personGrid.setTitle(ev.getCaption());
+
+		eventBusiness.setSelected(null);
 		personGrid.setEnabled(false);
-		personGrid.selectItems(ev.getPersons());
+		personGrid.setEvent(ev);
 		personGrid.setVisible(true);
 		personGrid.setEnabled(true);
 		eventBusiness.setSelected(ev);
