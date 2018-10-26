@@ -24,7 +24,7 @@ public class CalendarComponent extends CustomComponent {
 
 	private static final long serialVersionUID = -9152173211931554059L;
 
-	private DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uu");
+	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uu");
 
 	private Label monthName;
 
@@ -41,8 +41,6 @@ public class CalendarComponent extends CustomComponent {
 				.withMonth(Month.from(LocalDateTime.now()));
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
-		// calendar.setHandler(this::onNextMonth);
-		// calendar.setHandler(this::onPrevMonth);
 
 		updateMonthText(calendar.getStartDate());
 
@@ -76,7 +74,7 @@ public class CalendarComponent extends CustomComponent {
 		calendar.markAsDirty();
 	}
 
-	class ClubEventProvider extends BasicItemProvider<ClubEvent> {
+	static class ClubEventProvider extends BasicItemProvider<ClubEvent> {
 
 		private static final long serialVersionUID = -5415397258827236704L;
 

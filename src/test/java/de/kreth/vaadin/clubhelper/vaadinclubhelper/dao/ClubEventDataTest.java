@@ -42,6 +42,27 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		return p;
 	}
 
+	public List<Person> insertPersons(int count) {
+	
+		List<Person> inserted = new ArrayList<>();
+
+		Transaction tx = session.beginTransaction();
+		for (int i=0; i<count; i++) {
+
+			Person p = new Person();
+			p.setPrename("prename_" + i);
+			p.setSurname("surname_" + i);
+			p.setBirth(new Date());
+			session.save(p);
+			inserted.add(p);
+		}
+		tx.commit();
+		for (Person p: inserted) {
+			assertTrue("not saved: " + p , p.getId()>0);
+		}
+		return inserted;
+	}
+	
 	@Test
 	public void testInsertEvent() {
 		ClubEvent ev = creteEvent();
@@ -153,6 +174,41 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		tx.commit();
 		List<ClubeventHasPerson> entries = loadEventPersons();
 		assertEquals(2, entries.size());
+	}
+	
+	@Test
+	public void testChangeEventParticipantsRapidly() {
+
+		ClubEvent ev = creteEvent();
+		ev.setPersons(new HashSet<>());
+		Transaction tx = session.beginTransaction();
+		session.save(ev);
+		tx.commit();
+		
+		ev = session.byId(ClubEvent.class).load(ev.getId());
+		List<Person> persons = insertPersons(6);
+		for (Person p: persons) {
+			ev.getPersons().add(p);
+			tx = session.beginTransaction();
+			session.merge(ev);
+			tx.commit();
+		}
+		ev.getPersons().remove(persons.get(2));
+		tx = session.beginTransaction();
+		session.merge(ev);
+		tx.commit();
+		ev.getPersons().remove(persons.get(4));
+		tx = session.beginTransaction();
+		session.merge(ev);
+		tx.commit();
+
+		ev.getPersons().add(persons.get(2));
+		ev.getPersons().add(persons.get(4));
+		tx = session.beginTransaction();
+		session.merge(ev);
+		tx.commit();
+		List<ClubeventHasPerson> result = loadEventPersons();
+		assertEquals(6, result.size());
 	}
 	
 	private ClubEvent creteEvent() {

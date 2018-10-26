@@ -40,9 +40,6 @@ public class Adress implements Serializable {
 	@ManyToOne
 	private Person person;
 
-	public Adress() {
-	}
-
 	public int getId() {
 		return this.id;
 	}

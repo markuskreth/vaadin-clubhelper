@@ -36,9 +36,6 @@ public class Attendance implements Serializable {
 	@ManyToOne
 	private Person person;
 
-	public Attendance() {
-	}
-
 	public int getId() {
 		return this.id;
 	}

@@ -60,7 +60,7 @@ public class CalendarResource {
 		return new ArrayList<>(configs.values());
 	}
 
-	public class CalendarKonfig {
+	public static class CalendarKonfig {
 		private String name;
 		private String color;
 

@@ -60,11 +60,12 @@ public abstract class GoogleBaseAdapter {
 	}
 
 	protected void checkRefreshToken(String serverName) throws IOException {
-
-		if (credential == null) {
-			credential = authorize(serverName);
+		synchronized (SCOPES) {
+			if (credential == null) {
+				credential = authorize(serverName);
+			}
 		}
-
+		
 		if ((credential.getExpiresInSeconds() != null
 				&& credential.getExpiresInSeconds() < 3600)) {
 
@@ -87,7 +88,7 @@ public abstract class GoogleBaseAdapter {
 	 * @return an authorized Credential object.
 	 * @throws IOException
 	 */
-	private synchronized Credential authorize(String serverName)
+	private Credential authorize(String serverName)
 			throws IOException {
 		if (credential != null && (credential.getExpiresInSeconds() != null
 				&& credential.getExpiresInSeconds() < 3600)) {

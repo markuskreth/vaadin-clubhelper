@@ -74,8 +74,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			throw new IllegalStateException(
 					"Calendar " + calendarSummary + " not found!");
 		}
-		Calendar cal = service.calendars().get(calendarId).execute();
-		return cal;
+
+		return service.calendars().get(calendarId).execute();
 	}
 
 	public List<Event> getAllEvents(String serverName)
@@ -110,8 +110,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		oldestCal.add(java.util.Calendar.MONTH, -1);
 		oldestCal.add(java.util.Calendar.YEAR, -1);
 		oldestCal.add(java.util.Calendar.HOUR_OF_DAY, -1);
-		final long oldest = oldestCal.getTimeInMillis();
-		return oldest;
+
+		return oldestCal.getTimeInMillis();
 	}
 
 	List<CalendarListEntry> getCalendarList(String serverName)
@@ -154,18 +154,17 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		public void run() {
 
 			try {
-				log.debug("Fetching events of calendar \"" + summary + "\"");
+				log.debug("Fetching events of calendar \"{}\"", summary);
 				Calendar calendar = getCalendarBySummaryName(items, summary);
 				DateTime timeMin = new DateTime(oldest);
-				List<Event> items = service.events().list(calendar.getId())
+				List<Event> eventItems = service.events().list(calendar.getId())
 						.setTimeMin(timeMin).execute().getItems();
-				items.forEach(item -> item.set("colorClass", colorClass));
-				events.addAll(items);
-				log.debug("Added " + items.size() + " Events for \"" + summary
-						+ "\"");
+				eventItems.forEach(item -> item.set("colorClass", colorClass));
+				events.addAll(eventItems);
+				log.debug("Added {} Events for \"{}\"", eventItems.size(), summary);
 
 			} catch (IOException e) {
-				log.error("Unable to fetch Events from " + summary, e);
+				log.error("Unable to fetch Events from {}", summary, e);
 			}
 		}
 	}

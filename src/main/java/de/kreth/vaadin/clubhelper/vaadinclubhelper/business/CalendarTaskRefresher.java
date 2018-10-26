@@ -17,7 +17,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 @Component
 public class CalendarTaskRefresher {
 
-	private static final long RATE = 1000 * 60 * 10;
+	private static final long RATE = 1000L * 60 * 10;
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
