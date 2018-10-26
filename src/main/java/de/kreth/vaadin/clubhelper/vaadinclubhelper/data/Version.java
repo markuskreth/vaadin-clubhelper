@@ -36,7 +36,7 @@ public class Version implements Serializable {
 	}
 
 	public Date getDeleted() {
-		return this.deleted;
+		return new Date(this.deleted.getTime());
 	}
 
 	public void setDeleted(Date deleted) {

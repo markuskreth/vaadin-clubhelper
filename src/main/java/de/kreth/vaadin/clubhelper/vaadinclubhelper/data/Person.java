@@ -95,7 +95,7 @@ public class Person implements Serializable {
 	}
 
 	public Date getBirth() {
-		return this.birth;
+		return new Date(this.birth.getTime());
 	}
 
 	public void setBirth(Date birth) {
@@ -103,7 +103,7 @@ public class Person implements Serializable {
 	}
 
 	public Date getChanged() {
-		return this.changed;
+		return new Date(this.changed.getTime());
 	}
 
 	public void setChanged(Date changed) {
@@ -111,7 +111,7 @@ public class Person implements Serializable {
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return new Date(this.created.getTime());
 	}
 
 	public void setCreated(Date created) {
@@ -119,7 +119,7 @@ public class Person implements Serializable {
 	}
 
 	public Date getDeleted() {
-		return this.deleted;
+		return new Date(this.deleted.getTime());
 	}
 
 	public void setDeleted(Date deleted) {

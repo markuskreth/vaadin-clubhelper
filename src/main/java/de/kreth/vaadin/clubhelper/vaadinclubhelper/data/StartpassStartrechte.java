@@ -58,7 +58,7 @@ public class StartpassStartrechte implements Serializable {
 	}
 
 	public Date getChanged() {
-		return this.changed;
+		return new Date(this.changed.getTime());
 	}
 
 	public void setChanged(Date changed) {
@@ -66,7 +66,7 @@ public class StartpassStartrechte implements Serializable {
 	}
 
 	public Date getCreated() {
-		return this.created;
+		return new Date(this.created.getTime());
 	}
 
 	public void setCreated(Date created) {
@@ -74,7 +74,7 @@ public class StartpassStartrechte implements Serializable {
 	}
 
 	public Date getDeleted() {
-		return this.deleted;
+		return new Date(this.deleted.getTime());
 	}
 
 	public void setDeleted(Date deleted) {
@@ -90,7 +90,7 @@ public class StartpassStartrechte implements Serializable {
 	}
 
 	public Date getStartrechtBeginn() {
-		return this.startrechtBeginn;
+		return new Date(this.startrechtBeginn.getTime());
 	}
 
 	public void setStartrechtBeginn(Date startrechtBeginn) {
@@ -98,7 +98,7 @@ public class StartpassStartrechte implements Serializable {
 	}
 
 	public Date getStartrechtEnde() {
-		return this.startrechtEnde;
+		return new Date(this.startrechtEnde.getTime());
 	}
 
 	public void setStartrechtEnde(Date startrechtEnde) {
