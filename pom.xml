@@ -36,7 +36,7 @@
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 		<sonar.jacoco.reportPath>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPath>
-		<sonar.exclusions>${project.basedir}/src/main/webapp/VAADIN/themes/vaadin-clubhelpertheme/styles.css</sonar.exclusions>
+		<sonar.exclusions>**/src/main/webapp/VAADIN/**/*</sonar.exclusions>
 
 	</properties>
 
@@ -242,6 +242,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.1</version>
 <!-- 				<configuration> -->
 <!-- 					<argLine> -->
 <!-- 						-javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath} -->
@@ -250,11 +251,6 @@
 <!-- 				</configuration> -->
 
 				<dependencies>
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>1.3.1</version>
-					</dependency>
 					<dependency>
 						<groupId>org.junit.jupiter</groupId>
 						<artifactId>junit-jupiter-engine</artifactId>
