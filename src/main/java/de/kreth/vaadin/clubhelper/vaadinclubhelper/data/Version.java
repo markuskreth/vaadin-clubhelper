@@ -13,7 +13,8 @@ import java.util.Date;
 @Table(name="version")
 @NamedQuery(name="Version.findAll", query="SELECT v FROM Version v")
 public class Version implements Serializable {
-	private static final long serialVersionUID = 1L;
+
+	private static final long serialVersionUID = 1964331485558854626L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

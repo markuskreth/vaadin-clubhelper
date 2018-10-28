@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +23,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.calendar.Calendar.Builder;
 import com.google.api.services.calendar.CalendarScopes;
 
 public abstract class GoogleBaseAdapter {
@@ -43,10 +45,10 @@ public abstract class GoogleBaseAdapter {
 	 */
 	static final List<String> SCOPES = Arrays.asList(CalendarScopes.CALENDAR);
 
-	protected static Credential credential;
+	private static Credential credential;
 
-	protected static final Logger log = LoggerFactory
-			.getLogger(GoogleBaseAdapter.class);
+	protected final Logger log = LoggerFactory
+			.getLogger(getClass());
 	/** Global instance of the {@link FileDataStoreFactory}. */
 	protected final FileDataStoreFactory DATA_STORE_FACTORY;
 	/** Global instance of the HTTP transport. */
@@ -56,7 +58,11 @@ public abstract class GoogleBaseAdapter {
 		super();
 		HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
 		DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		DATA_STORE_DIR.mkdirs();
+		if (DATA_STORE_DIR.mkdirs()) {
+			log.info("created DATA_STORE_DIR: {}", DATA_STORE_DIR.getAbsolutePath());
+		} else {
+			log.trace("DATA_STORE_DIR already exists.");
+		}
 	}
 
 	protected void checkRefreshToken(String serverName) throws IOException {
@@ -78,6 +84,19 @@ public abstract class GoogleBaseAdapter {
 						+ (result ? "successfull." : "failed."));
 			}
 		}
+	}
+
+	public Builder createBuilder() {
+		if (credential == null) {
+			throw new IllegalStateException("credential is null, checkRefreshToken need to be called before.");
+		}
+		
+		return new com.google.api.services.calendar.Calendar.Builder(
+				HTTP_TRANSPORT, JSON_FACTORY, credential);
+	}
+	
+	public final boolean refreshToken() throws IOException {
+		return credential.refreshToken();
 	}
 
 	/**
@@ -113,7 +132,7 @@ public abstract class GoogleBaseAdapter {
 			}
 		}
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets
-				.load(JSON_FACTORY, new InputStreamReader(in));
+				.load(JSON_FACTORY, new InputStreamReader(in, Charset.defaultCharset()));
 		if (log.isTraceEnabled()) {
 			log.trace("client secret json resource loaded.");
 		}

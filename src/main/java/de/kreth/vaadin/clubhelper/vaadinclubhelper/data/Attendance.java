@@ -11,22 +11,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name="attendance")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name="Attendance.findAll", query="SELECT a FROM Attendance a")
-public class Attendance implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Attendance extends BaseEntity implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
+	private static final long serialVersionUID = 2385033161272078335L;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="on_date")
@@ -35,38 +24,6 @@ public class Attendance implements Serializable {
 	//bi-directional many-to-one association to Person
 	@ManyToOne
 	private Person person;
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
-	}
 
 	public Date getOnDate() {
 		return new Date(this.onDate.getTime());

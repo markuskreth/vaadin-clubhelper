@@ -39,9 +39,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			if (lock.tryLock(10, TimeUnit.SECONDS)) {
 				try {
 					super.checkRefreshToken(serverName);
-					if (service == null && credential != null) {
-						service = new com.google.api.services.calendar.Calendar.Builder(
-								HTTP_TRANSPORT, JSON_FACTORY, credential)
+					if (service == null) {
+						service = createBuilder()
 										.setApplicationName(APPLICATION_NAME)
 										.build();
 					}
@@ -125,7 +124,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 				log.warn("Error fetching Calendar List, trying token refresh",
 						e);
 			}
-			credential.refreshToken();
+			refreshToken();
 			if (log.isInfoEnabled()) {
 				log.info("Successfully refreshed Google Security Token.");
 			}

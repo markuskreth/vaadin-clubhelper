@@ -1,8 +1,15 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 
 /**
@@ -11,22 +18,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name="relative")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name="Relative.findAll", query="SELECT r FROM Relative r")
-public class Relative implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Relative extends BaseEntity implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
+	private static final long serialVersionUID = -1331008393583211773L;
 
 	@Column(name="TO_PERSON1_RELATION")
 	private String toPerson1Relation;
@@ -45,38 +41,6 @@ public class Relative implements Serializable {
 	private Person person2Bean;
 
 	public Relative() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
 	}
 
 	public String getToPerson1Relation() {
@@ -114,9 +78,7 @@ public class Relative implements Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
-		result = prime * result + id;
+		int result = super.hashCode();
 		result = prime * result + ((person1Bean == null) ? 0 : person1Bean.hashCode());
 		result = prime * result + ((person2Bean == null) ? 0 : person2Bean.hashCode());
 		result = prime * result + ((toPerson1Relation == null) ? 0 : toPerson1Relation.hashCode());
@@ -128,18 +90,11 @@ public class Relative implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Relative other = (Relative) obj;
-		if (deleted == null) {
-			if (other.deleted != null)
-				return false;
-		} else if (!deleted.equals(other.deleted))
-			return false;
-		if (id != other.id)
-			return false;
 		if (person1Bean == null) {
 			if (other.person1Bean != null)
 				return false;

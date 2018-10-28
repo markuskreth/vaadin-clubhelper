@@ -1,9 +1,16 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 
 /**
@@ -12,22 +19,11 @@ import java.util.List;
  */
 @Entity
 @Table(name="startpaesse")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name="Startpaesse.findAll", query="SELECT s FROM Startpaesse s")
-public class Startpaesse implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Startpaesse extends BaseEntity implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
+	private static final long serialVersionUID = 1464510869007022357L;
 
 	@Column(name="startpass_nr")
 	private String startpassNr;
@@ -41,38 +37,6 @@ public class Startpaesse implements Serializable {
 	private List<StartpassStartrechte> startpassStartrechtes;
 
 	public Startpaesse() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
 	}
 
 	public String getStartpassNr() {
@@ -111,52 +75,6 @@ public class Startpaesse implements Serializable {
 		startpassStartrechte.setStartpaesse(null);
 
 		return startpassStartrechte;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((person == null) ? 0 : person.hashCode());
-		result = prime * result + ((startpassNr == null) ? 0 : startpassNr.hashCode());
-		result = prime * result + ((startpassStartrechtes == null) ? 0 : startpassStartrechtes.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Startpaesse other = (Startpaesse) obj;
-		if (deleted == null) {
-			if (other.deleted != null)
-				return false;
-		} else if (!deleted.equals(other.deleted))
-			return false;
-		if (id != other.id)
-			return false;
-		if (person == null) {
-			if (other.person != null)
-				return false;
-		} else if (!person.equals(other.person))
-			return false;
-		if (startpassNr == null) {
-			if (other.startpassNr != null)
-				return false;
-		} else if (!startpassNr.equals(other.startpassNr))
-			return false;
-		if (startpassStartrechtes == null) {
-			if (other.startpassStartrechtes != null)
-				return false;
-		} else if (!startpassStartrechtes.equals(other.startpassStartrechtes))
-			return false;
-		return true;
 	}
 
 }

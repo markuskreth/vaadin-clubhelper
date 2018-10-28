@@ -11,22 +11,11 @@ import java.util.Date;
  */
 @Entity
 @Table(name="startpass_startrechte")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name="StartpassStartrechte.findAll", query="SELECT s FROM StartpassStartrechte s")
-public class StartpassStartrechte implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class StartpassStartrechte extends BaseEntity implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
+	private static final long serialVersionUID = 292071407439270519L;
 
 	private String fachgebiet;
 
@@ -45,41 +34,6 @@ public class StartpassStartrechte implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="startpass_id")
 	private Startpaesse startpaesse;
-
-	public StartpassStartrechte() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
-	}
 
 	public String getFachgebiet() {
 		return this.fachgebiet;

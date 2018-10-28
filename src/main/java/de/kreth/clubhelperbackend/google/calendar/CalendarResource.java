@@ -46,10 +46,9 @@ public class CalendarResource {
 				case "name" :
 					conf.name = value;
 					break;
-
 				case "color" :
 					conf.color = value;
-
+					break;
 				default :
 					break;
 			}

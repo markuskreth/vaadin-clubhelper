@@ -13,28 +13,16 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "person")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = Person.QUERY_FINDALL, query = "SELECT p FROM Person p")
-public class Person implements Serializable {
+public class Person extends BaseEntity implements Serializable {
 
 	public final static String QUERY_FINDALL = "Person.findAll";
 
 	private static final long serialVersionUID = -8361264400619997123L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date birth;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
 
 	private String password;
 
@@ -83,47 +71,12 @@ public class Person implements Serializable {
 	    )
 	private Set<ClubEvent> events;
 	
-	public Person() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public Date getBirth() {
 		return new Date(this.birth.getTime());
 	}
 
 	public void setBirth(Date birth) {
 		this.birth = birth;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
 	}
 
 	public String getPassword() {
@@ -306,60 +259,8 @@ public class Person implements Serializable {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((created == null) ? 0 : created.hashCode());
-		result = prime * result + ((deleted == null) ? 0 : deleted.hashCode());
-		result = prime * result + id;
-		result = prime * result + ((prename == null) ? 0 : prename.hashCode());
-		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Person other = (Person) obj;
-		if (created == null) {
-			if (other.created != null)
-				return false;
-		} else if (!created.equals(other.created))
-			return false;
-		if (deleted == null) {
-			if (other.deleted != null)
-				return false;
-		} else if (!deleted.equals(other.deleted))
-			return false;
-		if (id != other.id)
-			return false;
-		if (prename == null) {
-			if (other.prename != null)
-				return false;
-		} else if (!prename.equals(other.prename))
-			return false;
-		if (surname == null) {
-			if (other.surname != null)
-				return false;
-		} else if (!surname.equals(other.surname))
-			return false;
-		if (username == null) {
-			if (other.username != null)
-				return false;
-		} else if (!username.equals(other.username))
-			return false;
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "Person [id=" + id + ", prename=" + prename + ", surname=" + surname + "]";
+		return "Person [id=" + getId() + ", prename=" + prename + ", surname=" + surname + "]";
 	}
 
 }

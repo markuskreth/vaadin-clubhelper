@@ -1,21 +1,17 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * The persistent class for the groupDef database table.
@@ -23,25 +19,13 @@ import javax.persistence.TemporalType;
  */
 @Entity(name = "groupDef")
 @Table(name = "groupDef")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM groupDef g")
-public class GroupDef implements Serializable {
+public class GroupDef extends BaseEntity implements Serializable {
 
 	public final static String QUERY_FINDALL = "GroupDef.findAll";
 
 	private static final long serialVersionUID = -2827542956463449518L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date changed;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date created;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date deleted;
 
 	private String name;
 
@@ -52,38 +36,6 @@ public class GroupDef implements Serializable {
 	private List<Persongroup> persongroups;
 
 	public GroupDef() {
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Date getChanged() {
-		return new Date(this.changed.getTime());
-	}
-
-	public void setChanged(Date changed) {
-		this.changed = changed;
-	}
-
-	public Date getCreated() {
-		return new Date(this.created.getTime());
-	}
-
-	public void setCreated(Date created) {
-		this.created = created;
-	}
-
-	public Date getDeleted() {
-		return new Date(this.deleted.getTime());
-	}
-
-	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
 	}
 
 	public String getName() {
@@ -118,15 +70,15 @@ public class GroupDef implements Serializable {
 
 	@Override
 	public String toString() {
-		return "GroupDef [id=" + id + ", name=" + name + "]";
+		return "GroupDef [id=" + getId() + ", name=" + name + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		result = prime * result + id;
+		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((persongroups == null) ? 0 : persongroups.hashCode());
 		return result;
 	}
 
@@ -134,17 +86,20 @@ public class GroupDef implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		GroupDef other = (GroupDef) obj;
-		if (id != other.id)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
+			return false;
+		if (persongroups == null) {
+			if (other.persongroups != null)
+				return false;
+		} else if (!persongroups.equals(other.persongroups))
 			return false;
 		return true;
 	}
