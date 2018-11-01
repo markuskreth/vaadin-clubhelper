@@ -1,10 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,26 +48,15 @@ public class EventBusiness {
 
 		List<ClubEvent> list = new ArrayList<>();
 
-		File f = new File("google_events.json");
-		if (f.exists()) {
-			try {
-				Files.delete(f.toPath());
-			} catch (IOException e) {
-				log.error("Error deleting file " + f.getAbsolutePath(), e);
-			}
-		}
-		try (BufferedWriter out = new BufferedWriter(new FileWriter(f))) {
-			
+		try (FileExporter ex = FileExporter.builder(log).setFileName("google_events.json").setAppend(false).disable().build()) {
+
 			String remoteHost = "localhost";
 			CalendarAdapter adapter = new CalendarAdapter();
 			List<com.google.api.services.calendar.model.Event> events = adapter
 					.getAllEvents(remoteHost);
 
 			for (com.google.api.services.calendar.model.Event ev : events) {
-				if (out != null) {
-					out.write(ev.toPrettyString());
-					out.newLine();
-				}
+				ex.writeLine(ev.toPrettyString());
 
 				if ("cancelled".equals(ev.getStatus())) {
 					log.debug("Cancelled: {}", ev.getSummary());
@@ -79,9 +64,12 @@ public class EventBusiness {
 					list.add(ClubEvent.parse(ev));
 				}
 			}
+			
 		} catch (GeneralSecurityException | IOException
 				| InterruptedException e) {
 			log.error("Error loading events from google.", e);
+		} catch (Exception e1) {
+			log.warn("Error closing " + FileExporter.class.getSimpleName(), e1);
 		}
 
 		return Collections.unmodifiableList(list);
