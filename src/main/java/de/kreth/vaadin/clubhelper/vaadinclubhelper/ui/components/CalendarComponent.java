@@ -13,9 +13,15 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents.DateClickHandler;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardHandler;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
+import com.vaadin.contextmenu.ContextMenu;
+import com.vaadin.contextmenu.MenuItem;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -36,6 +42,11 @@ public class CalendarComponent extends CustomComponent {
 		monthName = new Label();
 		monthName.setStyleName("title_label");
 
+		Button popupButton = new Button("Menu");
+		popupButton.addClickListener(ev -> openPopupMenu(ev));
+		
+		HorizontalLayout head = new HorizontalLayout(monthName, popupButton);
+		
 		dataProvider = new ClubEventProvider();
 		calendar = new Calendar<>(dataProvider)
 				.withMonth(Month.from(LocalDateTime.now()));
@@ -44,9 +55,19 @@ public class CalendarComponent extends CustomComponent {
 
 		updateMonthText(calendar.getStartDate());
 
-		VerticalLayout layout = new VerticalLayout(monthName, calendar);
+		VerticalLayout layout = new VerticalLayout(head, calendar);
 		layout.setSizeFull();
 		setCompositionRoot(layout);
+	}
+
+	private void openPopupMenu(ClickEvent ev) {
+		ContextMenu contextMenu = new ContextMenu(ev.getButton(), true);
+		contextMenu.addItem("Export", ev1 -> calendarExport(ev1));
+		contextMenu.open(210, 40);
+	}
+
+	private void calendarExport(MenuItem ev1) {
+		Notification.show("Do Export");
 	}
 
 	private void updateMonthText(ZonedDateTime startDate) {

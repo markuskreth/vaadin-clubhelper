@@ -75,6 +75,10 @@
 			<artifactId>calendar-component</artifactId>
 			<version>2.0-BETA4</version>
 		</dependency>
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin-context-menu</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -248,7 +252,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
 				<!-- <configuration> -->
 				<!-- <argLine> -->
 				<!-- -javaagent:${sonar.jacoco.jar}=destfile=${sonar.jacoco.reportPath} -->
@@ -270,20 +273,20 @@
 				<version>0.8.2</version>
 				<executions>
 					<execution>
-						<id>default-prepare-agent</id>
+						<id>default-jacoco-prepare-agent</id>
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>default-report</id>
+						<id>default-jacoco-report</id>
 						<phase>prepare-package</phase>
 						<goals>
 							<goal>report</goal>
 						</goals>
 					</execution>
 					<execution>
-						<id>default-check</id>
+						<id>default-jacoco-check</id>
 						<goals>
 							<goal>check</goal>
 						</goals>
