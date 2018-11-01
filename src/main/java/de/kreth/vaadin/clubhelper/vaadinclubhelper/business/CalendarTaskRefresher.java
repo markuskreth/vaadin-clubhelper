@@ -29,7 +29,7 @@ public class CalendarTaskRefresher {
 	public void synchronizeCalendarTasks() {
 		List<ClubEvent> events = business.loadEvents(null, true);
 		for (ClubEvent e : events) {
-			if (dao.get(e.getId()) != null) {
+			if (dao.get(e.getId()) == null) {
 				try {
 					log.trace("try inserting {}", e);
 					dao.save(e);
