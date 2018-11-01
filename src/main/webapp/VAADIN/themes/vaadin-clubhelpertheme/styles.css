@@ -1091,7 +1091,7 @@
  */
 
 .v-vaadin-version:after {
-	content: "8.4.4";
+	content: "8.5.2";
 }
 
 .v-widget {
@@ -5078,6 +5078,8 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	border-right: 1px solid #d4d4d4;
+	position: relative;
+	z-index: 11;
 }
 
 .vaadin-clubhelpertheme .v-grid-cell.frozen  + th, .vaadin-clubhelpertheme .v-grid-cell.frozen  + td {
@@ -9724,6 +9726,8 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	border-right: 1px solid #d4d4d4;
+	position: relative;
+	z-index: 11;
 }
 
 .vaadin-clubhelpertheme .v-tree8-cell.frozen  + th, .vaadin-clubhelpertheme .v-tree8-cell.frozen  + td {
@@ -10800,6 +10804,8 @@ div.v-layout.v-horizontal.v-widget {
 	-webkit-box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	box-shadow: 1px 0 2px rgba(0, 0, 0, 0.1);
 	border-right: 1px solid #d4d4d4;
+	position: relative;
+	z-index: 11;
 }
 
 .vaadin-clubhelpertheme .v-treegrid-cell.frozen  + th, .vaadin-clubhelpertheme .v-treegrid-cell.frozen  + td {
