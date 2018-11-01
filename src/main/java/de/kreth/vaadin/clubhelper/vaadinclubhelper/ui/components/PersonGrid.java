@@ -40,7 +40,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 public class PersonGrid extends CustomComponent {
 
 	private static final long serialVersionUID = -8148097982839343673L;
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private transient final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final DateFormat birthFormat = DateFormat
 			.getDateInstance(DateFormat.MEDIUM);
@@ -52,7 +52,7 @@ public class PersonGrid extends CustomComponent {
 
 	private final TextField textTitle;
 
-	private ClosedFunction closedFunction = null;
+	private transient ClosedFunction closedFunction = null;
 	private ConfigurableFilterDataProvider<Person, Void, SerializablePredicate<Person>> dataProvider;
 	private Boolean selectedOnlyFilter;
 	private Set<GroupDef> groupMemberFilter;

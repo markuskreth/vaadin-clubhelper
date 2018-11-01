@@ -50,15 +50,17 @@ public class EventBusiness {
 				"Loading events from Google Calendar, forceRefresh={}",
 				forceRefresh);
 
-		BufferedWriter out = null;
-
 		List<ClubEvent> list = new ArrayList<>();
-		
-		try {
 
-			File f = new File("google_events.json");
-			Files.delete(f.toPath());
-			out = new BufferedWriter(new FileWriter(f));
+		File f = new File("google_events.json");
+		if (f.exists()) {
+			try {
+				Files.delete(f.toPath());
+			} catch (IOException e) {
+				log.error("Error deleting file " + f.getAbsolutePath(), e);
+			}
+		}
+		try (BufferedWriter out = new BufferedWriter(new FileWriter(f))) {
 			
 			String remoteHost = "localhost";
 			CalendarAdapter adapter = new CalendarAdapter();
@@ -80,14 +82,6 @@ public class EventBusiness {
 		} catch (GeneralSecurityException | IOException
 				| InterruptedException e) {
 			log.error("Error loading events from google.", e);
-		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					log.error("Error writing File", e);
-				}
-			}
 		}
 
 		return Collections.unmodifiableList(list);

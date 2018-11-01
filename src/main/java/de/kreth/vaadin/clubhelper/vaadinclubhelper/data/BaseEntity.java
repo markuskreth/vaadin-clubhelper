@@ -38,7 +38,7 @@ public abstract class BaseEntity {
 	}
 
 	public void setChanged(Date changed) {
-		this.changed = changed;
+		this.changed = new Date(changed.getTime());
 	}
 
 	public Date getCreated() {
@@ -46,7 +46,7 @@ public abstract class BaseEntity {
 	}
 
 	public void setCreated(Date created) {
-		this.created = created;
+		this.created = new Date(created.getTime());
 	}
 
 	public Date getDeleted() {
@@ -54,7 +54,7 @@ public abstract class BaseEntity {
 	}
 
 	public void setDeleted(Date deleted) {
-		this.deleted = deleted;
+		this.deleted = new Date(deleted.getTime());
 	}
 
 	@Override
