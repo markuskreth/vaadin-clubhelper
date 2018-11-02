@@ -1,11 +1,19 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.addon.calendar.Calendar;
 import org.vaadin.addon.calendar.item.BasicItemProvider;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardHandler;
@@ -15,7 +23,10 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.contextmenu.MenuItem;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.Registration;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -23,14 +34,19 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 public class CalendarComponent extends CustomComponent {
 
 	private static final long serialVersionUID = -9152173211931554059L;
+	private transient final Logger log = LoggerFactory.getLogger(getClass()); 
 
-	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uu");
+	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private Label monthName;
 
@@ -67,7 +83,48 @@ public class CalendarComponent extends CustomComponent {
 	}
 
 	private void calendarExport(MenuItem ev1) {
-		Notification.show("Do Export");
+
+		try {
+			JasperPrint print = CalendarCreator.createCalendar(new Date());
+		    Window window = new Window();
+		    window.setCaption("View PDF");
+		    AbstractComponent e = createEmbedded(print);
+		    window.setContent(e);
+		    window.setModal(true);
+		    window.setWidth("50%");
+		    window.setHeight("90%");
+		    monthName.getUI().addWindow(window);
+		} catch (JRException e) {
+			log.error("Error Creating Jasper Report.", e);
+			Notification.show("Fehler bei PDF: " + e);
+		} catch (IOException e1) {
+			log.error("Error Creating Jasper Report.", e1);
+			Notification.show("Fehler bei PDF: " + e1);
+		}
+	}
+
+	private AbstractComponent createEmbedded(JasperPrint print) throws IOException, JRException {
+
+		PipedInputStream in = new PipedInputStream();
+		final PipedOutputStream out = new PipedOutputStream(in);
+
+		final StreamResource resource = new StreamResource(() -> in, "invoice.pdf");
+	    resource.setMIMEType("application/pdf");
+	    
+		BrowserFrame c = new BrowserFrame("PDF invoice", resource);
+	    c.setSizeFull();
+	    
+	    ExecutorService exec = Executors.newSingleThreadExecutor();
+	    exec.execute(() -> {
+	    	try {
+				JasperExportManager.exportReportToPdfStream(print, out);
+			} catch (JRException e) {
+				log.error("Error on Export to Pdf.", e);
+				throw new RuntimeException(e);
+			}
+	    });
+	    exec.shutdown();
+	    return c;
 	}
 
 	private void updateMonthText(ZonedDateTime startDate) {

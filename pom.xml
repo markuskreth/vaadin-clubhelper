@@ -197,6 +197,11 @@
 			<version>3.23.1-GA</version>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.7.0</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
