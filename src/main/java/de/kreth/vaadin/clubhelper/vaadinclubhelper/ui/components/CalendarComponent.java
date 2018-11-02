@@ -19,9 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.calendar.Calendar;
 import org.vaadin.addon.calendar.item.BasicItemProvider;
-import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardHandler;
-import org.vaadin.addon.calendar.ui.CalendarComponentEvents.DateClickHandler;
-import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardHandler;
+import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardEvent;
+import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
 import com.vaadin.contextmenu.ContextMenu;
@@ -71,12 +70,24 @@ public class CalendarComponent extends CustomComponent {
 				.withMonth(Month.from(LocalDateTime.now()));
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
+		calendar.addListener(ev -> calendarEvent(ev));
 
 		updateMonthText(calendar.getStartDate());
 
 		VerticalLayout layout = new VerticalLayout(head, calendar);
 		layout.setSizeFull();
 		setCompositionRoot(layout);
+	}
+
+	private void calendarEvent(Event ev) {
+		log.debug("Event on calendar: {}", ev);
+		if (ev instanceof BackwardEvent || ev instanceof ForwardEvent) {
+			updateMonthText(calendar.getStartDate());
+		}
+	}
+
+	public Registration setHandler(ItemClickHandler listener) {
+		return calendar.setHandler(listener);
 	}
 
 	private void openPopupMenu(ClickEvent ev) {
@@ -153,23 +164,9 @@ public class CalendarComponent extends CustomComponent {
 	}
 
 	private void updateMonthText(ZonedDateTime startDate) {
-		monthName.setValue(dfMonth.format(startDate));
-	}
-
-	public Registration setHandler(ForwardHandler listener) {
-		return calendar.setHandler(listener);
-	}
-
-	public Registration setHandler(BackwardHandler listener) {
-		return calendar.setHandler(listener);
-	}
-
-	public Registration setHandler(DateClickHandler listener) {
-		return calendar.setHandler(listener);
-	}
-
-	public Registration setHandler(ItemClickHandler listener) {
-		return calendar.setHandler(listener);
+		String monthValue = dfMonth.format(startDate);
+		log.debug("Changed Month title to {}", monthValue);
+		monthName.setValue(monthValue);
 	}
 
 	public void setItems(Collection<ClubEvent> items) {
