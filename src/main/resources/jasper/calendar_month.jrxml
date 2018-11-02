@@ -170,16 +170,25 @@
 					<rightPen lineWidth="1.0" lineStyle="Solid"/>
 				</box>
 				<textField>
-					<reportElement style="Style1" mode="Transparent" x="60" y="0" width="50" height="25" isRemoveLineWhenBlank="true" backcolor="#C6EDBB" uuid="733ff549-0109-4f55-b9de-476f0ad9fbeb">
+					<reportElement style="Style1" mode="Transparent" x="80" y="0" width="30" height="21" isRemoveLineWhenBlank="true" backcolor="#C6EDBB" uuid="733ff549-0109-4f55-b9de-476f0ad9fbeb">
 						<printWhenExpression><![CDATA[$V{Date}.intValue()>0&&$V{Date}.intValue()<=$P{Days}.intValue()]]></printWhenExpression>
 					</reportElement>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#050505"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#050505"/>
+					</box>
 					<textElement textAlignment="Right">
 						<font size="16" isBold="true"/>
+						<paragraph rightIndent="5"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$V{Date}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="0" y="25" width="110" height="65" uuid="52fccbc5-19e8-40be-b02c-3d23afa55a7d"/>
+					<reportElement x="0" y="21" width="110" height="69" isRemoveLineWhenBlank="true" uuid="52fccbc5-19e8-40be-b02c-3d23afa55a7d">
+						<printWhenExpression><![CDATA[$V{Date}.intValue()>0&&$V{Date}.intValue()<=$P{Days}.intValue()]]></printWhenExpression>
+					</reportElement>
 					<textFieldExpression><![CDATA[$F{Field_Value}]]></textFieldExpression>
 				</textField>
 			</frame>

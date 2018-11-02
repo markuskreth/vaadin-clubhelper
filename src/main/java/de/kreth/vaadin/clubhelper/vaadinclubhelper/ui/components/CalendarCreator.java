@@ -24,51 +24,68 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class CalendarCreator {
 
-	private Date date;
-	private YearMonth yearMonthObject;
-	private int daysInMonth;
+//	private final Date date;
+	private final YearMonth yearMonthObject;
 
 	public static JasperPrint createCalendar(Date date) throws JRException {
 		return new CalendarCreator(date).createCalendar();
 	}
 	
 	CalendarCreator(Date date) {
-		this.date = date;
+//		this.date = date;
 		
-		yearMonthObject = YearMonth.from(date.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate());
+		yearMonthObject = YearMonth
+				.from(date.toInstant()
+						.atZone(ZoneId.systemDefault())
+						.toLocalDate()
+				);
 		
-		daysInMonth = yearMonthObject.lengthOfMonth();
 	}
 
 	JasperPrint createCalendar() throws JRException {
 
 		Map<String, Object> parameters = new HashMap<>();
-		Timestamp timestamp = new Timestamp(date.getTime());
+		Timestamp timestamp = new Timestamp(yearMonthObject.atDay(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		
 		parameters.put("Date", timestamp);
 	
 		InputStream jrxmlResource = CalendarCreator.class.getResourceAsStream("/jasper/calendar_month.jrxml");
 		JasperReport report = JasperCompileManager
 				.compileReport(jrxmlResource);
+		Map<Integer, String> values = createValues();
 		JasperPrint print = JasperFillManager.fillReport(report,
-				parameters, new CalendarSource(yearMonthObject.atDay(1).getDayOfWeek().getValue() -1, daysInMonth));
+				parameters, new CalendarSource(yearMonthObject, values ));
 
 		return print;
 	}
 
+	private Map<Integer, String> createValues() {
+		Map<Integer, String> values = new HashMap<>();
+		for (int i=1; i<33; i++) {
+			values.put(i -1, "Termine Tag " + i);
+		}
+		return values;
+	}
+
 	private static class CalendarSource implements JRDataSource {
-		
+
 		private final List<Integer> days;
+		private final Map<Integer, String> dayContent;
 		private int index = -1;
+		private int prefix;
 		
-		public CalendarSource(int prefix, int daysInMonth) {
+		public CalendarSource(YearMonth yearMonthObject, Map<Integer, String> dayContent) {
+
 			days = new ArrayList<>();
+			this.dayContent = dayContent;
+			prefix = yearMonthObject.atDay(1).getDayOfWeek().getValue() -1;
+			int daysInMonth = yearMonthObject.lengthOfMonth();
+			
 			for (int i=0, limit = daysInMonth + prefix; i<limit; i++) {
 				days.add(i+1);
 			}
 		}
-		
+
 		@Override
 		public boolean next() throws JRException {
 
@@ -81,8 +98,13 @@ public class CalendarCreator {
 
 		@Override
 		public Object getFieldValue(JRField jrField) throws JRException {
-			System.err.println(String.format("name=%s, type=%s, value=%d, parentProps=%s", jrField.getName(), jrField.getValueClass(), days.get(index), jrField.getParentProperties()));
-			return days.get(index);
+			if (jrField.getName().equals("id")) {
+				return days.get(index);
+			} else if (jrField.getName().equals("Field_Value") && days.get(index)>0) {
+				return dayContent.get(index - prefix);
+			} else {
+				return "";
+			}
 		}
 		
 	}
@@ -91,13 +113,9 @@ public class CalendarCreator {
 		
 		Locale.setDefault(Locale.GERMANY);
 		
-		Calendar cal = new GregorianCalendar(2018, Calendar.AUGUST, 1);
+		Calendar cal = new GregorianCalendar(2018, Calendar.OCTOBER, 1);
 		JasperViewer v1 = new JasperViewer(createCalendar(cal.getTime()));
 		v1.setVisible(true);
-
-		cal = new GregorianCalendar(2018, Calendar.SEPTEMBER, 1);
-		JasperViewer v2 = new JasperViewer(createCalendar(cal.getTime()));
-		v2.setVisible(true);
 		
 		cal = new GregorianCalendar(2018, Calendar.FEBRUARY, 1);
 		JasperViewer v3 = new JasperViewer(createCalendar(cal.getTime()));
@@ -132,12 +150,11 @@ public class CalendarCreator {
 			date.set(Calendar.DAY_OF_MONTH, 1);
 			dow = date.get(Calendar.DAY_OF_WEEK);
 			
-//			dow =new Date(date.getYear(), date.getMonth(), 1).getDay();
 			dom = date.get(Calendar.MONTH) + 1;
 			doy = date.get(Calendar.YEAR);
 			days = YearMonth.of(doy, dom).lengthOfMonth();
-			cells = dow-1+days;
-			limit = cells>28?(cells>35?42:35):28;
+			cells = dow - 1 + days;
+			limit = cells > 28 ? (cells>35?42:35) : 28;
 		}
 		
 		/**
