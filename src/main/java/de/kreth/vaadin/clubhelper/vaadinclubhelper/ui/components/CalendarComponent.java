@@ -9,6 +9,9 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -84,8 +87,30 @@ public class CalendarComponent extends CustomComponent {
 
 	private void calendarExport(MenuItem ev1) {
 
+		ZonedDateTime start = calendar.getStartDate();
+		ZonedDateTime end = calendar.getEndDate();
+		List<ClubEvent> items = dataProvider.getItems(start, end);
+		Map<Integer, StringBuilder> values = new HashMap<>();
+		
+		for (ClubEvent ev : items) {
+			StringBuilder content;
+			int dayOfMonth = ev.getStart().getDayOfMonth();
+			int endDayOfMonth = ev.getEnd().getDayOfMonth();
+			for (;dayOfMonth<=endDayOfMonth; dayOfMonth++) {
+
+				if (values.containsKey(dayOfMonth)) {
+					content = values.get(dayOfMonth);
+					content.append("\n");
+				} else {
+					content = new StringBuilder();
+					values.put(dayOfMonth, content);
+				}
+				content.append(ev.getCaption());
+			}
+		}
+		
 		try {
-			JasperPrint print = CalendarCreator.createCalendar(new Date());
+			JasperPrint print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values);
 		    Window window = new Window();
 		    window.setCaption("View PDF");
 		    AbstractComponent e = createEmbedded(print);

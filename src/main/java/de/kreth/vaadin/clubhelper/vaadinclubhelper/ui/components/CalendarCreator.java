@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -24,16 +25,17 @@ import net.sf.jasperreports.view.JasperViewer;
 
 public class CalendarCreator {
 
-//	private final Date date;
 	private final YearMonth yearMonthObject;
 
 	public static JasperPrint createCalendar(Date date) throws JRException {
-		return new CalendarCreator(date).createCalendar();
+		return new CalendarCreator(date).createCalendar(Collections.emptyMap());
+	}
+
+	public static <T extends CharSequence> JasperPrint createCalendar(Date date, Map<Integer, T> values) throws JRException {
+		return new CalendarCreator(date).createCalendar(values);
 	}
 	
 	CalendarCreator(Date date) {
-//		this.date = date;
-		
 		yearMonthObject = YearMonth
 				.from(date.toInstant()
 						.atZone(ZoneId.systemDefault())
@@ -42,7 +44,7 @@ public class CalendarCreator {
 		
 	}
 
-	JasperPrint createCalendar() throws JRException {
+	 <T extends CharSequence> JasperPrint createCalendar(Map<Integer, T> values) throws JRException {
 
 		Map<String, Object> parameters = new HashMap<>();
 		Timestamp timestamp = new Timestamp(yearMonthObject.atDay(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
@@ -52,29 +54,21 @@ public class CalendarCreator {
 		InputStream jrxmlResource = CalendarCreator.class.getResourceAsStream("/jasper/calendar_month.jrxml");
 		JasperReport report = JasperCompileManager
 				.compileReport(jrxmlResource);
-		Map<Integer, String> values = createValues();
+
 		JasperPrint print = JasperFillManager.fillReport(report,
-				parameters, new CalendarSource(yearMonthObject, values ));
+				parameters, new CalendarSource<>(yearMonthObject, values));
 
 		return print;
 	}
 
-	private Map<Integer, String> createValues() {
-		Map<Integer, String> values = new HashMap<>();
-		for (int i=1; i<33; i++) {
-			values.put(i -1, "Termine Tag " + i);
-		}
-		return values;
-	}
-
-	private static class CalendarSource implements JRDataSource {
+	private static class CalendarSource<T extends CharSequence> implements JRDataSource {
 
 		private final List<Integer> days;
-		private final Map<Integer, String> dayContent;
+		private final Map<Integer, T> dayContent;
 		private int index = -1;
 		private int prefix;
 		
-		public CalendarSource(YearMonth yearMonthObject, Map<Integer, String> dayContent) {
+		public CalendarSource(YearMonth yearMonthObject, Map<Integer, T> dayContent) {
 
 			days = new ArrayList<>();
 			this.dayContent = dayContent;
@@ -101,7 +95,12 @@ public class CalendarCreator {
 			if (jrField.getName().equals("id")) {
 				return days.get(index);
 			} else if (jrField.getName().equals("Field_Value") && days.get(index)>0) {
-				return dayContent.get(index - prefix);
+				T content = dayContent.get(index - prefix);
+				if (content != null) {
+					return content.toString();
+				} else {
+					return "";
+				}
 			} else {
 				return "";
 			}
