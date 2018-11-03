@@ -10,8 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -100,31 +102,43 @@ public class CalendarComponent extends CustomComponent {
 
 		ZonedDateTime start = calendar.getStartDate();
 		ZonedDateTime end = calendar.getEndDate();
+		log.debug("exporting Calendar from {} to {}", start, end);
 		List<ClubEvent> items = dataProvider.getItems(start, end);
 		Map<Integer, StringBuilder> values = new HashMap<>();
+		Set<Integer> holidays = new HashSet<>();
 		
 		for (ClubEvent ev : items) {
-			StringBuilder content;
-			int dayOfMonth = ev.getStart().getDayOfMonth();
-			int endDayOfMonth = ev.getEnd().getDayOfMonth();
-			for (;dayOfMonth<=endDayOfMonth; dayOfMonth++) {
 
-				if (values.containsKey(dayOfMonth)) {
-					content = values.get(dayOfMonth);
-					content.append("\n");
-				} else {
-					content = new StringBuilder();
-					values.put(dayOfMonth, content);
+			String calendarName = ev.getOrganizerDisplayName();
+			if ("Schulferien".equals(calendarName)) {
+				int endDayOfMonth = ev.getEnd().getDayOfMonth();
+				for (int dayOfMonth = ev.getStart().getDayOfMonth(); dayOfMonth<=endDayOfMonth; dayOfMonth++) {
+					holidays.add(dayOfMonth);
 				}
-				content.append(ev.getCaption());
+			} else {
+				StringBuilder content;
+
+				int dayOfMonth = ev.getStart().getDayOfMonth();
+				int endDayOfMonth = ev.getEnd().getDayOfMonth();
+				for (;dayOfMonth<=endDayOfMonth; dayOfMonth++) {
+
+					if (values.containsKey(dayOfMonth)) {
+						content = values.get(dayOfMonth);
+						content.append("\n");
+					} else {
+						content = new StringBuilder();
+						values.put(dayOfMonth, content);
+					}
+					content.append(ev.getCaption());
+				}
 			}
 		}
 		
 		try {
-			JasperPrint print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values);
+			JasperPrint print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
 		    Window window = new Window();
 		    window.setCaption("View PDF");
-		    AbstractComponent e = createEmbedded(print);
+		    AbstractComponent e = createEmbedded(dfMonth.format(start), print);
 		    window.setContent(e);
 		    window.setModal(true);
 		    window.setWidth("50%");
@@ -139,12 +153,12 @@ public class CalendarComponent extends CustomComponent {
 		}
 	}
 
-	private AbstractComponent createEmbedded(JasperPrint print) throws IOException, JRException {
+	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException, JRException {
 
 		PipedInputStream in = new PipedInputStream();
 		final PipedOutputStream out = new PipedOutputStream(in);
 
-		final StreamResource resource = new StreamResource(() -> in, "invoice.pdf");
+		final StreamResource resource = new StreamResource(() -> in, title);
 	    resource.setMIMEType("application/pdf");
 	    
 		BrowserFrame c = new BrowserFrame("PDF invoice", resource);
