@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="clubhelper_calendar" printOrder="Horizontal" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="573" leftMargin="11" rightMargin="11" topMargin="6" bottomMargin="6" uuid="32abf871-39b8-4cc7-b03c-d950a55e2bfb">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CalendarSource"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<style name="Style_Calendar_Day_Number" forecolor="#050505" backcolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{id}.intValue()%7==0]]></conditionExpression>
+			<style forecolor="#FA0702"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{IsHoliday}]]></conditionExpression>
+			<style backcolor="#FFFFCC"/>
+		</conditionalStyle>
+	</style>
+	<style name="Style_Calendar_Holiday" backcolor="#FFFFFF">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{IsHoliday}]]></conditionExpression>
+			<style backcolor="#FFFFCC"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="Date" class="java.time.LocalDate">
+		<defaultValueExpression><![CDATA[java.time.LocalDate.now()]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Year" class="de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year"/>
+	<queryString>
+		<![CDATA[SELECT i as id FROM generate_series(1, 31 ) i]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="Field_Value" class="java.lang.String"/>
+	<field name="IsHoliday" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[Current Day is a holiday]]></fieldDescription>
+	</field>
+	<title>
+		<band height="505">
+			<textField pattern="MMMM">
+				<reportElement isPrintRepeatedValues="false" x="0" y="0" width="286" height="25" uuid="21293131-3839-43aa-b449-b19867eee2da"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[java.time.Month.JANUARY.getDisplayName(java.time.format.TextStyle.FULL_STANDALONE, java.util.Locale.getDefault())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="1b4d6c56-6d09-482b-8eb5-662c88cbe870">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Montag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="42" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="a373077e-66c1-4218-b9a2-bd35f7d19f7a">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dienstag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="84" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="d1e26dda-0b1a-4ef2-b48c-276accc3eeaa">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mittwoch]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="126" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="9c9395c6-7cc2-4571-97f6-e3b4bfe58263">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Donnerstag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="168" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="12589ff4-2da8-448f-995a-99cf8446ccfa">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Freitag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="210" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="c2f7be3d-5ccf-4838-b55d-51eafd78f3e4">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Samstag]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="252" y="26" width="41" height="10" forecolor="#FFFCFC" backcolor="#403D3D" uuid="bc9c8dee-afda-435c-8f11-d7294c248f8c">
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<box>
+					<pen lineColor="#000000"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="6" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sonntag]]></text>
+			</staticText>
+			<frame>
+				<reportElement mode="Transparent" x="0" y="38" width="41" height="50" backcolor="#F7C86F" uuid="7621d880-6dae-4cfb-9d99-6c4c83dd1983">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textField>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="0" width="41" height="10" isRemoveLineWhenBlank="true" uuid="e30cd5f6-c9f8-459d-b37e-401dadccba90"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+						<paragraph rightIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)1, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="10" width="41" height="40" isRemoveLineWhenBlank="true" uuid="660304e6-2981-448f-8990-0cf8f2efbc23"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="4"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Field_Value}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement mode="Transparent" x="41" y="38" width="41" height="50" backcolor="#F7C86F" uuid="7e44315b-20e3-43bf-9014-e0d0aa6072f3">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textField>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="0" width="41" height="10" isRemoveLineWhenBlank="true" uuid="202fe000-98be-4c0f-b59c-7bc91a656a5b"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+						<paragraph rightIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)1, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="10" width="41" height="40" isRemoveLineWhenBlank="true" uuid="208dff4b-9244-4c50-9ae1-e6b1a36fc06a"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="4"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Field_Value}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement mode="Transparent" x="41" y="90" width="41" height="50" backcolor="#F7C86F" uuid="55a1c7f6-7ce3-4824-9d1b-fb0290572f7c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textField>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="0" width="41" height="10" isRemoveLineWhenBlank="true" uuid="389d3764-a279-4825-bb7d-e36f1be6b580"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+						<paragraph rightIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)2, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="10" width="41" height="40" isRemoveLineWhenBlank="true" uuid="ecf323b4-70bd-4cdf-96e5-f16c400d7710"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="4"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Field_Value}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement mode="Transparent" x="0" y="90" width="41" height="50" backcolor="#F7C86F" uuid="f72aa4b4-fc79-4ee5-bb8e-51df4c08d0b4">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textField>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="0" width="41" height="10" isRemoveLineWhenBlank="true" uuid="74c81ac8-3588-4df4-bec7-bb3193c625c1"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+						<paragraph rightIndent="1"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)2, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="0" y="10" width="41" height="40" isRemoveLineWhenBlank="true" uuid="16724e14-9391-4fe0-99b8-4284ec4d39d1"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement>
+						<font size="4"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{Field_Value}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<detail>
+		<band/>
+	</detail>
+</jasperReport>

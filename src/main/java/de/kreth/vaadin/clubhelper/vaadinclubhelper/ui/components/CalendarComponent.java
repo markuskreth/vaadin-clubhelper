@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -111,11 +113,14 @@ public class CalendarComponent extends CustomComponent {
 
 			String calendarName = ev.getOrganizerDisplayName();
 			if ("Schulferien".equals(calendarName)) {
-				int endDayOfMonth = ev.getEnd().getDayOfMonth();
-				for (int dayOfMonth = ev.getStart().getDayOfMonth(); dayOfMonth<=endDayOfMonth; dayOfMonth++) {
+				log.trace("Added to holiday List: {}", ev);
+				TemporalUnit unit = ChronoUnit.DAYS;
+				int durationDays = (int) ev.getStart().until(ev.getEnd(), unit) + 1;
+				for (int dayOfMonth = ev.getStart().getDayOfMonth(), endDay=dayOfMonth + durationDays; dayOfMonth<=endDay; dayOfMonth++) {
 					holidays.add(dayOfMonth);
 				}
 			} else {
+				log.trace("Added to eventsd: {}", ev);
 				StringBuilder content;
 
 				int dayOfMonth = ev.getStart().getDayOfMonth();
@@ -133,22 +138,25 @@ public class CalendarComponent extends CustomComponent {
 				}
 			}
 		}
-		
+
+	    String calendarMonth = dfMonth.format(start);
 		try {
 			JasperPrint print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
+			log.trace("Created Jasper print for {}", calendarMonth);
 		    Window window = new Window();
 		    window.setCaption("View PDF");
-		    AbstractComponent e = createEmbedded(dfMonth.format(start), print);
+			AbstractComponent e = createEmbedded(calendarMonth, print);
 		    window.setContent(e);
 		    window.setModal(true);
 		    window.setWidth("50%");
 		    window.setHeight("90%");
 		    monthName.getUI().addWindow(window);
+			log.trace("Added pdf window for {}", calendarMonth);
 		} catch (JRException e) {
-			log.error("Error Creating Jasper Report.", e);
+			log.error("Error Creating Jasper Report for {}", calendarMonth, e);
 			Notification.show("Fehler bei PDF: " + e);
 		} catch (IOException e1) {
-			log.error("Error Creating Jasper Report.", e1);
+			log.error("Error Creating Jasper Report for {}", calendarMonth, e1);
 			Notification.show("Fehler bei PDF: " + e1);
 		}
 	}

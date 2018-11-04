@@ -12,7 +12,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
-public class CalendarSource<T extends CharSequence> implements JRDataSource {
+public class MonthlyCalendarSource<T extends CharSequence> implements JRDataSource {
 
 	private final List<Integer> days;
 	private final Map<Integer, T> dayContent;
@@ -20,7 +20,7 @@ public class CalendarSource<T extends CharSequence> implements JRDataSource {
 	private int prefix;
 	private final Collection<Integer> holidays;
 	
-	public CalendarSource(YearMonth yearMonthObject, Map<Integer, T> dayContent, Collection<Integer> holidays) {
+	public MonthlyCalendarSource(YearMonth yearMonthObject, Map<Integer, T> dayContent, Collection<Integer> holidays) {
 
 		days = new ArrayList<>();
 		this.dayContent = dayContent;
@@ -64,13 +64,13 @@ public class CalendarSource<T extends CharSequence> implements JRDataSource {
 		}
 	}
 		
-	public static CalendarSource<String> createTestSource() {
+	public static MonthlyCalendarSource<String> createTestSource() {
 		Map<Integer, String> values = new HashMap<>();
 		for (int i=1; i<30;i+=3) {
 			values.put(i, String.format("Termin am %s.", i));
 		}
 		
 		List<Integer> holi = Arrays.asList(2,3,4,5,6);
-		return new CalendarSource<>(YearMonth.now(), values, holi );
+		return new MonthlyCalendarSource<>(YearMonth.now(), values, holi );
 	}
 }
