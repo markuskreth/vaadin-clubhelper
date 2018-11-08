@@ -13,6 +13,15 @@ import org.junit.jupiter.api.Test;
 class WeeksOfMonthTest {
 
 	@Test
+	void test2018January() {
+		WeeksOfMonth january = new WeeksOfMonth(Month.JANUARY, 2018);
+		assertEquals(31, january.dayCount());
+		assertEquals(5, january.weekCount());
+		assertEquals(1, january.getWeek(0).get(DayOfWeek.MONDAY).intValue());
+		assertEquals(31, january.getWeek(4).get(DayOfWeek.WEDNESDAY).intValue());
+	}
+	
+	@Test
 	void test2018November() {
 		WeeksOfMonth november = new WeeksOfMonth(Month.NOVEMBER, 2018);
 		assertNotNull(november);

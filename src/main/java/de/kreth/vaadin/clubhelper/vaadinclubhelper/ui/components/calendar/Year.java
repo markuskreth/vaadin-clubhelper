@@ -46,7 +46,12 @@ public class Year {
 	 * @return	numeric value of the day of the month.
 	 */
 	public String getDay(Month month, short week, DayOfWeek dayOfWeek) {
-		Integer res = monthWeeks.get(month).getWeek(week - 1).get(dayOfWeek);
+		
+		WeeksOfMonth weeksOfMonth = monthWeeks.get(month);
+		if (week >= weeksOfMonth.weekCount()) {
+			return "";
+		}
+		Integer res = weeksOfMonth.getWeek(week - 1).get(dayOfWeek);
 		
 		return res == null ?  "" : res.toString();
 				
