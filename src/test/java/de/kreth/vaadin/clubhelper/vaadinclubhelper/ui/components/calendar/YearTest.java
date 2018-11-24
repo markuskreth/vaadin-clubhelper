@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.DayOfWeek;
 import java.time.Month;
@@ -20,13 +21,13 @@ class YearTest {
 	@Test
 	void testMondayIsFirst() {
 		Year y = new Year(2018);
-		assertEquals(Short.valueOf((short)1), y.getDay(Month.OCTOBER, (short)1, DayOfWeek.MONDAY));
+		assertEquals("1", y.getDay(Month.OCTOBER, (short) 1, DayOfWeek.MONDAY));
 	}
 
 	@Test
 	void testThursdayIsFirst() {
 		Year y = new Year(2018);
-		assertNull(y.getDay(Month.NOVEMBER, (short)1, DayOfWeek.MONDAY));
+		assertEquals("", y.getDay(Month.NOVEMBER, (short) 1, DayOfWeek.MONDAY));
 	}
 
 }

@@ -7,8 +7,8 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.hibernate.query.Query;
-import org.junit.Test;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

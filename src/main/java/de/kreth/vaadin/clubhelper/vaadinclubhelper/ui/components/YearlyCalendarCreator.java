@@ -1,14 +1,12 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Map;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-import net.sf.jasperreports.engine.JasperPrint;
 
 public class YearlyCalendarCreator extends CalendarCreator {
 
@@ -33,7 +31,7 @@ public class YearlyCalendarCreator extends CalendarCreator {
 		return CalendarCreator.class.getResourceAsStream("/jasper/calendar_year.jrxml");
 	}
 
-	private static class EmptySource implements JRDataSource {
+	public static class EmptySource implements JRDataSource {
 
 		@Override
 		public boolean next() throws JRException {
@@ -44,6 +42,6 @@ public class YearlyCalendarCreator extends CalendarCreator {
 		public Object getFieldValue(JRField jrField) throws JRException {
 			return null;
 		}
-		
+
 	}
 }

@@ -29,7 +29,6 @@ public abstract class AbstractDatabaseTest {
 		Configuration configuration = createConfig();
 
 		sessionFactory = configuration.buildSessionFactory();
-
 		session = sessionFactory.openSession();
 
 	}
