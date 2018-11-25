@@ -161,7 +161,7 @@
 				<text><![CDATA[Sonntag]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="378" y="32" width="39" height="10" uuid="802e6694-d7a3-4690-a49b-68f7922e0ca2"/>
+				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="378" y="32" width="39" height="10" isRemoveLineWhenBlank="true" uuid="802e6694-d7a3-4690-a49b-68f7922e0ca2"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -175,7 +175,9 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)1, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="378" y="42" width="39" height="25" uuid="1fab31e5-c838-4e32-9c93-7ba3b75ae0e3"/>
+				<reportElement x="378" y="42" width="39" height="25" uuid="1fab31e5-c838-4e32-9c93-7ba3b75ae0e3">
+					<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)1, java.time.DayOfWeek.WEDNESDAY )!=""]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -185,7 +187,6 @@
 				<textElement>
 					<font size="4"/>
 				</textElement>
-				<textFieldExpression><![CDATA[]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="378" y="77" width="39" height="25" uuid="6a28af25-3705-42fa-b11d-a91243830b19"/>
@@ -701,7 +702,7 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)4, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="300" y="32" width="39" height="10" uuid="0dd76a73-e991-43ad-a814-9ad7561d042f"/>
+				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="300" y="32" width="39" height="10" isRemoveLineWhenBlank="true" uuid="0dd76a73-e991-43ad-a814-9ad7561d042f"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -715,7 +716,9 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)1, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="300" y="42" width="39" height="25" uuid="2f9978bf-a19f-4aaa-a10a-4a9e43b0a764"/>
+				<reportElement x="300" y="42" width="39" height="25" uuid="2f9978bf-a19f-4aaa-a10a-4a9e43b0a764">
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -728,7 +731,7 @@
 				<textFieldExpression><![CDATA[]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="339" y="32" width="39" height="10" uuid="93dbbb94-3db7-4067-9472-4913748f5b5e"/>
+				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="339" y="32" width="39" height="10" isRemoveLineWhenBlank="true" uuid="93dbbb94-3db7-4067-9472-4913748f5b5e"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -742,7 +745,9 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)1, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="339" y="42" width="39" height="25" uuid="1d83d649-98ad-49ef-a1bd-fba93376bf11"/>
+				<reportElement x="339" y="42" width="39" height="25" uuid="1d83d649-98ad-49ef-a1bd-fba93376bf11">
+					<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.FEBRUARY, (short)1, java.time.DayOfWeek.TUESDAY ))>0]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1052,7 +1057,9 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)5, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="495" y="182" width="39" height="25" uuid="bd77c18c-c4f8-44f4-a35e-6242db33d93f"/>
+				<reportElement x="495" y="182" width="39" height="25" uuid="bd77c18c-c4f8-44f4-a35e-6242db33d93f">
+					<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.FEBRUARY, (short)5, java.time.DayOfWeek.SATURDAY ) )>0]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1079,7 +1086,9 @@
 				<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.FEBRUARY, (short)5, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="534" y="182" width="39" height="25" uuid="c407c8f5-e703-4621-9cee-2221de47ad2a"/>
+				<reportElement x="534" y="182" width="39" height="25" uuid="c407c8f5-e703-4621-9cee-2221de47ad2a">
+					<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.FEBRUARY, (short)5, java.time.DayOfWeek.SUNDAY ) )>0]]></printWhenExpression>
+				</reportElement>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1092,7 +1101,7 @@
 				<textFieldExpression><![CDATA[]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="534" y="172" width="39" height="10" uuid="0381b4f2-d649-4ddb-b3a4-40d24c9f7feb"/>
+				<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="534" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="0381b4f2-d649-4ddb-b3a4-40d24c9f7feb"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -1892,7 +1901,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)3, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="112" width="39" height="25" uuid="e0716ccb-7794-4789-b123-1506eff12934"/>
+					<reportElement x="0" y="112" width="39" height="25" uuid="e0716ccb-7794-4789-b123-1506eff12934">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)3, java.time.DayOfWeek.MONDAY ) != null]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
@@ -1986,7 +1997,9 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="182" width="39" height="25" uuid="ba2a0e53-7ace-403e-bcad-78728d0c2166"/>
+					<reportElement x="0" y="182" width="39" height="25" uuid="ba2a0e53-7ace-403e-bcad-78728d0c2166">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.MONDAY )!=""]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
@@ -1999,7 +2012,9 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="39" y="182" width="39" height="25" uuid="519ad489-5091-441e-bc45-8c26de09e2fc"/>
+					<reportElement x="39" y="182" width="39" height="25" uuid="519ad489-5091-441e-bc45-8c26de09e2fc">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.TUESDAY )!=""]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2012,7 +2027,9 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="78" y="182" width="39" height="25" uuid="9e945caf-c28b-410d-a35f-07318fd746a3"/>
+					<reportElement x="78" y="182" width="39" height="25" uuid="9e945caf-c28b-410d-a35f-07318fd746a3">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.WEDNESDAY )!=""]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2025,7 +2042,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="78" y="172" width="39" height="10" uuid="fa5df98f-572c-4a68-9a4c-c82adc4b54d7"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="78" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="fa5df98f-572c-4a68-9a4c-c82adc4b54d7"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2039,7 +2056,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="117" y="182" width="39" height="25" uuid="8cbdab17-2819-4534-9a78-f8bea636b2ac"/>
+					<reportElement x="117" y="182" width="39" height="25" uuid="8cbdab17-2819-4534-9a78-f8bea636b2ac">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.THURSDAY )!=""]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2052,7 +2071,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="117" y="172" width="39" height="10" uuid="f60d5fce-60d1-4aa1-828f-381e2fb917cb"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="117" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="f60d5fce-60d1-4aa1-828f-381e2fb917cb"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2066,7 +2085,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="156" y="182" width="39" height="25" uuid="58ba0ac4-a6d1-425a-9dee-b504a8497b9f"/>
+					<reportElement x="156" y="182" width="39" height="25" uuid="58ba0ac4-a6d1-425a-9dee-b504a8497b9f">
+						<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.FRIDAY ) )>0]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2079,7 +2100,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="156" y="172" width="39" height="10" uuid="150ba72d-b892-4dcc-bc0a-dbd75d6556a8"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="156" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="150ba72d-b892-4dcc-bc0a-dbd75d6556a8"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2093,7 +2114,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="195" y="182" width="39" height="25" uuid="2331e041-c51e-4cfa-9673-bdca77498949"/>
+					<reportElement x="195" y="182" width="39" height="25" uuid="2331e041-c51e-4cfa-9673-bdca77498949">
+						<printWhenExpression><![CDATA[LEN( $P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.SATURDAY ))>0]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2106,7 +2129,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="195" y="172" width="39" height="10" uuid="8938d342-91c1-49da-b690-5ef7d97d7eca"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="195" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="8938d342-91c1-49da-b690-5ef7d97d7eca"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2120,7 +2143,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="234" y="182" width="39" height="25" uuid="1a10a28e-3533-40c6-9edb-fe25e4ad183c"/>
+					<reportElement x="234" y="182" width="39" height="25" uuid="1a10a28e-3533-40c6-9edb-fe25e4ad183c">
+						<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.SUNDAY ) )>0]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2133,7 +2158,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="234" y="172" width="39" height="10" uuid="f5141fdf-eac2-45b3-bf3d-6e1a9d801e6c"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="234" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="f5141fdf-eac2-45b3-bf3d-6e1a9d801e6c"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2146,8 +2171,8 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" uuid="1665af80-ddaa-44dd-ab9c-13b14890e4f3"/>
+				<textField isBlankWhenNull="true">
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" isRemoveLineWhenBlank="true" uuid="1665af80-ddaa-44dd-ab9c-13b14890e4f3"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
@@ -2161,7 +2186,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)6, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="217" width="39" height="25" uuid="09435d8c-c639-4292-87d0-f7ab45d3eec3"/>
+					<reportElement x="0" y="217" width="39" height="25" isRemoveLineWhenBlank="true" uuid="09435d8c-c639-4292-87d0-f7ab45d3eec3">
+						<printWhenExpression><![CDATA[false]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
@@ -2173,8 +2200,8 @@
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="207" width="39" height="10" uuid="d6b5cfda-8268-4636-8fe0-0d9dbf0d6cfb"/>
+				<textField isBlankWhenNull="true">
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="207" width="39" height="10" isRemoveLineWhenBlank="true" uuid="d6b5cfda-8268-4636-8fe0-0d9dbf0d6cfb"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2188,7 +2215,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)6, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="39" y="217" width="39" height="25" uuid="fb0d09fa-6bbe-4245-9441-e39566f1bb94"/>
+					<reportElement x="39" y="217" width="39" height="25" uuid="fb0d09fa-6bbe-4245-9441-e39566f1bb94">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)6, java.time.DayOfWeek.TUESDAY )!=""]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -2201,7 +2230,7 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="172" width="39" height="10" backcolor="#FFFFFF" uuid="6c2ffa9c-c9d8-4b4f-b8c1-2ab7e00770d6"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="172" width="39" height="10" isRemoveLineWhenBlank="true" backcolor="#FFFFFF" uuid="6c2ffa9c-c9d8-4b4f-b8c1-2ab7e00770d6"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
@@ -2215,7 +2244,7 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JANUARY, (short)5, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="172" width="39" height="10" uuid="c5ca3414-04c8-42c2-ba85-5aac7c11ee95"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="172" width="39" height="10" isRemoveLineWhenBlank="true" uuid="c5ca3414-04c8-42c2-ba85-5aac7c11ee95"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -3483,7 +3512,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3491,26 +3520,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="42" width="39" height="25" uuid="e3e7ac6d-9557-4525-bd16-b21d342fa974"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="77" width="39" height="25" uuid="8158e3bc-e136-49de-b50c-b9fce0c7802b"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3523,7 +3552,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3531,13 +3560,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="112" width="39" height="25" uuid="3f7e69b3-d2fe-43e4-8efc-c58f9abb53f6"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3550,7 +3579,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3558,13 +3587,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="147" width="39" height="25" uuid="26cc3b3f-9bac-4d0a-8a7a-63ef3d9f958b"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3577,7 +3606,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3591,7 +3620,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3599,26 +3628,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="42" width="39" height="25" uuid="3fb04c6c-2a18-4ce7-920e-14ad02e958dd"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="77" width="39" height="25" uuid="8aee4fb7-f4b7-4141-b9a2-5d1469da3b3d"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3631,7 +3660,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3639,13 +3668,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="112" width="39" height="25" uuid="bd6ed95a-4f53-4744-acf1-b4e1a41f8d8e"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3658,7 +3687,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3666,13 +3695,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="147" width="39" height="25" uuid="f7dfebd5-c53b-4477-aa5c-a657fd773599"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3685,7 +3714,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3699,7 +3728,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3707,26 +3736,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="42" width="39" height="25" uuid="29b7262b-c7e7-4c46-b03b-5219668f1362"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="77" width="39" height="25" uuid="517508e4-fd43-4025-9863-1ffdde7a0e81"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3739,7 +3768,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3747,13 +3776,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="112" width="39" height="25" uuid="fc82e1d7-066d-47bc-943a-6b2af4c3dddc"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3766,7 +3795,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3774,13 +3803,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="147" width="39" height="25" uuid="5f03cf30-175e-4ff8-9ac0-7a20d67b3aea"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3793,7 +3822,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3807,7 +3836,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3815,26 +3844,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="42" width="39" height="25" uuid="fe1e4494-6831-4f09-a894-47738ecfcecf"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="77" width="39" height="25" uuid="23477d1a-1adf-4394-aa64-88434928aed5"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3847,7 +3876,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3855,13 +3884,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="112" width="39" height="25" uuid="26d729ed-a3fd-4f55-b17b-e2bde3667377"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3874,7 +3903,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3882,13 +3911,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="147" width="39" height="25" uuid="7a8b7119-43ea-4bee-9112-b1bc336b9986"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3901,7 +3930,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3915,7 +3944,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3923,26 +3952,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="42" width="39" height="25" uuid="ad506615-3485-447a-a9ee-92d4acfeca89"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="77" width="39" height="25" uuid="f4bf4175-7363-496f-a512-1e411e2668ca"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3955,7 +3984,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3963,13 +3992,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="112" width="39" height="25" uuid="9fbf28fe-baae-40ab-b95b-f6e07fd7395b"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -3982,7 +4011,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -3990,13 +4019,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="147" width="39" height="25" uuid="3575c444-d516-4dd4-8d1b-2a70b45809bc"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4009,7 +4038,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4021,9 +4050,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="32" width="39" height="10" uuid="14a57475-83db-4829-b782-cddf0fac7513"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4031,13 +4060,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="42" width="39" height="25" uuid="00e84328-d5a9-4371-8d89-d7d0907ffd62"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4050,7 +4079,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4058,13 +4087,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)1, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="42" width="39" height="25" uuid="451fd4fc-4e59-43e2-832a-57a64d4a7612"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4075,9 +4104,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="67" width="39" height="10" uuid="56fd87d9-41fb-42c6-8303-8153e811d3c8"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4085,13 +4114,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="77" width="39" height="25" uuid="aaccf32e-44ad-44d9-aeee-e8bad20264c7"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4104,7 +4133,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4112,13 +4141,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)2, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="77" width="39" height="25" uuid="cbf2dc70-6275-4c06-bf7b-d24fc763762f"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4129,9 +4158,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="102" width="39" height="10" uuid="1766a809-e3ae-4d63-98be-1265058253b9"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4139,13 +4168,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="112" width="39" height="25" uuid="f82dfe5d-b09e-42fd-87c5-1338972233d7"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4158,7 +4187,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4166,13 +4195,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)3, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="112" width="39" height="25" uuid="0569e212-8f83-43d4-9a26-7a1807470786"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4183,9 +4212,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="137" width="39" height="10" uuid="6aae77d0-7eea-43d5-9ada-761b50d75a39"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4193,13 +4222,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)4, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="147" width="39" height="25" uuid="527cb952-afc1-4e69-aed5-cc62cd2afdac"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4212,7 +4241,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4220,13 +4249,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)4, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="147" width="39" height="25" uuid="31990965-e74a-4487-8b9b-fc3905e91f54"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4237,9 +4266,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="172" width="39" height="10" uuid="47487ac5-fd53-4a25-b80e-4278a7ea995c"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4247,13 +4276,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="182" width="39" height="25" uuid="7296e8c8-5548-4f67-a588-767cb90332b6"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4266,7 +4295,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4274,26 +4303,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="182" width="39" height="25" uuid="d2c3d422-a06e-41c2-b993-b49b20ced842"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="182" width="39" height="25" uuid="4e495a3e-bc1b-49b6-901c-5c1fc9307b2a"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4306,7 +4335,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4314,13 +4343,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="182" width="39" height="25" uuid="3f3511d0-8989-4af8-a585-b14fe6aa4d30"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4333,7 +4362,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4341,13 +4370,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="182" width="39" height="25" uuid="1ae8ab15-1b27-40cd-8003-ba0a706eb5a6"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4360,7 +4389,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4368,13 +4397,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="182" width="39" height="25" uuid="390f10c2-3897-4b74-8688-ec6b48a4aef7"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4387,7 +4416,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4395,13 +4424,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)5, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="182" width="39" height="25" uuid="6df7a065-a2d0-4b14-a57d-8da32f658282"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -4414,7 +4443,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4426,9 +4455,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" uuid="5e655f76-7653-41ef-b199-81068fa33120"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4442,7 +4471,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -4450,26 +4479,28 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)6, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="217" width="39" height="25" uuid="edebb81f-8e60-40ff-813b-ac068623dfcd"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
-					<reportElement x="0" y="217" width="39" height="25" uuid="2f12341a-68ec-4fc3-9f30-63756a3e3b71"/>
+				<textField isBlankWhenNull="true">
+					<reportElement x="0" y="217" width="39" height="25" uuid="2f12341a-68ec-4fc3-9f30-63756a3e3b71">
+						<printWhenExpression><![CDATA[$P{Year}.getDay( java.time.Month.MAY, (short)6, java.time.DayOfWeek.MONDAY ) != null]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5548,7 +5579,7 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.APRIL, (short)5, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" uuid="e1751d74-af2c-42ae-a622-25c9467b7512"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" isRemoveLineWhenBlank="true" uuid="e1751d74-af2c-42ae-a622-25c9467b7512"/>
 					<box>
 						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -5562,7 +5593,7 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.APRIL, (short)6, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="207" width="39" height="10" uuid="c52b2bae-83e9-4e17-874b-498af45931c6"/>
+					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="39" y="207" width="39" height="10" isRemoveLineWhenBlank="true" uuid="c52b2bae-83e9-4e17-874b-498af45931c6"/>
 					<box>
 						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -5576,7 +5607,9 @@
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.APRIL, (short)6, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="0" y="217" width="39" height="25" uuid="8c3ec441-4fcd-4a35-876c-7c217d2df23c"/>
+					<reportElement x="0" y="217" width="39" height="25" uuid="8c3ec441-4fcd-4a35-876c-7c217d2df23c">
+						<printWhenExpression><![CDATA[LEN($P{Year}.getDay( java.time.Month.APRIL, (short)6, java.time.DayOfWeek.MONDAY ) )>0]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -5589,7 +5622,9 @@
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
-					<reportElement x="39" y="217" width="39" height="25" uuid="529c58c0-3d44-4a7d-9eee-38e7cd54dcee"/>
+					<reportElement x="39" y="217" width="39" height="25" uuid="529c58c0-3d44-4a7d-9eee-38e7cd54dcee">
+						<printWhenExpression><![CDATA[LEN( $P{Year}.getDay( java.time.Month.APRIL, (short)6, java.time.DayOfWeek.TUESDAY ))>0]]></printWhenExpression>
+					</reportElement>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -5732,7 +5767,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5740,26 +5775,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="42" width="39" height="25" uuid="de00ea68-55a2-4c92-bdbe-984cdb7da715"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="77" width="39" height="25" uuid="e32ae6de-0737-4cf7-b7fd-70974f75e28e"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5772,7 +5807,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5780,13 +5815,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="112" width="39" height="25" uuid="cf17d7fa-e58b-49e4-a364-23ac18e319cd"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5799,7 +5834,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5807,13 +5842,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.WEDNESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="78" y="147" width="39" height="25" uuid="1f329a24-045b-4fe4-8fd8-7d9f22cb6160"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5826,7 +5861,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5840,7 +5875,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5848,26 +5883,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="42" width="39" height="25" uuid="a0343770-5309-41c5-908c-1f3a65d33b00"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="77" width="39" height="25" uuid="02ee8bcc-1cbd-4876-bfa9-7b29e14f6718"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5880,7 +5915,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5888,13 +5923,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="112" width="39" height="25" uuid="20c88051-e001-4910-8b7e-ef4901b4c444"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5907,7 +5942,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5915,13 +5950,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.THURSDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="117" y="147" width="39" height="25" uuid="d387730e-6d7f-4c64-9c44-fe9f39f8cebd"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5934,7 +5969,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5948,7 +5983,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5956,26 +5991,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="42" width="39" height="25" uuid="e5a390ee-f21c-4d8b-b947-bfe2dc1c4d1b"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="77" width="39" height="25" uuid="a4a36818-d0b2-4c72-9f05-02eb460951ab"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -5988,7 +6023,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -5996,13 +6031,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="112" width="39" height="25" uuid="9d42e190-8dc5-424b-9ae0-3507a84a298e"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6015,7 +6050,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6023,13 +6058,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.FRIDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="156" y="147" width="39" height="25" uuid="1447c948-ffc1-48fb-9a1d-767575ed23f4"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6042,7 +6077,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6056,7 +6091,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6064,26 +6099,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="42" width="39" height="25" uuid="0e55d732-25c6-4463-b45d-28e8eee83727"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="77" width="39" height="25" uuid="4d77c45c-67f1-44d8-90fd-1c5698861e3c"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6096,7 +6131,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6104,13 +6139,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="112" width="39" height="25" uuid="15607ab2-51ef-4c28-92a8-76c9c70d02f3"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6123,7 +6158,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6131,13 +6166,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="195" y="147" width="39" height="25" uuid="55caac44-80ba-4d4b-b143-ea1f89c7d9cf"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6150,7 +6185,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6164,7 +6199,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6172,26 +6207,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="42" width="39" height="25" uuid="08eda686-b175-4b08-8c9d-9a78409ff8e9"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="77" width="39" height="25" uuid="f32fe17c-b97b-4e53-b16f-757ddd48c110"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6204,7 +6239,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6212,13 +6247,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="112" width="39" height="25" uuid="16874b1f-c5d8-4dd0-b2c4-86de37a5b0b7"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6231,7 +6266,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6239,13 +6274,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.SUNDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="147" width="39" height="25" uuid="24d6952b-274b-43b3-97e9-8aeb978ef392"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6258,7 +6293,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6270,9 +6305,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="32" width="39" height="10" uuid="a814e427-8312-4670-ac77-740af2c99d45"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6280,13 +6315,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="42" width="39" height="25" uuid="5cff196f-c834-44f7-924f-6f98d06004fe"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6299,7 +6334,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6307,13 +6342,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)1, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="42" width="39" height="25" uuid="15288764-61ca-4b8f-a038-a875daef3307"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6324,9 +6359,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="67" width="39" height="10" uuid="dc4a3858-deaf-4d5f-8815-e9acb3089766"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6334,13 +6369,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="77" width="39" height="25" uuid="cb07efc2-c80c-435e-b8d0-5f5b507904fd"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6353,7 +6388,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6361,13 +6396,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay( java.time.Month.JUNE, (short)2, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="77" width="39" height="25" uuid="b9908d2c-75d7-4410-a06e-4da028a96ad4"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6378,9 +6413,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="102" width="39" height="10" uuid="d6df9bd8-4ff2-471a-be83-88d92c99f664"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6388,13 +6423,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="112" width="39" height="25" uuid="26eff69d-af76-4ad1-bca9-bf5023fd8bbb"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6407,7 +6442,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6415,13 +6450,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)3, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="112" width="39" height="25" uuid="162a5596-ab4e-4b60-8248-828ab9dd1caa"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6432,9 +6467,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="137" width="39" height="10" uuid="543c1555-e8eb-4c51-a6b6-af7410c7855e"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6442,13 +6477,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)4, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="147" width="39" height="25" uuid="0a850734-a6b0-421e-b507-66908ef4fba0"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6461,7 +6496,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6469,13 +6504,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)4, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="147" width="39" height="25" uuid="03873079-add7-44d8-81d0-57fd936715ef"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6486,9 +6521,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="172" width="39" height="10" uuid="64474d1a-9a4b-4410-b380-267ab3a4e17a"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6496,13 +6531,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)5, java.time.DayOfWeek.MONDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="182" width="39" height="25" uuid="6a104e81-0fb2-4973-a6b9-73b3327f1645"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6515,7 +6550,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6523,13 +6558,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)5, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="182" width="39" height="25" uuid="c1fe334e-b106-45dd-a21a-d85a6ce69491"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6541,8 +6576,8 @@
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6555,7 +6590,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6568,8 +6603,8 @@
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6582,7 +6617,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6595,8 +6630,8 @@
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6609,7 +6644,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6622,8 +6657,8 @@
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6636,7 +6671,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6644,13 +6679,13 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)5, java.time.DayOfWeek.SATURDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="234" y="182" width="39" height="25" uuid="af1b8139-c03a-4b8b-aa72-4e682e513131"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
@@ -6663,7 +6698,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6675,9 +6710,9 @@
 					<reportElement style="Style_Calendar_Day_Number" mode="Opaque" x="0" y="207" width="39" height="10" uuid="a2058acf-f5a9-4814-baa3-2080d2c94275"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6691,7 +6726,7 @@
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
@@ -6699,26 +6734,26 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$P{Year}.getDay(  java.time.Month.JUNE, (short)6, java.time.DayOfWeek.TUESDAY )]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="0" y="217" width="39" height="25" uuid="b7f8c0f8-2662-47fd-88d3-a8585c431c9a"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
 					</textElement>
 					<textFieldExpression><![CDATA[]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField isBlankWhenNull="true">
 					<reportElement x="39" y="217" width="39" height="25" uuid="80d63235-c3ae-4c0b-a47d-b0c8589e8259"/>
 					<box>
 						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
 					<textElement>
 						<font size="4"/>
