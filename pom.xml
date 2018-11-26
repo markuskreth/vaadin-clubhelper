@@ -12,6 +12,10 @@
 	<name>vaadin-clubhelper</name>
 	<description>Vaadin Administation Frontend for Clubhelper.</description>
 
+	<prerequisites>
+		<maven>3</maven>
+	</prerequisites>
+
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -148,11 +152,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>test</scope>
@@ -200,6 +199,11 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
+			<version>6.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-functions</artifactId>
 			<version>6.7.0</version>
 		</dependency>
 	</dependencies>
@@ -266,19 +270,6 @@
 					</execution>
 					<execution>
 						<id>default-jacoco-report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-jacoco-check</id>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-report</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>

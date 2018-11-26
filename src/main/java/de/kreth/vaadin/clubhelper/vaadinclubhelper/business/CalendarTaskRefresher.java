@@ -44,4 +44,8 @@ public class CalendarTaskRefresher {
 			log.debug("successfully stored {}", e);
 		}
 	}
+
+	public void setDao(ClubEventDao dao) {
+		this.dao = dao;
+	}
 }

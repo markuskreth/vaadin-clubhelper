@@ -31,16 +31,15 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	public T update(T obj) {
 		return em.merge(obj);
 	}
-	
+
 	@Override
 	public T get(Object primaryKey) {
 		return em.find(entityClass, primaryKey);
 	}
-	
+
 	@Override
 	public List<T> listAll() {
-		TypedQuery<T> query = em.createNamedQuery(
-				entityClass.getSimpleName() + ".findAll", entityClass);
+		TypedQuery<T> query = em.createNamedQuery(entityClass.getSimpleName() + ".findAll", entityClass);
 		return query.getResultList();
 	}
 

@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class WeeksOfMonth {
 
-	private static final List<DayOfWeek> ORDERED_WEEKDAY = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+	private static final List<DayOfWeek> ORDERED_WEEKDAY = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY,
+			DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 	private final YearMonth yearMonth;
 	private final List<Map<DayOfWeek, Integer>> weeks;
 
@@ -31,17 +32,17 @@ public class WeeksOfMonth {
 
 		List<Map<DayOfWeek, Integer>> result = new ArrayList<>();
 		Map<DayOfWeek, Integer> currentWeek = new HashMap<>();
-		
+
 		int monthValue = yearMonth.getMonthValue();
 		while (day.getMonthValue() == monthValue) {
 
-			for (DayOfWeek d: ORDERED_WEEKDAY) {
+			for (DayOfWeek d : ORDERED_WEEKDAY) {
 				if (d.equals(day.getDayOfWeek()) && day.getMonthValue() == monthValue) {
 					currentWeek.put(d, day.getDayOfMonth());
 					day = day.plusDays(1);
 				} else {
 					currentWeek.put(d, null);
-				}				
+				}
 			}
 			result.add(Collections.unmodifiableMap(currentWeek));
 			currentWeek = new HashMap<>();
@@ -54,7 +55,9 @@ public class WeeksOfMonth {
 	}
 
 	/**
-	 * Week in Month >=0 && < {@link #weekCount()} depending on day count and weekday order.
+	 * Week in Month >=0 && < {@link #weekCount()} depending on day count and
+	 * weekday order.
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -64,11 +67,11 @@ public class WeeksOfMonth {
 
 	/**
 	 * Count of week (parts) in this month.
+	 * 
 	 * @return
 	 */
 	public int weekCount() {
 		return weeks.size();
 	}
-	
-	
+
 }

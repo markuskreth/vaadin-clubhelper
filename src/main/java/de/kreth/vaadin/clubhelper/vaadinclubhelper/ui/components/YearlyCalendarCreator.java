@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.Map;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year;
@@ -12,8 +13,11 @@ public class YearlyCalendarCreator extends CalendarCreator {
 
 	private Year year;
 
-	public YearlyCalendarCreator(int year) {
-		this.year = new Year(year);
+	public YearlyCalendarCreator(int year, Map<LocalDate, CharSequence> values) {
+		if (values == null) {
+			throw new NullPointerException("Calendar values must not be null!");
+		}
+		this.year = new Year(year, values);
 	}
 
 	@Override
