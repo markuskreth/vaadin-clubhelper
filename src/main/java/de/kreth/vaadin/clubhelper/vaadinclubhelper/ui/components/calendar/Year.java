@@ -6,8 +6,11 @@ import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class Year {
 
@@ -15,29 +18,28 @@ public class Year {
 	private final Locale locale;
 	private final Map<Month, WeeksOfMonth> monthWeeks;
 	private final Map<LocalDate, CharSequence> values;
+	private final Set<LocalDate> holidays;
 
 	public Year(int year) {
-		this(year, Collections.emptyMap(), Locale.getDefault());
+		this(year, Collections.emptyMap(), Collections.emptyList(), Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values) {
-		this(year, values, Locale.getDefault());
+	public Year(int year, Map<LocalDate, CharSequence> values, List<LocalDate> holidays) {
+		this(year, values, holidays, Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values, Locale locale) {
+	public Year(int year, Map<LocalDate, CharSequence> values, List<LocalDate> holidays, Locale locale) {
 		if (year < 1900 || year > 2100) {
 			throw new IllegalArgumentException("Year value must be between 1900 and 2100");
 		}
 		this.date = LocalDate.of(year, 1, 1);
 		this.locale = locale;
+		this.holidays = new HashSet<>(holidays);
 		this.monthWeeks = new HashMap<>();
 		for (Month m : Month.values()) {
 			monthWeeks.put(m, new WeeksOfMonth(m, year));
 		}
 		this.values = values;
-		for (LocalDate d : values.keySet()) {
-			System.out.println(d + "\t" + values.get(d));
-		}
 	}
 
 	public int getYear() {
@@ -46,6 +48,10 @@ public class Year {
 
 	public CharSequence getMonth(Month month) {
 		return month.getDisplayName(TextStyle.FULL_STANDALONE, locale);
+	}
+
+	public CharSequence getMonth(int month) {
+		return Month.of(month).getDisplayName(TextStyle.FULL_STANDALONE, locale);
 	}
 
 	/**
@@ -72,9 +78,18 @@ public class Year {
 		return weeksOfMonth.getWeek(week - 1).get(dayOfWeek);
 	}
 
+	public boolean isHoliday(Month month, short week, DayOfWeek dayOfWeek) {
+		LocalDate day = toDate(month, week, dayOfWeek);
+		return holidays.contains(day);
+	}
+
 	public CharSequence getContent(Month month, short week, DayOfWeek dayOfWeek) {
-		Integer res = getDayOfMonth(month, week, dayOfWeek);
-		LocalDate day = date.withMonth(month.getValue()).withDayOfMonth(res);
+		LocalDate day = toDate(month, week, dayOfWeek);
 		return values.get(day);
+	}
+
+	public LocalDate toDate(Month month, short week, DayOfWeek dayOfWeek) {
+		Integer res = getDayOfMonth(month, week, dayOfWeek);
+		return date.withMonth(month.getValue()).withDayOfMonth(res);
 	}
 }

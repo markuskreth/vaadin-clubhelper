@@ -13,21 +13,21 @@ class YearTest {
 
 	@Test()
 	void test18thCenturyEx() {
-		assertThrows(IllegalArgumentException.class, () -> new Year(1899, Collections.emptyMap()));
-		assertThrows(IllegalArgumentException.class, () -> new Year(2101, Collections.emptyMap()));
-		new Year(1900, Collections.emptyMap());
-		new Year(2100, Collections.emptyMap());
+		assertThrows(IllegalArgumentException.class, () -> new Year(1899));
+		assertThrows(IllegalArgumentException.class, () -> new Year(2101));
+		new Year(1900);
+		new Year(2100);
 	}
 
 	@Test
 	void testMondayIsFirst() {
-		Year y = new Year(2018, Collections.emptyMap());
+		Year y = new Year(2018, Collections.emptyMap(), Collections.emptyList());
 		assertEquals("1", y.getDay(Month.OCTOBER, (short) 1, DayOfWeek.MONDAY));
 	}
 
 	@Test
 	void testThursdayIsFirst() {
-		Year y = new Year(2018, Collections.emptyMap());
+		Year y = new Year(2018);
 		assertEquals("", y.getDay(Month.NOVEMBER, (short) 1, DayOfWeek.MONDAY));
 	}
 
