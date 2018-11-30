@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -21,8 +22,7 @@ public class Person extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8361264400619997123L;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date birth;
+	private LocalDate birth;
 
 	private String password;
 
@@ -71,11 +71,11 @@ public class Person extends BaseEntity implements Serializable {
 	    )
 	private Set<ClubEvent> events;
 	
-	public Date getBirth() {
-		return new Date(this.birth.getTime());
+	public LocalDate getBirth() {
+		return birth;
 	}
 
-	public void setBirth(Date birth) {
+	public void setBirth(LocalDate birth) {
 		this.birth = birth;
 	}
 

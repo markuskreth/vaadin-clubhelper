@@ -1,6 +1,5 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.converter.LocalDateToDateConverter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Panel;
@@ -56,7 +54,7 @@ public class PersonEditDialog extends Window {
 		binder = new Binder<>();
 		binder.forField(textPrename).bind(Person::getPrename, Person::setPrename);
 		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
-		binder.forField(birthday).withConverter(new LocalDateToDateConverter(ZoneId.systemDefault())).bind(Person::getBirth, Person::setBirth);
+		binder.forField(birthday).bind(Person::getBirth, Person::setBirth);
 		
 		binder.readBean(person);
 		

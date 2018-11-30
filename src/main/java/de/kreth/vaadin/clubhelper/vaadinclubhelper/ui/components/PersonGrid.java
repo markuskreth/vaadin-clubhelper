@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
-import java.text.DateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,8 +43,7 @@ public class PersonGrid extends CustomComponent {
 	private static final long serialVersionUID = -8148097982839343673L;
 	private transient final Logger log = LoggerFactory.getLogger(getClass());
 
-	private final DateFormat birthFormat = DateFormat
-			.getDateInstance(DateFormat.MEDIUM);
+	private final DateTimeFormatter birthFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
 
 	private final Grid<Person> grid;
 
@@ -85,9 +85,7 @@ public class PersonGrid extends CustomComponent {
 		grid.setDataProvider(dataProvider);
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
-		grid.addColumn(Person::getBirth,
-				b -> b != null ? birthFormat.format(b) : "")
-				.setCaption("Geburtstag");
+		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
 		grid.addComponentColumn(this::buildDeleteButton);
 		grid.setSelectionMode(SelectionMode.MULTI);
 
@@ -103,13 +101,13 @@ public class PersonGrid extends CustomComponent {
 		setCompositionRoot(panel);
 	}
 
-    private Button buildDeleteButton(Person p) {
-        Button button = new Button(VaadinIcons.EDIT);
-        button.addStyleName(ValoTheme.BUTTON_SMALL);
-        button.addClickListener(e -> showPersonDetails(p));
-        return button;
-    }
-    
+	private Button buildDeleteButton(Person p) {
+		Button button = new Button(VaadinIcons.EDIT);
+		button.addStyleName(ValoTheme.BUTTON_SMALL);
+		button.addClickListener(e -> showPersonDetails(p));
+		return button;
+	}
+
 	private void showPersonDetails(Person p) {
 		if (onPersonEdit != null) {
 			onPersonEdit.accept(p);
@@ -127,7 +125,7 @@ public class PersonGrid extends CustomComponent {
 
 	private void updateFilter() {
 		Predicate<Person> filter = p -> true;
-		if (selectedOnlyFilter!= null && selectedOnlyFilter.equals(Boolean.TRUE)) {
+		if (selectedOnlyFilter != null && selectedOnlyFilter.equals(Boolean.TRUE)) {
 			Set<Person> selected = grid.getSelectedItems();
 			filter = p -> selected.contains(p);
 		}
@@ -136,7 +134,7 @@ public class PersonGrid extends CustomComponent {
 			groupMemberFilter.forEach(gm -> {
 				groupIds.add(gm.getId());
 			});
-			
+
 			filter = filter.and(p -> {
 				{
 					List<GroupDef> personGroups = p.getPersongroups();
@@ -149,7 +147,7 @@ public class PersonGrid extends CustomComponent {
 				}
 			});
 		}
-		
+
 		setFilter(filter);
 	}
 

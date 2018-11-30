@@ -1,24 +1,24 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.Transaction;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.ibm.icu.util.Calendar;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
-class PersonDaoTest extends AbstractDatabaseTest {
+public class PersonDaoTest extends AbstractDatabaseTest {
 
 	private PersonDaoImpl personDao;
 	private Person person;
 
-	@BeforeEach
+	@Override
+	@Before
 	public void setUp() throws Exception {
 		super.setUp();
 		personDao = new PersonDaoImpl();
@@ -26,16 +26,19 @@ class PersonDaoTest extends AbstractDatabaseTest {
 		person = new Person();
 		person.setPrename("prename");
 		person.setSurname("surname");
-		person.setBirth(new GregorianCalendar(2018, Calendar.NOVEMBER, 8).getTime());
+//		Date time = new GregorianCalendar(2018, Calendar.NOVEMBER, 8).getTime();
+		person.setBirth(LocalDate.of(2018, 11, 8));
 		person.setPassword("password");
 	}
 
 	@Test
-	void testSave() {
+	public void testSave() {
 		storePerson();
 		List<Person> stored = session.createNamedQuery(Person.QUERY_FINDALL, Person.class).list();
 		assertEquals(1, stored.size());
 		assertEquals(person, stored.get(0));
+		assertEquals(person, personDao.get(person.getId()));
+
 	}
 
 	public void storePerson() {
@@ -45,7 +48,7 @@ class PersonDaoTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	void testUpdate() {
+	public void testUpdate() {
 		storePerson();
 		person.setSurname("surname2");
 		person.setPrename("prename2");
@@ -59,18 +62,22 @@ class PersonDaoTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	void testListAll() {
+	public void testListAll() {
 		storePerson();
 		session.detach(person);
 		person = new Person();
 		person.setSurname("surname2");
 		person.setPrename("prename2");
-		person.setBirth(new GregorianCalendar(2018, Calendar.NOVEMBER, 8).getTime());
+		person.setBirth(LocalDate.of(2018, 11, 8));
 		person.setPassword("password");
 		storePerson();
-		List<Person> stored = session.createNamedQuery(Person.QUERY_FINDALL, Person.class).list();
+		List<Person> stored = personDao.listAll();
 		assertEquals(2, stored.size());
-		
+
 	}
 
+	@Test
+	public void testPersonGroup() {
+		assertNotNull(new GroupDaoImpl());
+	}
 }
