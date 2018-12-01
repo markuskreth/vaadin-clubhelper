@@ -2,6 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="TMP_YEAR" columnCount="2" printOrder="Horizontal" pageWidth="595" pageHeight="842" columnWidth="287" leftMargin="10" rightMargin="10" topMargin="10" bottomMargin="10" uuid="f895a4b9-02ee-452a-8d47-bb589135dde6">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="CalendarSource"/>
+	<import value="de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year"/>
 	<import value="java.time.Month"/>
 	<import value="java.time.format.TextStyle"/>
 	<import value="java.time.DayOfWeek"/>
@@ -227,14 +228,13 @@
 			<style backcolor="#FFFF00"/>
 		</conditionalStyle>
 	</style>
-	<parameter name="Year" class="de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year" evaluationTime="Early">
-		<defaultValueExpression><![CDATA[new de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year(2018)]]></defaultValueExpression>
+	<parameter name="Year" class="Year" evaluationTime="Early">
+		<defaultValueExpression><![CDATA[new Year(2018)]]></defaultValueExpression>
 	</parameter>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
 	<field name="MONTH_COUNTER" class="java.lang.Integer"/>
-	<field name="HOLIDAY" class="java.lang.Boolean"/>
 	<pageHeader>
 		<band height="25">
 			<textField>

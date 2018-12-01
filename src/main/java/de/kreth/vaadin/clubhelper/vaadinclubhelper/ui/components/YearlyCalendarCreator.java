@@ -33,7 +33,7 @@ public class YearlyCalendarCreator extends CalendarCreator {
 
 	@Override
 	protected JRDataSource getSource() {
-		return new EmptySource();
+		return new CalendarSource();
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public class YearlyCalendarCreator extends CalendarCreator {
 		return CalendarCreator.class.getResourceAsStream("/jasper/calendar_year.jrxml");
 	}
 
-	public static class EmptySource implements JRDataSource {
+	public static class CalendarSource implements JRDataSource {
 
 		Iterator<Integer> values = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12).iterator();
 
@@ -57,7 +57,11 @@ public class YearlyCalendarCreator extends CalendarCreator {
 
 		@Override
 		public Object getFieldValue(JRField jrField) throws JRException {
-			return values.next();
+			if ("MONTH_COUNTER".equals(jrField.getName())) {
+				Integer next = values.next();
+				return next;
+			}
+			return null;
 		}
 
 	}
