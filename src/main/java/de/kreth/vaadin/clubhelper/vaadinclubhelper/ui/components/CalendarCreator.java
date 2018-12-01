@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.hibernate.Session;
@@ -51,14 +52,16 @@ public abstract class CalendarCreator {
 				.setHolidays(Collections.emptyList()).createCalendar();
 	}
 
-	public static <T extends CharSequence> JasperPrint createCalendar(Date date, Map<Integer, T> values,
-			Collection<Integer> holidays) throws JRException {
-		return new MonthlyCalendarCreator<T>(date).setValues(values).setHolidays(holidays).createCalendar();
+	public static <T extends CharSequence> JasperPrint createCalendar(Date date, Map<LocalDate, T> values,
+			Collection<LocalDate> holidays) throws JRException {
+		return new MonthlyCalendarCreator<T>(date).setValues(values)
+				.setHolidays(holidays.stream().map(h -> h.getDayOfMonth()).collect(Collectors.toList()))
+				.createCalendar();
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends CharSequence> JasperPrint createCalendar(int year, Map<LocalDate, T> values,
-			List<LocalDate> holidays) throws JRException {
+	public static <T extends CharSequence> JasperPrint createYearCalendar(int year, Map<LocalDate, T> values,
+			Collection<LocalDate> holidays) throws JRException {
 		return new YearlyCalendarCreator(year, (Map<LocalDate, CharSequence>) values, holidays).createCalendar();
 	}
 
@@ -91,12 +94,12 @@ public abstract class CalendarCreator {
 
 		Map<LocalDate, CharSequence> values = map(allevents, year);
 
-		JasperViewer v1 = new JasperViewer(createCalendar(year, values, holidays));
+		JasperViewer v1 = new JasperViewer(createYearCalendar(year, values, holidays));
 		v1.setVisible(true);
 
 	}
 
-	private static List<LocalDate> filterHolidays(List<ClubEvent> allevents) {
+	public static List<LocalDate> filterHolidays(List<ClubEvent> allevents) {
 		List<LocalDate> holidays = new ArrayList<>();
 		Iterator<ClubEvent> iter = allevents.iterator();
 		while (iter.hasNext()) {
@@ -105,14 +108,18 @@ public abstract class CalendarCreator {
 				iter.remove();
 				LocalDate start = item.getStart().toLocalDate();
 				LocalDate end = item.getEnd().toLocalDate();
-				while (end.isAfter(start) || end.isEqual(start)) {
-					holidays.add(start);
-					start = start.plusDays(1);
-				}
+				iterateDays(start, end, d -> holidays.add(d));
 			}
 		}
 
 		return holidays;
+	}
+
+	public static void iterateDays(LocalDate start, LocalDate end, Consumer<LocalDate> consumer) {
+		while (end.isAfter(start) || end.isEqual(start)) {
+			consumer.accept(start);
+			start = start.plusDays(1);
+		}
 	}
 
 	protected static Map<LocalDate, CharSequence> map(List<ClubEvent> allevents, int year) {

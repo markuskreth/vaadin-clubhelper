@@ -3,9 +3,9 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year;
@@ -21,7 +21,7 @@ public class YearlyCalendarCreator extends CalendarCreator {
 		this(year, values, Collections.emptyList());
 	}
 
-	public YearlyCalendarCreator(int year, Map<LocalDate, CharSequence> values, List<LocalDate> holidays) {
+	public YearlyCalendarCreator(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays) {
 		if (values == null) {
 			throw new NullPointerException("Calendar values must not be null!");
 		}

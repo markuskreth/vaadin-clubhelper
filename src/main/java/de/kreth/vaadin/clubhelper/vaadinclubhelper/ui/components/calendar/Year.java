@@ -4,10 +4,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -24,11 +24,11 @@ public class Year {
 		this(year, Collections.emptyMap(), Collections.emptyList(), Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values, List<LocalDate> holidays) {
+	public Year(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays) {
 		this(year, values, holidays, Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values, List<LocalDate> holidays, Locale locale) {
+	public Year(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays, Locale locale) {
 		if (year < 1900 || year > 2100) {
 			throw new IllegalArgumentException("Year value must be between 1900 and 2100");
 		}

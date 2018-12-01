@@ -3,19 +3,16 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,7 +47,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 public class CalendarComponent extends CustomComponent {
 
 	private static final long serialVersionUID = -9152173211931554059L;
-	private transient final Logger log = LoggerFactory.getLogger(getClass()); 
+	private transient final Logger log = LoggerFactory.getLogger(getClass());
 
 	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
@@ -66,12 +63,11 @@ public class CalendarComponent extends CustomComponent {
 
 		Button popupButton = new Button("Menu");
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
-		
+
 		HorizontalLayout head = new HorizontalLayout(monthName, popupButton);
-		
+
 		dataProvider = new ClubEventProvider();
-		calendar = new Calendar<>(dataProvider)
-				.withMonth(Month.from(LocalDateTime.now()));
+		calendar = new Calendar<>(dataProvider).withMonth(Month.from(LocalDateTime.now()));
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));
@@ -96,61 +92,76 @@ public class CalendarComponent extends CustomComponent {
 
 	private void openPopupMenu(ClickEvent ev) {
 		ContextMenu contextMenu = new ContextMenu(ev.getButton(), true);
-		contextMenu.addItem("Export", ev1 -> calendarExport(ev1));
+		contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1));
+		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
 		contextMenu.open(210, 40);
 	}
 
 	private void calendarExport(MenuItem ev1) {
 
-		ZonedDateTime start = calendar.getStartDate();
-		ZonedDateTime end = calendar.getEndDate();
-		log.debug("exporting Calendar from {} to {}", start, end);
-		List<ClubEvent> items = dataProvider.getItems(start, end);
-		Map<Integer, StringBuilder> values = new HashMap<>();
-		Set<Integer> holidays = new HashSet<>();
-		
-		for (ClubEvent ev : items) {
+		boolean monthOnly = ev1.getText().contains("Monat");
+		List<ClubEvent> items;
+		ZonedDateTime start;
+		if (monthOnly) {
+			start = calendar.getStartDate();
+			ZonedDateTime end = calendar.getEndDate();
+			log.debug("exporting Calendar from {} to {}", start, end);
+			items = dataProvider.getItems(start, end);
+		} else {
 
-			String calendarName = ev.getOrganizerDisplayName();
-			if ("Schulferien".equals(calendarName)) {
-				log.trace("Added to holiday List: {}", ev);
-				TemporalUnit unit = ChronoUnit.DAYS;
-				int durationDays = (int) ev.getStart().until(ev.getEnd(), unit) + 1;
-				for (int dayOfMonth = ev.getStart().getDayOfMonth(), endDay=dayOfMonth + durationDays; dayOfMonth<=endDay; dayOfMonth++) {
-					holidays.add(dayOfMonth);
-				}
-			} else {
-				log.trace("Added to eventsd: {}", ev);
-				StringBuilder content;
-
-				int dayOfMonth = ev.getStart().getDayOfMonth();
-				int endDayOfMonth = ev.getEnd().getDayOfMonth();
-				for (;dayOfMonth<=endDayOfMonth; dayOfMonth++) {
-
-					if (values.containsKey(dayOfMonth)) {
-						content = values.get(dayOfMonth);
-						content.append("\n");
-					} else {
-						content = new StringBuilder();
-						values.put(dayOfMonth, content);
-					}
-					content.append(ev.getCaption());
-				}
-			}
+			start = calendar.getStartDate().withDayOfYear(1);
+			ZonedDateTime end = start.withMonth(12).withDayOfMonth(31);
+			log.debug("exporting Calendar from {} to {}", start, end);
+			items = dataProvider.getItems(start, end);
 		}
 
-	    String calendarMonth = dfMonth.format(start);
+		Map<LocalDate, StringBuilder> values = new HashMap<>();
+		List<LocalDate> holidays = CalendarCreator.filterHolidays(items);
+
+		for (ClubEvent ev : items) {
+
+			ZonedDateTime evStart = ev.getStart();
+			ZonedDateTime evEnd = ev.getEnd();
+
+			log.trace("Added to eventsd: {}", ev);
+
+			CalendarCreator.iterateDays(evStart.toLocalDate(), evEnd.toLocalDate(), day -> {
+
+				StringBuilder content;
+				if (values.containsKey(day)) {
+					content = values.get(day);
+					content.append("\n");
+				} else {
+					content = new StringBuilder();
+					values.put(day, content);
+				}
+				content.append(ev.getCaption());
+			});
+		}
+
+		String calendarMonth;
+		if (monthOnly) {
+			calendarMonth = dfMonth.format(start);
+		} else {
+			calendarMonth = "Jahr " + start.getYear();
+		}
+
 		try {
-			JasperPrint print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
+			JasperPrint print;
+			if (monthOnly) {
+				print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
+			} else {
+				print = CalendarCreator.createYearCalendar(start.getYear(), values, holidays);
+			}
 			log.trace("Created Jasper print for {}", calendarMonth);
-		    Window window = new Window();
-		    window.setCaption("View PDF");
+			Window window = new Window();
+			window.setCaption("View PDF");
 			AbstractComponent e = createEmbedded(calendarMonth, print);
-		    window.setContent(e);
-		    window.setModal(true);
-		    window.setWidth("50%");
-		    window.setHeight("90%");
-		    monthName.getUI().addWindow(window);
+			window.setContent(e);
+			window.setModal(true);
+			window.setWidth("50%");
+			window.setHeight("90%");
+			monthName.getUI().addWindow(window);
 			log.trace("Added pdf window for {}", calendarMonth);
 		} catch (JRException e) {
 			log.error("Error Creating Jasper Report for {}", calendarMonth, e);
@@ -167,22 +178,22 @@ public class CalendarComponent extends CustomComponent {
 		final PipedOutputStream out = new PipedOutputStream(in);
 
 		final StreamResource resource = new StreamResource(() -> in, title);
-	    resource.setMIMEType("application/pdf");
-	    
+		resource.setMIMEType("application/pdf");
+
 		BrowserFrame c = new BrowserFrame("PDF invoice", resource);
-	    c.setSizeFull();
-	    
-	    ExecutorService exec = Executors.newSingleThreadExecutor();
-	    exec.execute(() -> {
-	    	try {
+		c.setSizeFull();
+
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		exec.execute(() -> {
+			try {
 				JasperExportManager.exportReportToPdfStream(print, out);
 			} catch (JRException e) {
 				log.error("Error on Export to Pdf.", e);
 				throw new RuntimeException(e);
 			}
-	    });
-	    exec.shutdown();
-	    return c;
+		});
+		exec.shutdown();
+		return c;
 	}
 
 	private void updateMonthText(ZonedDateTime startDate) {
