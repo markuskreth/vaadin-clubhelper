@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -81,13 +82,16 @@ public abstract class CalendarCreator {
 
 		Locale.setDefault(Locale.GERMANY);
 
-		List<ClubEvent> allevents = loadAllEvents(false);
+		int year = 2019;
+		List<ClubEvent> allevents = loadAllEvents(true).stream().filter(ev -> {
+			return ev.getStart().toLocalDate().getYear() <= year && ev.getEnd().toLocalDate().getYear() >= year;
+		}).collect(Collectors.toList());
 
 		List<LocalDate> holidays = filterHolidays(allevents);
 
-		Map<LocalDate, CharSequence> values = map(allevents, 2019);
+		Map<LocalDate, CharSequence> values = map(allevents, year);
 
-		JasperViewer v1 = new JasperViewer(createCalendar(2019, values, holidays));
+		JasperViewer v1 = new JasperViewer(createCalendar(year, values, holidays));
 		v1.setVisible(true);
 
 	}

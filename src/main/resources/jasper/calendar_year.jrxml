@@ -1138,7 +1138,7 @@
 				<textFieldExpression><![CDATA[]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="162" y="179" width="39" height="10" isRemoveLineWhenBlank="true" uuid="1e1aaf99-75aa-4f94-af18-3d5b12623132"/>
+				<reportElement style="DayStyleFRIDAY5" mode="Opaque" x="162" y="179" width="39" height="10" isRemoveLineWhenBlank="true" uuid="1e1aaf99-75aa-4f94-af18-3d5b12623132"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
