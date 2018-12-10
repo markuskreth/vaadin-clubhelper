@@ -30,7 +30,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 @Theme("vaadin-clubhelpertheme")
 @SpringUI
-@Push(value=PushMode.MANUAL)
+@Push(value = PushMode.MANUAL)
 public class MainUi extends UI {
 
 	private static final long serialVersionUID = 7581634188909841919L;
@@ -41,7 +41,7 @@ public class MainUi extends UI {
 
 	@Autowired
 	GroupDao groupDao;
-	
+
 	@Autowired
 	EventBusiness eventBusiness;
 
@@ -70,7 +70,7 @@ public class MainUi extends UI {
 		contentLayout = new HorizontalLayout();
 		contentLayout.setSizeFull();
 		contentLayout.addComponents(calendar);
-		
+
 		setContent(contentLayout);
 		setSizeFull();
 
@@ -84,7 +84,7 @@ public class MainUi extends UI {
 				calendar.setItems(events);
 				ui.push();
 			});
-			
+
 		});
 		exec.shutdown();
 		LOGGER.info("Loaded UI and started fetch of Events");
@@ -94,7 +94,7 @@ public class MainUi extends UI {
 		PersonEditDialog dlg = new PersonEditDialog(groupDao.listAll(), p, personDao);
 		getUI().addWindow(dlg);
 	}
-	
+
 	private void personSelectionChange(SelectionEvent<Person> ev) {
 		Set<Person> selected = ev.getAllSelectedItems();
 		LOGGER.debug("Selection changed to: {}", selected);
@@ -110,14 +110,14 @@ public class MainUi extends UI {
 		ClubEvent ev = (ClubEvent) event.getCalendarItem();
 		LOGGER.debug("Opening detail view for {}", ev);
 
-		contentLayout.removeComponent(personGrid);
-		contentLayout.addComponent(personGrid);
+//		contentLayout.removeComponent(personGrid);
+//		contentLayout.addComponent(personGrid);
 
 		eventBusiness.setSelected(null);
-		personGrid.setEnabled(false);
-		personGrid.setEvent(ev);
-		personGrid.setVisible(true);
-		personGrid.setEnabled(true);
+//		personGrid.setEnabled(false);
+//		personGrid.setEvent(ev);
+//		personGrid.setVisible(true);
+//		personGrid.setEnabled(true);
 		eventBusiness.setSelected(ev);
 	}
 

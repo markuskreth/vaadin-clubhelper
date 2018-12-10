@@ -41,23 +41,22 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 public class PersonGrid extends CustomComponent {
 
 	private static final long serialVersionUID = -8148097982839343673L;
-	private transient final Logger log = LoggerFactory.getLogger(getClass());
+	private final transient Logger log = LoggerFactory.getLogger(getClass());
 
-	private final DateTimeFormatter birthFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+	private final transient DateTimeFormatter birthFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+	private final ConfigurableFilterDataProvider<Person, Void, SerializablePredicate<Person>> dataProvider;
 
 	private final Grid<Person> grid;
-
 	private final CheckBox checkIncluded;
 	private final ComboBox<GroupDef> comboGroups;
-
 	private final TextField textTitle;
 
 	private transient ClosedFunction closedFunction = null;
-	private ConfigurableFilterDataProvider<Person, Void, SerializablePredicate<Person>> dataProvider;
+	private transient Consumer<Person> onPersonEdit;
 	private Boolean selectedOnlyFilter;
+
 	private Set<GroupDef> groupMemberFilter;
 	private List<GroupDef> allGroups;
-	private Consumer<Person> onPersonEdit;
 
 	public PersonGrid(GroupDao groupDao) {
 

@@ -25,7 +25,6 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
 import com.vaadin.contextmenu.ContextMenu;
-import com.vaadin.contextmenu.MenuItem;
 import com.vaadin.server.StreamResource;
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.AbstractComponent;
@@ -35,6 +34,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
