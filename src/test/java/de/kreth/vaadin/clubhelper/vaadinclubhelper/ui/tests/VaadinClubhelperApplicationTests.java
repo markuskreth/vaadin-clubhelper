@@ -25,8 +25,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 public class VaadinClubhelperApplicationTests {
 
 	private static ChromeOptions options;
-//	@Autowired
-//	private WebTestClient webClient;
 	@LocalServerPort
 	int port;
 
@@ -41,7 +39,6 @@ public class VaadinClubhelperApplicationTests {
 
 		options = new ChromeOptions();
 		options.setHeadless(!GraphicsEnvironment.isHeadless());
-//		options.setPageLoadStrategy(PageLoadStrategy.EAGER);
 
 	}
 

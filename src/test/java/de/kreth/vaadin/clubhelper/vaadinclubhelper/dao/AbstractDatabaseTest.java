@@ -3,7 +3,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Attendance;
@@ -22,7 +22,7 @@ public abstract class AbstractDatabaseTest {
 	protected SessionFactory sessionFactory;
 	protected Session session;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 		// setup the session factory
@@ -46,15 +46,11 @@ public abstract class AbstractDatabaseTest {
 		configuration.addAnnotatedClass(Startpaesse.class);
 		configuration.addAnnotatedClass(StartpassStartrechte.class);
 		configuration.addAnnotatedClass(Version.class);
-		configuration.addInputStream(
-				getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
+		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
 
-		configuration.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.H2Dialect");
-		configuration.setProperty("hibernate.connection.driver_class",
-				"org.h2.Driver");
-		configuration.setProperty("hibernate.connection.url",
-				"jdbc:h2:mem:test");
+		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+		configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
+		configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
 		configuration.setProperty("hibernate.hbm2ddl.auto", "create");
 		return configuration;
 	}

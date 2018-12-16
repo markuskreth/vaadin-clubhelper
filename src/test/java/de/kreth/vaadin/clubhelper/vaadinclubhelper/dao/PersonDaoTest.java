@@ -1,14 +1,14 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import org.hibernate.Transaction;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
@@ -18,7 +18,7 @@ public class PersonDaoTest extends AbstractDatabaseTest {
 	private Person person;
 
 	@Override
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		super.setUp();
 		personDao = new PersonDaoImpl();

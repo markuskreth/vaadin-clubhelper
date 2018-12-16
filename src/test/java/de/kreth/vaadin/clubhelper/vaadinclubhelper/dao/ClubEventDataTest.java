@@ -1,9 +1,9 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -22,7 +22,7 @@ import org.hibernate.IdentifierLoadAccess;
 import org.hibernate.Transaction;
 import org.hibernate.jdbc.Work;
 import org.hibernate.query.Query;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
@@ -58,7 +58,7 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		}
 		tx.commit();
 		for (Person p : inserted) {
-			assertTrue("not saved: " + p, p.getId() > 0);
+			assertTrue(p.getId() > 0, "not saved: " + p);
 		}
 		return inserted;
 	}
