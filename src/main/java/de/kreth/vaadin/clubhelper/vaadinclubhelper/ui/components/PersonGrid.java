@@ -61,14 +61,17 @@ public class PersonGrid extends CustomComponent {
 	public PersonGrid(GroupDao groupDao) {
 
 		textTitle = new TextField();
+		textTitle.setId("person.title");
 		textTitle.setStyleName("title_label");
 		textTitle.setCaption("Veranstaltung");
 		textTitle.setEnabled(false);
 		textTitle.setSizeFull();
 
 		checkIncluded = new CheckBox("Nur gemeldete");
+		checkIncluded.setId("person.filter.checked");
 		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));
 		comboGroups = new ComboBox<>("Gruppenfilter");
+		comboGroups.setId("person.filter.groups");
 		comboGroups.setEmptySelectionAllowed(true);
 		comboGroups.setEmptySelectionCaption("Alle");
 		comboGroups.setItemCaptionGenerator(GroupDef::getName);
@@ -82,6 +85,7 @@ public class PersonGrid extends CustomComponent {
 		dataProvider = new ListDataProvider<Person>(new ArrayList<>()).withConfigurableFilter();
 		grid = new Grid<>();
 		grid.setDataProvider(dataProvider);
+		grid.setId("person.grid");
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
 		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
@@ -94,6 +98,7 @@ public class PersonGrid extends CustomComponent {
 				closedFunction.closed();
 			}
 		});
+		close.setId("person.close");
 
 		VerticalLayout panel = new VerticalLayout();
 		panel.addComponents(textTitle, filters, grid, close);

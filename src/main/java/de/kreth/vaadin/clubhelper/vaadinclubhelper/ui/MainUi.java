@@ -54,10 +54,11 @@ public class MainUi extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 
-		LOGGER.debug("Starting Vaadin UI with " + getClass().getName());
+		LOGGER.debug("Starting Vaadin UI with {}", getClass().getName());
 
 		List<Person> persons = personDao.listAll();
 		personGrid = new PersonGrid(groupDao);
+		personGrid.setId("main.person");
 		personGrid.setItems(persons);
 		personGrid.setCaption("Personen");
 		personGrid.onClosedFunction(() -> detailClosed());
@@ -65,6 +66,7 @@ public class MainUi extends UI {
 		personGrid.onPersonEdit(p -> onPersonEdit(p));
 
 		this.calendar = new CalendarComponent();
+		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
 		contentLayout = new HorizontalLayout();

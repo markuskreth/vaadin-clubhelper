@@ -59,15 +59,18 @@ public class CalendarComponent extends CustomComponent {
 	public CalendarComponent() {
 
 		monthName = new Label();
+		monthName.setId("calendar.month");
 		monthName.setStyleName("title_label");
 
 		Button popupButton = new Button("Menu");
+		popupButton.setId("calendar.menu");
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
 
 		HorizontalLayout head = new HorizontalLayout(monthName, popupButton);
 
 		dataProvider = new ClubEventProvider();
 		calendar = new Calendar<>(dataProvider).withMonth(Month.from(LocalDateTime.now()));
+		calendar.setId("calendar.calendar");
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));
