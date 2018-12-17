@@ -17,17 +17,24 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 @Component
 public class CalendarTaskRefresher {
 
+	public static final String SKIP_EVENT_UPDATE = "skipEventUpdate";
+
 	private static final long RATE = 1000L * 60 * 10;
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final boolean skip = Boolean.parseBoolean(System.getProperty(SKIP_EVENT_UPDATE, "false"));
 
 	@Autowired
 	ClubEventDao dao;
 
-	EventBusiness business = new EventBusiness();
+	@Autowired
+	EventBusiness eventBusiness;
 
 	@Scheduled(fixedDelay = RATE)
 	public void synchronizeCalendarTasks() {
-		List<ClubEvent> events = business.loadEvents(null, true);
+		if (skip) {
+			return;
+		}
+		List<ClubEvent> events = eventBusiness.loadEvents(null, true);
 		for (ClubEvent e : events) {
 			if (dao.get(e.getId()) == null) {
 				try {
@@ -47,5 +54,9 @@ public class CalendarTaskRefresher {
 
 	public void setDao(ClubEventDao dao) {
 		this.dao = dao;
+	}
+
+	public void setEventBusiness(EventBusiness eventBusiness) {
+		this.eventBusiness = eventBusiness;
 	}
 }
