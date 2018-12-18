@@ -3,6 +3,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.awt.GraphicsEnvironment;
 import java.sql.ResultSet;
@@ -148,7 +149,7 @@ public class VaadinClubhelperApplicationTests {
 		p.setPrename("prename");
 		p.setSurname("participant");
 		p.setBirth(now.minusYears(10).toLocalDate());
-		p.setUsername("Allgroups");
+		p.setUsername("participant");
 		p.setPassword("password");
 		p.setPersongroups(Arrays.asList(participantGroup));
 		em.persist(p);
@@ -157,7 +158,7 @@ public class VaadinClubhelperApplicationTests {
 		p.setPrename("prename");
 		p.setSurname("competitor");
 		p.setBirth(now.minusYears(10).toLocalDate());
-		p.setUsername("Allgroups");
+		p.setUsername("competitor");
 		p.setPassword("password");
 		p.setPersongroups(Arrays.asList(competitorGroup, participantGroup));
 		em.persist(p);
@@ -233,7 +234,14 @@ public class VaadinClubhelperApplicationTests {
 		WebElement titleElement = driver.findElement(By.id("event.title"));
 		assertEquals("caption", titleElement.getAttribute("value"));
 
-//		driver.findElement(By.id("person.grid")).findElement(By.tagName("table"));
+		WebElement personList = driver.findElement(By.id("person.grid")).findElement(By.tagName("table"));
+		WebElement allGroupsPerson = findElementWithContent(personList, "Allgroups");
+		WebElement competitorPerson = findElementWithContent(personList, "competitor");
+		WebElement participantPerson = findElementWithContent(personList, "participant");
+
+		assertNotNull(allGroupsPerson);
+		assertNotNull(competitorPerson);
+		assertNotNull(participantPerson);
 
 	}
 
@@ -254,6 +262,14 @@ public class VaadinClubhelperApplicationTests {
 	}
 
 	public WebElement findElementWithContent(String content) {
-		return driver.findElement(By.xpath(String.format("//*[contains(text(), '%s')]", content)));
+		return findElementWithContent(null, content);
+	}
+
+	public WebElement findElementWithContent(WebElement parent, String content) {
+		if (parent != null) {
+			return parent.findElement(By.xpath(String.format("//*[contains(text(), '%s')]", content)));
+		} else {
+			return driver.findElement(By.xpath(String.format("//*[contains(text(), '%s')]", content)));
+		}
 	}
 }
