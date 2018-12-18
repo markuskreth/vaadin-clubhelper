@@ -61,7 +61,7 @@ public class PersonGrid extends CustomComponent {
 	public PersonGrid(GroupDao groupDao) {
 
 		textTitle = new TextField();
-		textTitle.setId("person.title");
+		textTitle.setId("event.title");
 		textTitle.setStyleName("title_label");
 		textTitle.setCaption("Veranstaltung");
 		textTitle.setEnabled(false);
@@ -165,10 +165,14 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	private void selectItems(Person... items) {
-		log.debug("Selecting Persons: {}", Arrays.asList(items));
 		MultiSelect<Person> asMultiSelect = grid.asMultiSelect();
 		asMultiSelect.deselectAll();
-		asMultiSelect.select(items);
+		if (items == null || items.length == 0) {
+			log.debug("No Persons selected.");
+		} else {
+			log.debug("Selecting Persons: {}", Arrays.asList(items));
+			asMultiSelect.select(items);
+		}
 	}
 
 	public void deselectItems(Person... items) {
@@ -217,9 +221,21 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	public void setEvent(ClubEvent ev) {
-		setCaption(ev.getCaption());
-		setTitle(ev.getCaption());
-		selectItems(ev.getPersons().toArray(new Person[0]));
+		if (ev != null) {
+
+			setCaption(ev.getCaption());
+			setTitle(ev.getCaption());
+
+			Set<Person> persons = ev.getPersons();
+			if (persons != null) {
+				selectItems(persons.toArray(new Person[0]));
+			} else {
+				selectItems(new Person[0]);
+			}
+		} else {
+			setCaption("");
+			setTitle("");
+		}
 	}
 
 }

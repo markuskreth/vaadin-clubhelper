@@ -71,6 +71,7 @@ public class CalendarComponent extends CustomComponent {
 		dataProvider = new ClubEventProvider();
 		calendar = new Calendar<>(dataProvider).withMonth(Month.from(LocalDateTime.now()));
 		calendar.setId("calendar.calendar");
+
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));

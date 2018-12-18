@@ -5,17 +5,27 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.GraphicsEnvironment;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 import org.hamcrest.Matchers;
+import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +41,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CalendarTaskRefresher;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -41,6 +52,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 public class VaadinClubhelperApplicationTests {
 
 	private static ChromeOptions options;
+
+	private static final AtomicInteger idCount = new AtomicInteger();
+
 	@LocalServerPort
 	int port;
 
@@ -49,6 +63,7 @@ public class VaadinClubhelperApplicationTests {
 
 	private WebDriver driver;
 	private ZonedDateTime now;
+	private WebDriverWait driverWait;
 
 	@BeforeAll
 	static void setupDriverConfiguration() {
@@ -60,28 +75,44 @@ public class VaadinClubhelperApplicationTests {
 		options = new ChromeOptions();
 		options.setHeadless(GraphicsEnvironment.isHeadless());
 
+		System.setProperty(CalendarTaskRefresher.SKIP_EVENT_UPDATE, Boolean.TRUE.toString());
 	}
 
 	@BeforeEach
 	void setUp() throws Exception {
 		now = ZonedDateTime.now();
 
+		insertDataIntoDatabase();
+
+		driver = new ChromeDriver(options);
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(5L, TimeUnit.SECONDS);
+		driver.manage().timeouts().pageLoadTimeout(15, TimeUnit.SECONDS);
+		driver.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
+		driverWait = new WebDriverWait(driver, 45L);
+	}
+
+	public void insertDataIntoDatabase() {
+		TypedQuery<GroupDef> query = em.createQuery("FROM groupDef", GroupDef.class);
+		if (!query.getResultList().isEmpty()) {
+			return;
+		}
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 
-		GroupDef g1 = new GroupDef();
-		g1.setName("ADMIN");
-		GroupDef g2 = new GroupDef();
-		g1.setName("Wettkämpfer");
-		GroupDef g3 = new GroupDef();
-		g1.setName("ACTIVE");
+		GroupDef adminGroup = new GroupDef();
+		adminGroup.setName("ADMIN");
+		GroupDef competitorGroup = new GroupDef();
+		competitorGroup.setName("Wettkämpfer");
+		GroupDef participantGroup = new GroupDef();
+		participantGroup.setName("ACTIVE");
 
-		em.persist(g1);
-		em.persist(g2);
-		em.persist(g3);
+		em.persist(adminGroup);
+		em.persist(competitorGroup);
+		em.persist(participantGroup);
 
-		ClubEvent ev = new ClubEventBuilder().withAllDay(true).withId("id").withCaption("caption")
-				.withDescription("description").withiCalUID("iCalUID").withLocation("location")
+		ClubEvent ev = new ClubEventBuilder().withAllDay(true).withId("id" + idCount.incrementAndGet())
+				.withCaption("caption").withDescription("description").withiCalUID("iCalUID").withLocation("location")
 				.withOrganizerDisplayName("mtv_allgemein").withStart(now).withEnd(now.plusDays(2)).build();
 
 		em.persist(ev);
@@ -98,26 +129,40 @@ public class VaadinClubhelperApplicationTests {
 			holidayEnd = now.plusDays(30);
 		}
 
-		ClubEvent holiday = new ClubEventBuilder().withAllDay(true).withId("holiday").withCaption("holiday")
-				.withDescription("holiday").withiCalUID("iCalUID").withLocation("")
+		ClubEvent holiday = new ClubEventBuilder().withAllDay(true).withId("holiday" + idCount.incrementAndGet())
+				.withCaption("holiday").withDescription("holiday").withiCalUID("iCalUID").withLocation("")
 				.withOrganizerDisplayName("Schulferien").withStart(holidayStart).withEnd(holidayEnd).build();
 
 		em.persist(holiday);
 
 		Person p = new Person();
 		p.setPrename("prename");
-		p.setSurname("surname");
+		p.setSurname("Allgroups");
 		p.setBirth(now.minusYears(13).toLocalDate());
-		p.setUsername("username");
+		p.setUsername("Allgroups");
 		p.setPassword("password");
+		p.setPersongroups(Arrays.asList(adminGroup, competitorGroup, participantGroup));
+		em.persist(p);
 
-		List<GroupDef> persongroups = Arrays.asList(g1, g2, g3);
-		p.setPersongroups(persongroups);
+		p = new Person();
+		p.setPrename("prename");
+		p.setSurname("participant");
+		p.setBirth(now.minusYears(10).toLocalDate());
+		p.setUsername("Allgroups");
+		p.setPassword("password");
+		p.setPersongroups(Arrays.asList(participantGroup));
+		em.persist(p);
+
+		p = new Person();
+		p.setPrename("prename");
+		p.setSurname("competitor");
+		p.setBirth(now.minusYears(10).toLocalDate());
+		p.setUsername("Allgroups");
+		p.setPassword("password");
+		p.setPersongroups(Arrays.asList(competitorGroup, participantGroup));
 		em.persist(p);
 
 		tx.commit();
-
-		driver = new ChromeDriver(options);
 	}
 
 	@AfterEach
@@ -125,15 +170,38 @@ public class VaadinClubhelperApplicationTests {
 		if (driver != null) {
 			driver.close();
 		}
+		org.hibernate.Session session = (Session) em;
+
+		session.doWork(connection -> {
+
+			String TABLE_NAME = "TABLE_NAME";
+			String[] TABLE_TYPES = { "TABLE" };
+			ResultSet tables = connection.getMetaData().getTables(null, null, null, TABLE_TYPES);
+			Set<String> tableNames = new HashSet<>();
+
+			while (tables.next()) {
+				tableNames.add(tables.getString(TABLE_NAME));
+			}
+			tables.close();
+			Statement stm = connection.createStatement();
+			while (tableNames.size() > 0) {
+				for (Iterator<String> iter = tableNames.iterator(); iter.hasNext();) {
+					String tableName = iter.next();
+					try {
+						stm.executeUpdate("DELETE FROM " + tableName);
+						iter.remove();
+					} catch (SQLException e) {
+						System.out.println("Must be later: " + tableName);
+					}
+				}
+			}
+		});
 	}
 
 	@Test
 	public void verifyMonthViewComplete() {
-		WebDriverWait driverWait = new WebDriverWait(driver, 45L);
 
-		driver.get("http://localhost:" + port);
-
-		driverWait.until(dr -> dr.findElements(By.id("calendar.month")).size() > 0);
+		loadApplication();
 
 		WebElement monthLabel = driver.findElement(By.id("calendar.month"));
 		String month = monthLabel.getText();
@@ -143,14 +211,46 @@ public class VaadinClubhelperApplicationTests {
 		List<WebElement> days = driver.findElements(By.className("v-calendar-day-number"));
 		assertThat(days, Matchers.hasSize(Matchers.greaterThanOrEqualTo(now.getMonth().length(true))));
 
-		WebElement today = findElementWithContent(String.valueOf(now.getDayOfMonth()));
-		WebElement parentElement = today.findElement(By.xpath("./.."));
-		WebElement todayContent = parentElement.findElement(By.className("v-calendar-event"));
+		WebElement today = driver.findElement(By.className("v-calendar-month-day-today"));
+		WebElement todayContent = today.findElement(By.className("v-calendar-event-start"));
 		assertEquals("caption", todayContent.getText());
 
 		List<WebElement> allEventElements = driver.findElements(By.className("v-calendar-event"));
 		assertThat(allEventElements, Matchers.hasSize(Matchers.greaterThanOrEqualTo(16)));
 
+	}
+
+	@Test
+	public void verifyPersonViewForEvent() {
+
+		loadApplication();
+
+		clickTodaysEvent();
+
+		By filterGroupId = By.id("person.filter.groups");
+		waitFor(filterGroupId);
+
+		WebElement titleElement = driver.findElement(By.id("event.title"));
+		assertEquals("caption", titleElement.getAttribute("value"));
+
+//		driver.findElement(By.id("person.grid")).findElement(By.tagName("table"));
+
+	}
+
+	public void clickTodaysEvent() {
+		WebElement today = findElementWithContent("caption");
+		today.click();
+	}
+
+	public void loadApplication() {
+		driver.get("http://localhost:" + port);
+		waitFor(By.id("calendar.month"));
+	}
+
+	public void waitFor(final By idMonth) {
+		driverWait.until(dr -> {
+			return dr.findElements(idMonth).size() > 0 && dr.findElements(idMonth).get(0).isDisplayed();
+		});
 	}
 
 	public WebElement findElementWithContent(String content) {
