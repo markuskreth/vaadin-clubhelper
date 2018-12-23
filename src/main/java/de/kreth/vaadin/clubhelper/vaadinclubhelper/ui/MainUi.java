@@ -79,7 +79,7 @@ public class MainUi extends UI {
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
 
-			final List<ClubEvent> events = eventBusiness.loadEvents(request);
+			final List<ClubEvent> events = eventBusiness.loadEvents();
 			LOGGER.info("Loaded events: {}", events);
 			final UI ui = calendar.getUI();
 			ui.access(() -> {

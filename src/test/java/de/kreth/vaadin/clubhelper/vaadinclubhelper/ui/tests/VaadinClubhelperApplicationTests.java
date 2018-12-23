@@ -6,18 +6,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.awt.GraphicsEnvironment;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.YearMonth;
 import java.time.ZonedDateTime;
 import java.time.format.TextStyle;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,6 +37,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CalendarTaskRefresher;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -174,28 +169,7 @@ public class VaadinClubhelperApplicationTests {
 		org.hibernate.Session session = (Session) em;
 
 		session.doWork(connection -> {
-
-			String TABLE_NAME = "TABLE_NAME";
-			String[] TABLE_TYPES = { "TABLE" };
-			ResultSet tables = connection.getMetaData().getTables(null, null, null, TABLE_TYPES);
-			Set<String> tableNames = new HashSet<>();
-
-			while (tables.next()) {
-				tableNames.add(tables.getString(TABLE_NAME));
-			}
-			tables.close();
-			Statement stm = connection.createStatement();
-			while (tableNames.size() > 0) {
-				for (Iterator<String> iter = tableNames.iterator(); iter.hasNext();) {
-					String tableName = iter.next();
-					try {
-						stm.executeUpdate("DELETE FROM " + tableName);
-						iter.remove();
-					} catch (SQLException e) {
-						System.out.println("Must be later: " + tableName);
-					}
-				}
-			}
+			AbstractDatabaseTest.cleanDatabase(connection, AbstractDatabaseTest.DB_TYPE.H2);
 		});
 	}
 

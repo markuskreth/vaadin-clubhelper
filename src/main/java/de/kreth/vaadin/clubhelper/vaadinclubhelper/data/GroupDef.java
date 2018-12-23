@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -29,11 +27,8 @@ public class GroupDef extends BaseEntity implements Serializable {
 
 	private String name;
 
-	@ManyToMany(fetch=FetchType.LAZY)
-	@JoinTable (name = "persongroup",
-	        joinColumns = { @JoinColumn(name = "group_id") }, 
-	        inverseJoinColumns = { @JoinColumn(name = "person_id") })
-	private List<Persongroup> persongroups;
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
+	private List<Person> persongroups;
 
 	public GroupDef() {
 	}
@@ -46,26 +41,20 @@ public class GroupDef extends BaseEntity implements Serializable {
 		this.name = name;
 	}
 
-	public List<Persongroup> getPersongroups() {
+	public List<Person> getPersongroups() {
 		return this.persongroups;
 	}
 
-	public void setPersongroups(List<Persongroup> persongroups) {
+	public void setPersongroups(List<Person> persongroups) {
 		this.persongroups = persongroups;
 	}
 
-	public Persongroup addPersongroup(Persongroup persongroup) {
-		getPersongroups().add(persongroup);
-		persongroup.setGroupDef(this);
-
-		return persongroup;
+	public void addPersongroup(Person persongroup) {
+		persongroups.add(persongroup);
 	}
 
-	public Persongroup removePersongroup(Persongroup persongroup) {
+	public void removePersongroup(Person persongroup) {
 		getPersongroups().remove(persongroup);
-		persongroup.setGroupDef(null);
-
-		return persongroup;
 	}
 
 	@Override

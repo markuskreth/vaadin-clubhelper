@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.springframework.stereotype.Component;
+
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Calendar;
 import com.google.api.services.calendar.model.CalendarList;
@@ -21,6 +23,7 @@ import com.google.api.services.calendar.model.EventAttendee;
 import de.kreth.clubhelperbackend.google.GoogleBaseAdapter;
 import de.kreth.clubhelperbackend.google.calendar.CalendarResource.CalendarKonfig;
 
+@Component
 public class CalendarAdapter extends GoogleBaseAdapter {
 
 	com.google.api.services.calendar.Calendar service;
@@ -40,9 +43,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 				try {
 					super.checkRefreshToken(serverName);
 					if (service == null) {
-						service = createBuilder()
-										.setApplicationName(APPLICATION_NAME)
-										.build();
+						service = createBuilder().setApplicationName(APPLICATION_NAME).build();
 					}
 				} finally {
 					lock.unlock();
@@ -54,13 +55,11 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			}
 		}
 		if (service == null) {
-			throw new IllegalStateException(
-					"Calendar Service not instanciated!");
+			throw new IllegalStateException("Calendar Service not instanciated!");
 		}
 	}
 
-	Calendar getCalendarBySummaryName(List<CalendarListEntry> items,
-			String calendarSummary) throws IOException {
+	Calendar getCalendarBySummaryName(List<CalendarListEntry> items, String calendarSummary) throws IOException {
 
 		String calendarId = null;
 		for (CalendarListEntry e : items) {
@@ -70,15 +69,13 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 			}
 		}
 		if (calendarId == null) {
-			throw new IllegalStateException(
-					"Calendar " + calendarSummary + " not found!");
+			throw new IllegalStateException("Calendar " + calendarSummary + " not found!");
 		}
 
 		return service.calendars().get(calendarId).execute();
 	}
 
-	public List<Event> getAllEvents(String serverName)
-			throws IOException, InterruptedException {
+	public List<Event> getAllEvents(String serverName) throws IOException, InterruptedException {
 
 		final List<Event> events = new ArrayList<>();
 
@@ -88,8 +85,7 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		List<CalendarKonfig> configs = res.getConfigs();
 		ExecutorService exec = Executors.newFixedThreadPool(configs.size());
 		for (CalendarKonfig c : configs) {
-			exec.execute(new FetchEventsRunner(items, c.getName(), events,
-					oldest, c.getColor()));
+			exec.execute(new FetchEventsRunner(items, c.getName(), events, oldest, c.getColor()));
 		}
 
 		exec.shutdown();
@@ -113,16 +109,14 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		return oldestCal.getTimeInMillis();
 	}
 
-	List<CalendarListEntry> getCalendarList(String serverName)
-			throws IOException {
+	List<CalendarListEntry> getCalendarList(String serverName) throws IOException {
 		checkRefreshToken(serverName);
 		CalendarList calendarList;
 		try {
 			calendarList = service.calendarList().list().execute();
 		} catch (IOException e) {
 			if (log.isWarnEnabled()) {
-				log.warn("Error fetching Calendar List, trying token refresh",
-						e);
+				log.warn("Error fetching Calendar List, trying token refresh", e);
 			}
 			refreshToken();
 			if (log.isInfoEnabled()) {
@@ -140,8 +134,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 		private List<CalendarListEntry> items;
 		private String summary;
 
-		private FetchEventsRunner(List<CalendarListEntry> items, String summary,
-				List<Event> events, long oldest, String colorClass) {
+		private FetchEventsRunner(List<CalendarListEntry> items, String summary, List<Event> events, long oldest,
+				String colorClass) {
 			this.events = events;
 			this.oldest = oldest;
 			this.items = items;
@@ -156,8 +150,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 				log.debug("Fetching events of calendar \"{}\"", summary);
 				Calendar calendar = getCalendarBySummaryName(items, summary);
 				DateTime timeMin = new DateTime(oldest);
-				List<Event> eventItems = service.events().list(calendar.getId())
-						.setTimeMin(timeMin).execute().getItems();
+				List<Event> eventItems = service.events().list(calendar.getId()).setTimeMin(timeMin).execute()
+						.getItems();
 				eventItems.forEach(item -> item.set("colorClass", colorClass));
 				events.addAll(eventItems);
 				log.debug("Added {} Events for \"{}\"", eventItems.size(), summary);
@@ -169,9 +163,8 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 	}
 
 	static Event createDefaultEvent(String summary) {
-		Event ev = new Event().setGuestsCanInviteOthers(false)
-				.setGuestsCanModify(false).setGuestsCanSeeOtherGuests(true)
-				.setSummary(summary);
+		Event ev = new Event().setGuestsCanInviteOthers(false).setGuestsCanModify(false)
+				.setGuestsCanSeeOtherGuests(true).setSummary(summary);
 		List<EventAttendee> attendees = new ArrayList<>();
 		ev.setAttendees(attendees);
 		return ev;

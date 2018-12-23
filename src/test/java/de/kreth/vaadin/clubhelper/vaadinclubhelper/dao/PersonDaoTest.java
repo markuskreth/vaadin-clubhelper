@@ -17,10 +17,8 @@ public class PersonDaoTest extends AbstractDatabaseTest {
 	private PersonDaoImpl personDao;
 	private Person person;
 
-	@Override
 	@BeforeEach
 	public void setUp() throws Exception {
-		super.setUp();
 		personDao = new PersonDaoImpl();
 		personDao.em = session;
 		person = new Person();

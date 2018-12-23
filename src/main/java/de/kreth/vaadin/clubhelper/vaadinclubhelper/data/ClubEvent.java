@@ -6,6 +6,7 @@ import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Transient;
@@ -44,6 +45,7 @@ public class ClubEvent extends BasicItem {
 		this.organizerDisplayName = organizerDisplayName;
 	}
 
+	@Override
 	public String getCaption() {
 		return super.getCaption();
 	}
@@ -88,24 +90,37 @@ public class ClubEvent extends BasicItem {
 	public Set<Person> getPersons() {
 		return persons;
 	}
-	
+
 	public void setPersons(Set<Person> persons) {
 		this.persons = persons;
 	}
-	
+
+	public void add(Person p) {
+		if (this.persons == null) {
+			this.persons = new HashSet<>();
+		}
+		if (this.persons.contains(p)) {
+			return;
+		}
+		this.persons.add(p);
+		p.add(this);
+	}
+
+	public void remove(Person person) {
+		persons.remove(person);
+		person.remove(this);
+	}
+
 	@Transient
 	public String toDisplayString() {
-		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart()
-				+ ", location=" + location + "]";
+		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart() + ", location=" + location + "]";
 	}
 
 	@Override
 	public String toString() {
 		return "ClubEvent [id=" + id + ", getCaption()=" + getCaption() + ", iCalUID=" + iCalUID + ", location="
-				+ location + ", organizerDisplayName=" + organizerDisplayName
-				+ ", getDescription()="
-				+ getDescription() + ", getEnd()=" + getEnd() + ", getStart()="
-				+ getStart() + ", isAllDay()=" + isAllDay() + "]";
+				+ location + ", organizerDisplayName=" + organizerDisplayName + ", getDescription()=" + getDescription()
+				+ ", getEnd()=" + getEnd() + ", getStart()=" + getStart() + ", isAllDay()=" + isAllDay() + "]";
 	}
 
 	public static ClubEvent parse(Event ev) {
@@ -204,14 +219,11 @@ public class ClubEvent extends BasicItem {
 		return null;
 	}
 
-	public static Date adjustExcludedEndDate(
-			com.google.api.services.calendar.model.Event e) {
+	public static Date adjustExcludedEndDate(com.google.api.services.calendar.model.Event e) {
 		if (e.isEndTimeUnspecified() == false) {
 			EventDateTime end = e.getEnd();
 			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTimeInMillis(end.getDate() != null
-					? end.getDate().getValue()
-					: end.getDateTime().getValue());
+			calendar.setTimeInMillis(end.getDate() != null ? end.getDate().getValue() : end.getDateTime().getValue());
 			if (startIsDateOnly(e)) {
 				calendar.add(Calendar.DAY_OF_MONTH, -1);
 			}
@@ -220,15 +232,13 @@ public class ClubEvent extends BasicItem {
 		return null;
 	}
 
-	public static boolean startIsDateOnly(
-			com.google.api.services.calendar.model.Event e) {
+	public static boolean startIsDateOnly(com.google.api.services.calendar.model.Event e) {
 
 		EventDateTime start = e.getStart();
 		if (start == null) {
 			start = e.getOriginalStartTime();
 		}
-		return (start.getDate() != null || (start.getDateTime() != null
-				&& start.getDateTime().isDateOnly()));
+		return (start.getDate() != null || (start.getDateTime() != null && start.getDateTime().isDateOnly()));
 	}
 
 }

@@ -1,8 +1,18 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.EntityTransaction;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
@@ -19,11 +29,11 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 
 public abstract class AbstractDatabaseTest {
 
-	protected SessionFactory sessionFactory;
-	protected Session session;
+	protected static SessionFactory sessionFactory;
+	protected static Session session;
 
-	@BeforeEach
-	public void setUp() throws Exception {
+	@BeforeAll
+	public static void setUpDatabase() throws Exception {
 
 		// setup the session factory
 		Configuration configuration = createConfig();
@@ -33,7 +43,7 @@ public abstract class AbstractDatabaseTest {
 
 	}
 
-	public Configuration createConfig() {
+	public static Configuration createConfig() {
 		Configuration configuration = new Configuration();
 		configuration.addAnnotatedClass(Adress.class);
 		configuration.addAnnotatedClass(Attendance.class);
@@ -46,7 +56,7 @@ public abstract class AbstractDatabaseTest {
 		configuration.addAnnotatedClass(Startpaesse.class);
 		configuration.addAnnotatedClass(StartpassStartrechte.class);
 		configuration.addAnnotatedClass(Version.class);
-		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
+		configuration.addInputStream(AbstractDatabaseTest.class.getResourceAsStream("/schema/ClubEvent.hbm.xml"));
 
 		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
@@ -55,4 +65,72 @@ public abstract class AbstractDatabaseTest {
 		return configuration;
 	}
 
+	public enum DB_TYPE {
+		MYSQL("SET @@foreign_key_checks = 0", "SET @@foreign_key_checks = 1"),
+		H2("SET REFERENTIAL_INTEGRITY FALSE", "SET REFERENTIAL_INTEGRITY TRUE");
+
+		private DB_TYPE(String disableReferentialIntegrety, String enableReferentialIntegrety) {
+			this.disableReferentialIntegrety = disableReferentialIntegrety;
+			this.enableReferentialIntegrety = enableReferentialIntegrety;
+		}
+
+		final String disableReferentialIntegrety;
+		final String enableReferentialIntegrety;
+	}
+
+	@BeforeEach
+	public void cleanH2Database() {
+		session.doWork(conn -> {
+			AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2);
+		});
+	}
+
+	public static void cleanDatabase(Connection connection, DB_TYPE type) throws SQLException {
+
+		String TABLE_NAME = "TABLE_NAME";
+		String[] TABLE_TYPES = { "TABLE" };
+		Set<String> tableNames = new HashSet<>();
+
+		try (ResultSet tables = connection.getMetaData().getTables(null, null, null, TABLE_TYPES)) {
+			while (tables.next()) {
+				tableNames.add(tables.getString(TABLE_NAME));
+			}
+		}
+
+		try (Statement stm = connection.createStatement()) {
+			stm.execute(type.disableReferentialIntegrety);
+			try {
+				for (String tableName : tableNames) {
+					try {
+						stm.executeUpdate("TRUNCATE TABLE " + tableName);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				}
+			} finally {
+				stm.execute(type.enableReferentialIntegrety);
+			}
+		}
+
+		if (connection.getAutoCommit() == false) {
+			connection.commit();
+		}
+	}
+
+	/**
+	 * executes the given runnable within a jpa Transaction.
+	 * 
+	 * @param r
+	 */
+	protected void transactional(Runnable r) {
+		EntityTransaction tx = session.getTransaction();
+		tx.begin();
+		try {
+			r.run();
+			tx.commit();
+		} catch (Exception e) {
+			tx.rollback();
+			throw e;
+		}
+	}
 }

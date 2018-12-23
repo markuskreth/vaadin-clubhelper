@@ -1,5 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.ConstraintViolationException;
@@ -11,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
@@ -25,17 +29,18 @@ public class CalendarTaskRefresher {
 
 	@Autowired
 	ClubEventDao dao;
-
 	@Autowired
-	EventBusiness eventBusiness;
+	CalendarAdapter calendarAdapter;
 
 	@Scheduled(fixedDelay = RATE)
 	public void synchronizeCalendarTasks() {
 		if (skip) {
 			return;
 		}
-		List<ClubEvent> events = eventBusiness.loadEvents(null, true);
-		for (ClubEvent e : events) {
+
+		List<ClubEvent> list = loadEventsFromGoogle();
+
+		for (ClubEvent e : list) {
 			if (dao.get(e.getId()) == null) {
 				try {
 					log.trace("try inserting {}", e);
@@ -52,11 +57,42 @@ public class CalendarTaskRefresher {
 		}
 	}
 
+	public List<ClubEvent> loadEventsFromGoogle() {
+
+		log.debug("Loading events from Google Calendar");
+
+		List<ClubEvent> list = new ArrayList<>();
+
+		try (FileExporter ex = FileExporter.builder(log).setFileName("google_events.json").setAppend(false).disable()
+				.build()) {
+
+			String remoteHost = "localhost";
+
+			List<com.google.api.services.calendar.model.Event> events = calendarAdapter.getAllEvents(remoteHost);
+
+			for (com.google.api.services.calendar.model.Event ev : events) {
+				ex.writeLine(ev.toPrettyString());
+
+				if ("cancelled".equals(ev.getStatus())) {
+					log.debug("Cancelled: {}", ev.getSummary());
+				} else {
+					list.add(ClubEvent.parse(ev));
+				}
+			}
+
+		} catch (GeneralSecurityException | IOException | InterruptedException e) {
+			log.error("Error loading events from google.", e);
+		} catch (Exception e1) {
+			log.warn("Error closing " + FileExporter.class.getSimpleName(), e1);
+		}
+		return list;
+	}
+
 	public void setDao(ClubEventDao dao) {
 		this.dao = dao;
 	}
 
-	public void setEventBusiness(EventBusiness eventBusiness) {
-		this.eventBusiness = eventBusiness;
+	public void setCalendarAdapter(CalendarAdapter calendarAdapter) {
+		this.calendarAdapter = calendarAdapter;
 	}
 }

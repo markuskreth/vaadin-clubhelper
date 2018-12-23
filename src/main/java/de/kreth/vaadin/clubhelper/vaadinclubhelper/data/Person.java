@@ -2,11 +2,20 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the person database table.
@@ -45,10 +54,9 @@ public class Person extends BaseEntity implements Serializable {
 	private List<Contact> contacts;
 
 	// bi-directional many-to-many association to Persongroup
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable (name = "persongroup", 
-	        joinColumns = { @JoinColumn(name = "person_id") }, 
-	        inverseJoinColumns = { @JoinColumn(name = "group_id") })
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "persongroup", joinColumns = { @JoinColumn(name = "person_id") }, inverseJoinColumns = {
+			@JoinColumn(name = "group_id") })
 	private List<GroupDef> groups;
 
 	// bi-directional many-to-one association to Relative
@@ -63,14 +71,9 @@ public class Person extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "person")
 	private List<Startpaesse> startpaesses;
 
-	@ManyToMany(cascade = { CascadeType.MERGE,  CascadeType.REFRESH, CascadeType.REMOVE,  CascadeType.DETACH }, fetch = FetchType.LAZY)
-	@JoinTable(
-	        name = "clubevent_has_person", 
-	        joinColumns = { @JoinColumn(name = "person_id") }, 
-	        inverseJoinColumns = { @JoinColumn(name = "clubevent_id") }
-	    )
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "persons")
 	private Set<ClubEvent> events;
-	
+
 	public LocalDate getBirth() {
 		return birth;
 	}
@@ -109,6 +112,37 @@ public class Person extends BaseEntity implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public List<GroupDef> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<GroupDef> groups) {
+		this.groups = groups;
+	}
+
+	public void add(GroupDef group) {
+
+	}
+
+	public Set<ClubEvent> getEvents() {
+		return events;
+	}
+
+	public void setEvents(Set<ClubEvent> events) {
+		this.events = events;
+	}
+
+	public void add(ClubEvent ev) {
+		if (this.events == null) {
+			this.events = new HashSet<>();
+		}
+		this.events.add(ev);
+	}
+
+	public void remove(ClubEvent clubEvent) {
+		events.remove(clubEvent);
 	}
 
 	public List<Adress> getAdresses() {

@@ -27,9 +27,6 @@ public class ClubEventDaoTest extends AbstractDatabaseTest {
 	@Autowired
 	private ClubEventDao dao;
 
-//	@Autowired
-//	private TestEntityManager entityManager; 
-
 	@Test
 	public void storeEvent() {
 		dao.save(creteEvent());

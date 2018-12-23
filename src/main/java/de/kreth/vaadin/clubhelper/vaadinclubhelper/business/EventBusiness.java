@@ -1,9 +1,5 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -12,9 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.vaadin.server.VaadinRequest;
-
-import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -23,79 +16,40 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 public class EventBusiness {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	ClubEventDao dao;
 
 	private ClubEvent current;
 
-	public List<ClubEvent> loadEvents(VaadinRequest request) {
-		return loadEvents(request, false);
-	}
+	public synchronized List<ClubEvent> loadEvents() {
 
-	public synchronized List<ClubEvent> loadEvents(VaadinRequest request,
-			boolean forceRefresh) {
-		
-		if (forceRefresh == false) {
-			List<ClubEvent> list = dao.listAll();
-			log.trace("Returning events from database: {}", list);
-			return list;
-		}
+		List<ClubEvent> list = dao.listAll();
+		log.trace("Returning events from database: {}", list);
+		return list;
 
-		log.debug(
-				"Loading events from Google Calendar, forceRefresh={}",
-				forceRefresh);
-
-		List<ClubEvent> list = new ArrayList<>();
-
-		try (FileExporter ex = FileExporter.builder(log).setFileName("google_events.json").setAppend(false).disable().build()) {
-
-			String remoteHost = "localhost";
-			CalendarAdapter adapter = new CalendarAdapter();
-			List<com.google.api.services.calendar.model.Event> events = adapter
-					.getAllEvents(remoteHost);
-
-			for (com.google.api.services.calendar.model.Event ev : events) {
-				ex.writeLine(ev.toPrettyString());
-
-				if ("cancelled".equals(ev.getStatus())) {
-					log.debug("Cancelled: {}", ev.getSummary());
-				} else {
-					list.add(ClubEvent.parse(ev));
-				}
-			}
-			
-		} catch (GeneralSecurityException | IOException
-				| InterruptedException e) {
-			log.error("Error loading events from google.", e);
-		} catch (Exception e1) {
-			log.warn("Error closing " + FileExporter.class.getSimpleName(), e1);
-		}
-
-		return Collections.unmodifiableList(list);
 	}
 
 	public ClubEvent getCurrent() {
 		return current;
 	}
-	
+
 	public void setSelected(ClubEvent ev) {
 		this.current = ev;
 	}
 
 	public void changePersons(Set<Person> selected) {
 		if (current != null) {
-
-			Set<Person> store = current.getPersons();
-			if (store != null) {
-				log.debug("adding to existing person set.");
-				store.addAll(selected);			
-			} else {
-				log.debug("setting persons to event without person set.");
-				current.setPersons(selected);
+			for (Person p : selected) {
+				current.add(p);
 			}
-			dao.update(current);
-			log.info("Updated {} with participants: {}", current, selected);
+			try {
+				dao.update(current);
+				log.info("Updated {}, {} with participants: {}", current.getCaption(), current.getStart(), selected);
+			} catch (Exception e) {
+				log.error("Unable to update Event {}, {}, {} with participants: {}", current.getId(),
+						current.getCaption(), current.getStart(), selected, e);
+			}
 		}
 	}
 }

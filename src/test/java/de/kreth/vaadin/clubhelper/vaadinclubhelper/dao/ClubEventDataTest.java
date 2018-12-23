@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -16,11 +14,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.IdentifierLoadAccess;
-import org.hibernate.Transaction;
-import org.hibernate.jdbc.Work;
 import org.hibernate.query.Query;
 import org.junit.jupiter.api.Test;
 
@@ -31,32 +27,33 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 public class ClubEventDataTest extends AbstractDatabaseTest {
 
+	private static final AtomicInteger counter = new AtomicInteger();
+
 	public Person testInsertPerson() {
 		Person p = new Person();
 		p.setPrename("prename");
 		p.setSurname("surname");
 		p.setBirth(LocalDate.now());
-		Transaction tx = session.beginTransaction();
-		session.save(p);
-		tx.commit();
+
+		transactional(() -> session.save(p));
 		return p;
 	}
 
 	public List<Person> insertPersons(int count) {
 
-		List<Person> inserted = new ArrayList<>();
+		final List<Person> inserted = new ArrayList<>();
 
-		Transaction tx = session.beginTransaction();
-		for (int i = 0; i < count; i++) {
+		transactional(() -> {
+			for (int i = 0; i < count; i++) {
 
-			Person p = new Person();
-			p.setPrename("prename_" + i);
-			p.setSurname("surname_" + i);
-			p.setBirth(LocalDate.now());
-			session.save(p);
-			inserted.add(p);
-		}
-		tx.commit();
+				Person p = new Person();
+				p.setPrename("prename_" + i);
+				p.setSurname("surname_" + i);
+				p.setBirth(LocalDate.now());
+				session.save(p);
+				inserted.add(p);
+			}
+		});
 		for (Person p : inserted) {
 			assertTrue(p.getId() > 0, "not saved: " + p);
 		}
@@ -64,22 +61,10 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 	}
 
 	@Test
-	public void testInsertEvent() {
+	public void testSaveAndSelectEvent() {
 		ClubEvent ev = creteEvent();
 
-		Transaction tx = session.beginTransaction();
-		session.save(ev);
-		tx.commit();
-	}
-
-	@Test
-	public void testSelectEvents() {
-		ClubEvent ev = creteEvent();
-
-		Transaction tx = session.beginTransaction();
-		session.save(ev);
-		tx.commit();
-
+		transactional(() -> session.save(ev));
 		Query<ClubEvent> query = session.createNamedQuery("ClubEvent.findAll", ClubEvent.class);
 		List<ClubEvent> result = query.list();
 		assertEquals(1, result.size());
@@ -98,9 +83,7 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		}
 		persons.add(person);
 
-		Transaction tx = session.beginTransaction();
-		session.save(ev);
-		tx.commit();
+		transactional(() -> session.save(ev));
 
 		List<ClubeventHasPerson> loadEventPersons = loadEventPersons();
 		assertFalse(loadEventPersons.isEmpty());
@@ -111,14 +94,12 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 	}
 
 	private List<ClubeventHasPerson> loadEventPersons() {
-		final AtomicBoolean finishedWork = new AtomicBoolean(false);
-		List<ClubeventHasPerson> link = new ArrayList<>();
 
-		session.doWork(new Work() {
+		return session.doReturningWork(conn -> {
 
-			@Override
-			public void execute(Connection connection) throws SQLException {
-				Statement stm = connection.createStatement();
+			List<ClubeventHasPerson> link = new ArrayList<>();
+
+			try (Statement stm = conn.createStatement()) {
 				ResultSet rs = stm.executeQuery("select * from clubevent_has_person");
 				while (rs.next()) {
 					ClubeventHasPerson ep = new ClubeventHasPerson();
@@ -127,21 +108,18 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 					ep.setPersonId(rs.getInt("person_id"));
 					link.add(ep);
 				}
-
-				finishedWork.set(true);
 			}
+
+			return link;
 		});
-		assertTrue(finishedWork.get());
-		return link;
+
 	}
 
 	@Test
 	public void changeEventsPersons() {
 		ClubEvent ev = creteEvent();
 
-		Transaction tx = session.beginTransaction();
-		session.save(ev);
-		tx.commit();
+		transactional(() -> session.save(ev));
 
 		Person person = testInsertPerson();
 
@@ -151,9 +129,7 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		person2.setSurname(person.getSurname() + "_2");
 		person2.setBirth(LocalDate.now());
 
-		tx = session.beginTransaction();
-		session.save(person2);
-		tx.commit();
+		transactional(() -> session.save(person2));
 
 		IdentifierLoadAccess<ClubEvent> idLoadAccess = session.byId(ClubEvent.class);
 		ClubEvent loaded = idLoadAccess.load(ev.getId());
@@ -163,14 +139,11 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		}
 
 		loaded.getPersons().add(person);
-		tx = session.beginTransaction();
-		session.update(ev);
-		tx.commit();
+		transactional(() -> session.update(ev));
 
 		loaded.getPersons().add(person2);
-		tx = session.beginTransaction();
-		session.update(ev);
-		tx.commit();
+		transactional(() -> session.update(ev));
+
 		List<ClubeventHasPerson> entries = loadEventPersons();
 		assertEquals(2, entries.size());
 	}
@@ -178,41 +151,34 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 	@Test
 	public void testChangeEventParticipantsRapidly() {
 
-		ClubEvent ev = creteEvent();
-		ev.setPersons(new HashSet<>());
-		Transaction tx = session.beginTransaction();
-		session.save(ev);
-		tx.commit();
+		final ClubEvent created = creteEvent();
+		transactional(() -> {
+			session.save(created);
+		});
 
-		ev = session.byId(ClubEvent.class).load(ev.getId());
+		final ClubEvent ev = session.byId(ClubEvent.class).load(created.getId());
 		List<Person> persons = insertPersons(6);
 		for (Person p : persons) {
-			ev.getPersons().add(p);
-			tx = session.beginTransaction();
-			session.merge(ev);
-			tx.commit();
+			ev.add(p);
+			transactional(() -> session.merge(ev));
 		}
-		ev.getPersons().remove(persons.get(2));
-		tx = session.beginTransaction();
-		session.merge(ev);
-		tx.commit();
-		ev.getPersons().remove(persons.get(4));
-		tx = session.beginTransaction();
-		session.merge(ev);
-		tx.commit();
+		ev.remove(persons.get(2));
+		transactional(() -> session.merge(ev));
+
+		ev.remove(persons.get(4));
+		transactional(() -> session.merge(ev));
 
 		ev.getPersons().add(persons.get(2));
 		ev.getPersons().add(persons.get(4));
-		tx = session.beginTransaction();
-		session.merge(ev);
-		tx.commit();
+		transactional(() -> session.merge(ev));
+
 		List<ClubeventHasPerson> result = loadEventPersons();
 		assertEquals(6, result.size());
 	}
 
 	private ClubEvent creteEvent() {
-		ClubEvent ev = ClubEventBuilder.builder().withId("id").withAllDay(true).withCaption("caption")
-				.withDescription("description")
+		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + counter.getAndIncrement()).withAllDay(true)
+				.withCaption("caption").withDescription("description")
 				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))
 				.withEnd(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault())).withiCalUID("iCalUID")
 				.withOrganizerDisplayName("organizerDisplayName").build();
