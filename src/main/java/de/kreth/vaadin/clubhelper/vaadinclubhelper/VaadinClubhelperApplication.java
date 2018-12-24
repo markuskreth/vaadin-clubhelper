@@ -6,7 +6,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "de.kreth.vaadin.clubhelper", "de.kreth.clubhelperbackend" })
 @EnableScheduling
 public class VaadinClubhelperApplication extends SpringBootServletInitializer {
 

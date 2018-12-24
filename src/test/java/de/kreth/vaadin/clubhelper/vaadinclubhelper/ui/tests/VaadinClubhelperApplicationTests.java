@@ -55,7 +55,7 @@ public class VaadinClubhelperApplicationTests {
 	int port;
 
 	@Autowired
-	EntityManager em;
+	EntityManager entityManager;
 
 	private WebDriver driver;
 	private ZonedDateTime now;
@@ -89,11 +89,11 @@ public class VaadinClubhelperApplicationTests {
 	}
 
 	public void insertDataIntoDatabase() {
-		TypedQuery<GroupDef> query = em.createQuery("FROM groupDef", GroupDef.class);
+		TypedQuery<GroupDef> query = entityManager.createQuery("FROM groupDef", GroupDef.class);
 		if (!query.getResultList().isEmpty()) {
 			return;
 		}
-		EntityTransaction tx = em.getTransaction();
+		EntityTransaction tx = entityManager.getTransaction();
 		tx.begin();
 
 		GroupDef adminGroup = new GroupDef();
@@ -103,15 +103,15 @@ public class VaadinClubhelperApplicationTests {
 		GroupDef participantGroup = new GroupDef();
 		participantGroup.setName("ACTIVE");
 
-		em.persist(adminGroup);
-		em.persist(competitorGroup);
-		em.persist(participantGroup);
+		entityManager.persist(adminGroup);
+		entityManager.persist(competitorGroup);
+		entityManager.persist(participantGroup);
 
 		ClubEvent ev = new ClubEventBuilder().withAllDay(true).withId("id" + idCount.incrementAndGet())
 				.withCaption("caption").withDescription("description").withiCalUID("iCalUID").withLocation("location")
 				.withOrganizerDisplayName("mtv_allgemein").withStart(now).withEnd(now.plusDays(2)).build();
 
-		em.persist(ev);
+		entityManager.persist(ev);
 
 		ZonedDateTime holidayStart;
 		ZonedDateTime holidayEnd;
@@ -129,7 +129,7 @@ public class VaadinClubhelperApplicationTests {
 				.withCaption("holiday").withDescription("holiday").withiCalUID("iCalUID").withLocation("")
 				.withOrganizerDisplayName("Schulferien").withStart(holidayStart).withEnd(holidayEnd).build();
 
-		em.persist(holiday);
+		entityManager.persist(holiday);
 
 		Person p = new Person();
 		p.setPrename("prename");
@@ -138,7 +138,7 @@ public class VaadinClubhelperApplicationTests {
 		p.setUsername("Allgroups");
 		p.setPassword("password");
 		p.setPersongroups(Arrays.asList(adminGroup, competitorGroup, participantGroup));
-		em.persist(p);
+		entityManager.persist(p);
 
 		p = new Person();
 		p.setPrename("prename");
@@ -147,7 +147,7 @@ public class VaadinClubhelperApplicationTests {
 		p.setUsername("participant");
 		p.setPassword("password");
 		p.setPersongroups(Arrays.asList(participantGroup));
-		em.persist(p);
+		entityManager.persist(p);
 
 		p = new Person();
 		p.setPrename("prename");
@@ -156,7 +156,7 @@ public class VaadinClubhelperApplicationTests {
 		p.setUsername("competitor");
 		p.setPassword("password");
 		p.setPersongroups(Arrays.asList(competitorGroup, participantGroup));
-		em.persist(p);
+		entityManager.persist(p);
 
 		tx.commit();
 	}
@@ -166,7 +166,7 @@ public class VaadinClubhelperApplicationTests {
 		if (driver != null) {
 			driver.close();
 		}
-		org.hibernate.Session session = (Session) em;
+		org.hibernate.Session session = (Session) entityManager;
 
 		session.doWork(connection -> {
 			AbstractDatabaseTest.cleanDatabase(connection, AbstractDatabaseTest.DB_TYPE.H2);

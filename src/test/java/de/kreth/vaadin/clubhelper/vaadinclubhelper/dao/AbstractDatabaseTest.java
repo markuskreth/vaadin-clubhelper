@@ -1,11 +1,19 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.persistence.EntityTransaction;
 
@@ -15,19 +23,15 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Attendance;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.DeletedEntry;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
+import de.kreth.vaadin.clubhelper.HibernateHolder;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relative;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpaesse;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 
 public abstract class AbstractDatabaseTest {
+
+	private static final AtomicInteger counter = new AtomicInteger();
 
 	protected static SessionFactory sessionFactory;
 	protected static Session session;
@@ -36,33 +40,11 @@ public abstract class AbstractDatabaseTest {
 	public static void setUpDatabase() throws Exception {
 
 		// setup the session factory
-		Configuration configuration = createConfig();
+		Configuration configuration = HibernateHolder.configuration();
 
 		sessionFactory = configuration.buildSessionFactory();
 		session = sessionFactory.openSession();
 
-	}
-
-	public static Configuration createConfig() {
-		Configuration configuration = new Configuration();
-		configuration.addAnnotatedClass(Adress.class);
-		configuration.addAnnotatedClass(Attendance.class);
-		configuration.addAnnotatedClass(Contact.class);
-		configuration.addAnnotatedClass(DeletedEntry.class);
-		configuration.addAnnotatedClass(GroupDef.class);
-		configuration.addAnnotatedClass(Person.class);
-		configuration.addAnnotatedClass(Persongroup.class);
-		configuration.addAnnotatedClass(Relative.class);
-		configuration.addAnnotatedClass(Startpaesse.class);
-		configuration.addAnnotatedClass(StartpassStartrechte.class);
-		configuration.addAnnotatedClass(Version.class);
-		configuration.addInputStream(AbstractDatabaseTest.class.getResourceAsStream("/schema/ClubEvent.hbm.xml"));
-
-		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-		configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-		configuration.setProperty("hibernate.connection.url", "jdbc:h2:mem:test");
-		configuration.setProperty("hibernate.hbm2ddl.auto", "create");
-		return configuration;
 	}
 
 	public enum DB_TYPE {
@@ -133,4 +115,67 @@ public abstract class AbstractDatabaseTest {
 			throw e;
 		}
 	}
+
+	public Person testInsertPerson() {
+		Person p = new Person();
+		p.setPrename("prename");
+		p.setSurname("surname");
+		p.setBirth(LocalDate.now());
+
+		transactional(() -> session.save(p));
+		return p;
+	}
+
+	public List<Person> insertPersons(int count) {
+
+		final List<Person> inserted = new ArrayList<>();
+
+		transactional(() -> {
+			for (int i = 0; i < count; i++) {
+
+				Person p = new Person();
+				p.setPrename("prename_" + i);
+				p.setSurname("surname_" + i);
+				p.setBirth(LocalDate.now());
+				session.save(p);
+				inserted.add(p);
+			}
+		});
+		for (Person p : inserted) {
+			assertTrue(p.getId() > 0, "not saved: " + p);
+		}
+		return inserted;
+	}
+
+	public ClubEvent creteEvent() {
+		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + counter.getAndIncrement()).withAllDay(true)
+				.withCaption("caption").withDescription("description")
+				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))
+				.withEnd(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault())).withiCalUID("iCalUID")
+				.withOrganizerDisplayName("organizerDisplayName").build();
+		return ev;
+	}
+
+	public List<ClubeventHasPerson> loadEventPersons() {
+
+		return session.doReturningWork(conn -> {
+
+			List<ClubeventHasPerson> link = new ArrayList<>();
+
+			try (Statement stm = conn.createStatement()) {
+				ResultSet rs = stm.executeQuery("select * from clubevent_has_person");
+				while (rs.next()) {
+					ClubeventHasPerson ep = new ClubeventHasPerson();
+
+					ep.setClubEventId(rs.getString("clubevent_id"));
+					ep.setPersonId(rs.getInt("person_id"));
+					link.add(ep);
+				}
+			}
+
+			return link;
+		});
+
+	}
+
 }

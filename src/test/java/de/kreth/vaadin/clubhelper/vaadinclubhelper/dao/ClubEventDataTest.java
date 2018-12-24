@@ -3,62 +3,21 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hibernate.IdentifierLoadAccess;
 import org.hibernate.query.Query;
 import org.junit.jupiter.api.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 public class ClubEventDataTest extends AbstractDatabaseTest {
-
-	private static final AtomicInteger counter = new AtomicInteger();
-
-	public Person testInsertPerson() {
-		Person p = new Person();
-		p.setPrename("prename");
-		p.setSurname("surname");
-		p.setBirth(LocalDate.now());
-
-		transactional(() -> session.save(p));
-		return p;
-	}
-
-	public List<Person> insertPersons(int count) {
-
-		final List<Person> inserted = new ArrayList<>();
-
-		transactional(() -> {
-			for (int i = 0; i < count; i++) {
-
-				Person p = new Person();
-				p.setPrename("prename_" + i);
-				p.setSurname("surname_" + i);
-				p.setBirth(LocalDate.now());
-				session.save(p);
-				inserted.add(p);
-			}
-		});
-		for (Person p : inserted) {
-			assertTrue(p.getId() > 0, "not saved: " + p);
-		}
-		return inserted;
-	}
 
 	@Test
 	public void testSaveAndSelectEvent() {
@@ -93,28 +52,6 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 
 	}
 
-	private List<ClubeventHasPerson> loadEventPersons() {
-
-		return session.doReturningWork(conn -> {
-
-			List<ClubeventHasPerson> link = new ArrayList<>();
-
-			try (Statement stm = conn.createStatement()) {
-				ResultSet rs = stm.executeQuery("select * from clubevent_has_person");
-				while (rs.next()) {
-					ClubeventHasPerson ep = new ClubeventHasPerson();
-
-					ep.setClubEventId(rs.getString("clubevent_id"));
-					ep.setPersonId(rs.getInt("person_id"));
-					link.add(ep);
-				}
-			}
-
-			return link;
-		});
-
-	}
-
 	@Test
 	public void changeEventsPersons() {
 		ClubEvent ev = creteEvent();
@@ -138,10 +75,10 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 			loaded.setPersons(new HashSet<>());
 		}
 
-		loaded.getPersons().add(person);
+		loaded.add(person);
 		transactional(() -> session.update(ev));
 
-		loaded.getPersons().add(person2);
+		loaded.add(person2);
 		transactional(() -> session.update(ev));
 
 		List<ClubeventHasPerson> entries = loadEventPersons();
@@ -176,12 +113,4 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		assertEquals(6, result.size());
 	}
 
-	private ClubEvent creteEvent() {
-		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + counter.getAndIncrement()).withAllDay(true)
-				.withCaption("caption").withDescription("description")
-				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))
-				.withEnd(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault())).withiCalUID("iCalUID")
-				.withOrganizerDisplayName("organizerDisplayName").build();
-		return ev;
-	}
 }
