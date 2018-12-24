@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import javax.persistence.EntityTransaction;
 
@@ -105,10 +106,15 @@ public abstract class AbstractDatabaseTest {
 	 * @param r
 	 */
 	protected void transactional(Runnable r) {
+		transactional(session -> r.run());
+	}
+
+	protected void transactional(Consumer<Session> r) {
+
 		EntityTransaction tx = session.getTransaction();
 		tx.begin();
 		try {
-			r.run();
+			r.accept(session);
 			tx.commit();
 		} catch (Exception e) {
 			tx.rollback();

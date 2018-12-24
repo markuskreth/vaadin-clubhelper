@@ -145,13 +145,11 @@ public class ClubEvent extends BasicItem {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 17;
 		result = prime * result + ((iCalUID == null) ? 0 : iCalUID.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((location == null) ? 0 : location.hashCode());
 		result = prime * result + ((organizerDisplayName == null) ? 0 : organizerDisplayName.hashCode());
-		result = prime * result + ((persons == null) ? 0 : persons.hashCode());
-		result = prime * result + ((getStart() == null) ? 0 : getStart().hashCode());
 		return result;
 	}
 
@@ -159,8 +157,6 @@ public class ClubEvent extends BasicItem {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		ClubEvent other = (ClubEvent) obj;
@@ -183,18 +179,6 @@ public class ClubEvent extends BasicItem {
 			if (other.organizerDisplayName != null)
 				return false;
 		} else if (!organizerDisplayName.equals(other.organizerDisplayName))
-			return false;
-		if (persons == null) {
-			if (other.persons != null)
-				return false;
-		} else if (!persons.equals(other.persons))
-			return false;
-		ZonedDateTime oStart = other.getStart();
-		ZonedDateTime start = getStart();
-		if (start == null) {
-			if (oStart != null)
-				return false;
-		} else if (!start.equals(oStart))
 			return false;
 		return true;
 	}

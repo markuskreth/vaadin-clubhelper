@@ -13,8 +13,14 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 		super(ClubEvent.class);
 	}
 
+	@Override
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
+	}
+
+	@Override
+	public EntityManager getEntityManager() {
+		return em;
 	}
 
 }
