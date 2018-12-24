@@ -32,7 +32,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 public abstract class AbstractDatabaseTest {
 
-	private static final AtomicInteger counter = new AtomicInteger();
+	private static final AtomicInteger eventIdSequence = new AtomicInteger();
 
 	protected static SessionFactory sessionFactory;
 	protected static Session session;
@@ -154,7 +154,7 @@ public abstract class AbstractDatabaseTest {
 	}
 
 	public ClubEvent creteEvent() {
-		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + counter.getAndIncrement()).withAllDay(true)
+		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + eventIdSequence.getAndIncrement()).withAllDay(true)
 				.withCaption("caption").withDescription("description")
 				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))
 				.withEnd(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault())).withiCalUID("iCalUID")

@@ -40,15 +40,16 @@ public class EventBusiness {
 
 	public void changePersons(Set<Person> selected) {
 		if (current != null) {
-			for (Person p : selected) {
-				current.add(p);
-			}
+//			for (Person p : selected) {
+//				current.add(p);
+//			}
 			try {
-				dao.update(current);
+				dao.addPersons(current, selected);
 				log.info("Updated {}, {} with participants: {}", current.getCaption(), current.getStart(), selected);
 			} catch (Exception e) {
 				log.error("Unable to update Event {}, {}, {} with participants: {}", current.getId(),
 						current.getCaption(), current.getStart(), selected, e);
+				throw e;
 			}
 		}
 	}

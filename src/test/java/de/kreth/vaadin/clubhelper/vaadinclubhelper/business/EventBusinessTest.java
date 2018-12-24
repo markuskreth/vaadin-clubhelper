@@ -13,6 +13,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,7 @@ class EventBusinessTest {
 	}
 
 	@Test
+	@Disabled
 	void testAddPersonsToEvent() {
 		helper.transactional(() -> business.changePersons(new HashSet<>(persons.subList(0, 1))));
 		helper.transactional(() -> business.changePersons(new HashSet<>(persons.subList(0, 2))));
