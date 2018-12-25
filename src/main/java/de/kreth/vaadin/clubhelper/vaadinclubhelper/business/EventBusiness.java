@@ -40,9 +40,6 @@ public class EventBusiness {
 
 	public void changePersons(Set<Person> selected) {
 		if (current != null) {
-//			for (Person p : selected) {
-//				current.add(p);
-//			}
 			try {
 				dao.addPersons(current, selected);
 				log.info("Updated {}, {} with participants: {}", current.getCaption(), current.getStart(), selected);

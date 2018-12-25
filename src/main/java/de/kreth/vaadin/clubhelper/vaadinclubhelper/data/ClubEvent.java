@@ -157,29 +157,35 @@ public class ClubEvent extends BasicItem {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
+		if (obj == null)
+			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		ClubEvent other = (ClubEvent) obj;
 		if (iCalUID == null) {
 			if (other.iCalUID != null)
 				return false;
-		} else if (!iCalUID.equals(other.iCalUID))
+		} else if (!iCalUID.equals(other.iCalUID)) {
 			return false;
+		}
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!id.equals(other.id)) {
 			return false;
+		}
 		if (location == null) {
 			if (other.location != null)
 				return false;
-		} else if (!location.equals(other.location))
+		} else if (!location.equals(other.location)) {
 			return false;
+		}
 		if (organizerDisplayName == null) {
 			if (other.organizerDisplayName != null)
 				return false;
-		} else if (!organizerDisplayName.equals(other.organizerDisplayName))
+		} else if (!organizerDisplayName.equals(other.organizerDisplayName)) {
 			return false;
+		}
 		return true;
 	}
 

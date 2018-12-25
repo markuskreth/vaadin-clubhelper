@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDaoImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -38,17 +39,17 @@ class EventBusinessTest {
 	private DatabaseHelper helper;
 
 	@Autowired
-	protected EntityManager entityManager;
-
 	private EventBusiness business;
 
+	@Autowired
+	private EntityManager entityManager;
+
 	@Configuration
-	public static class MyConfig {
+	public static class InnerConfig {
 
 		@Bean
 		public EntityManager getEntityManager() throws Exception {
 
-			// setup the session factory
 			org.hibernate.cfg.Configuration configuration = HibernateHolder.configuration();
 
 			SessionFactory sessionFactory = configuration.buildSessionFactory();
@@ -57,8 +58,18 @@ class EventBusinessTest {
 		}
 
 		@Bean
+		public ClubEventDao getClubEventDao() {
+			return new ClubEventDaoImpl();
+		}
+
+		@Bean
 		public CalendarAdapter getCalendarAdapter() throws GeneralSecurityException, IOException {
 			return new CalendarAdapter();
+		}
+
+		@Bean
+		public EventBusiness getEventBusiness() {
+			return new EventBusiness();
 		}
 
 	}
@@ -68,11 +79,6 @@ class EventBusinessTest {
 		helper = new DatabaseHelper(entityManager);
 		helper.cleanH2Database();
 
-		ClubEventDaoImpl dao = new ClubEventDaoImpl();
-		dao.setEntityManager(entityManager);
-
-		business = new EventBusiness();
-		business.dao = dao;
 		insertTestData();
 		business.setSelected(event);
 	}
