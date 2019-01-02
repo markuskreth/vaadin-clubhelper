@@ -21,6 +21,7 @@ import javax.persistence.EntityTransaction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -35,7 +36,7 @@ public abstract class AbstractDatabaseTest {
 	private static final AtomicInteger eventIdSequence = new AtomicInteger();
 
 	protected static SessionFactory sessionFactory;
-	protected static Session session;
+	protected Session session;
 
 	@BeforeAll
 	public static void setUpDatabase() throws Exception {
@@ -44,7 +45,6 @@ public abstract class AbstractDatabaseTest {
 		Configuration configuration = HibernateHolder.configuration();
 
 		sessionFactory = configuration.buildSessionFactory();
-		session = sessionFactory.openSession();
 
 	}
 
@@ -61,11 +61,24 @@ public abstract class AbstractDatabaseTest {
 		final String enableReferentialIntegrety;
 	}
 
-	@BeforeEach
+	@AfterEach
 	public void cleanH2Database() {
+		if (session.getTransaction().isActive()) {
+			session.flush();
+		}
+
 		session.doWork(conn -> {
 			AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2);
 		});
+
+	}
+
+	@BeforeEach
+	void createSession() {
+		if (session != null) {
+			session.close();
+		}
+		session = sessionFactory.openSession();
 	}
 
 	public static void cleanDatabase(Connection connection, DB_TYPE type) throws SQLException {
@@ -134,17 +147,11 @@ public abstract class AbstractDatabaseTest {
 
 	public List<Person> insertPersons(int count) {
 
-		final List<Person> inserted = new ArrayList<>();
+		final List<Person> inserted = createPersons(count);
 
 		transactional(() -> {
-			for (int i = 0; i < count; i++) {
-
-				Person p = new Person();
-				p.setPrename("prename_" + i);
-				p.setSurname("surname_" + i);
-				p.setBirth(LocalDate.now());
+			for (Person p : inserted) {
 				session.save(p);
-				inserted.add(p);
 			}
 		});
 		for (Person p : inserted) {
@@ -153,7 +160,23 @@ public abstract class AbstractDatabaseTest {
 		return inserted;
 	}
 
-	public ClubEvent creteEvent() {
+	public static List<Person> createPersons(int count) {
+
+		final List<Person> inserted = new ArrayList<>();
+
+		for (int i = 0; i < count; i++) {
+
+			Person p = new Person();
+			p.setId(i + 1);
+			p.setPrename("prename_" + i);
+			p.setSurname("surname_" + i);
+			p.setBirth(LocalDate.now());
+			inserted.add(p);
+		}
+		return inserted;
+	}
+
+	public static ClubEvent creteEvent() {
 		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + eventIdSequence.getAndIncrement()).withAllDay(true)
 				.withCaption("caption").withDescription("description")
 				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))

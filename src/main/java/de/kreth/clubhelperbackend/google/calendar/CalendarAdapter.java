@@ -1,3 +1,4 @@
+
 package de.kreth.clubhelperbackend.google.calendar;
 
 import java.io.IOException;
@@ -50,8 +51,9 @@ public class CalendarAdapter extends GoogleBaseAdapter {
 				}
 			}
 		} catch (InterruptedException e) {
-			if (log.isWarnEnabled()) {
-				log.warn("Lock interrupted", e);
+			log.warn("Lock interrupted", e);
+			if (service == null) {
+				throw new IOException("Unable to create Service", e);
 			}
 		}
 		if (service == null) {

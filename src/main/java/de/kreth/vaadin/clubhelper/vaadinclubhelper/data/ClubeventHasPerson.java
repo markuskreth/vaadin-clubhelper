@@ -1,25 +1,31 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "clubevent_has_person")
 public class ClubeventHasPerson {
 
-	private String clubEventId;
-	private int personId;
+	@EmbeddedId
+	private ClubeventPersonId clubeventPersonId = new ClubeventPersonId();
 	private String comment;
 
 	public String getClubEventId() {
-		return clubEventId;
+		return clubeventPersonId.getClubEventId();
 	}
 
 	public void setClubEventId(String clubEventId) {
-		this.clubEventId = clubEventId;
+		this.clubeventPersonId.setClubEventId(clubEventId);
 	}
 
 	public int getPersonId() {
-		return personId;
+		return clubeventPersonId.getPersonId();
 	}
 
 	public void setPersonId(int personId) {
-		this.personId = personId;
+		this.clubeventPersonId.setPersonId(personId);
 	}
 
 	public String getComment() {
@@ -32,15 +38,15 @@ public class ClubeventHasPerson {
 
 	@Override
 	public String toString() {
-		return "ClubeventHasPerson [clubEventId=" + clubEventId + ", personId=" + personId + "]";
+		return "ClubeventHasPerson [" + clubeventPersonId + ", comment=" + comment + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((clubEventId == null) ? 0 : clubEventId.hashCode());
-		result = prime * result + personId;
+		result = prime * result + ((clubeventPersonId == null) ? 0 : clubeventPersonId.hashCode());
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
 		return result;
 	}
 
@@ -53,12 +59,15 @@ public class ClubeventHasPerson {
 		if (getClass() != obj.getClass())
 			return false;
 		ClubeventHasPerson other = (ClubeventHasPerson) obj;
-		if (clubEventId == null) {
-			if (other.clubEventId != null)
+		if (clubeventPersonId == null) {
+			if (other.clubeventPersonId != null)
 				return false;
-		} else if (!clubEventId.equals(other.clubEventId))
+		} else if (!clubeventPersonId.equals(other.clubeventPersonId))
 			return false;
-		if (personId != other.personId)
+		if (comment == null) {
+			if (other.comment != null)
+				return false;
+		} else if (!comment.equals(other.comment))
 			return false;
 		return true;
 	}

@@ -1,17 +1,22 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import javax.persistence.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * The persistent class for the adress database table.
  * 
  */
 @Entity
-@Table(name="adress")
+@Table(name = "adress")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@NamedQuery(name="Adress.findAll", query="SELECT a FROM Adress a")
+@NamedQuery(name = "Adress.findAll", query = "SELECT a FROM Adress a")
 public class Adress extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 8216273166570667412L;
@@ -24,7 +29,7 @@ public class Adress extends BaseEntity implements Serializable {
 
 	private String plz;
 
-	//bi-directional many-to-one association to Person
+	// bi-directional many-to-one association to Person
 	@ManyToOne
 	private Person person;
 

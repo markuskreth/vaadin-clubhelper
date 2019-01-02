@@ -16,6 +16,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Repository
+@Transactional
 public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements ClubEventDao {
 
 	public ClubEventDaoImpl() {
@@ -33,7 +34,6 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
-	@Transactional
 	public void addPersons(ClubEvent event, Collection<Person> updated) {
 		List<Person> added = new ArrayList<>(updated);
 
@@ -45,11 +45,11 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 			event.setPersons(persons2);
 		}
 
-		Query insertQuery = em
-				.createNativeQuery("INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (?, ?)");
+		Query insertQuery = em.createNativeQuery(
+				"INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (:eventId,:personId)");
 		for (Person p : added) {
-			insertQuery.setParameter(1, event.getId());
-			insertQuery.setParameter(2, p.getId());
+			insertQuery.setParameter("eventId", event.getId());
+			insertQuery.setParameter("personId", p.getId());
 			insertQuery.executeUpdate();
 
 		}
