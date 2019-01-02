@@ -2,6 +2,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.vaadin.teemu.switchui.Switch;
 
@@ -35,7 +36,7 @@ public class PersonEditDialog extends Window {
 		textSureName = new TextField();
 		birthday = new DateField();
 		birthday.setCaption("Geburtstag");
-		
+
 		Panel groupPanel = new Panel("Gruppen");
 		VerticalLayout glay = new VerticalLayout();
 		groupPanel.setContent(glay);
@@ -43,7 +44,7 @@ public class PersonEditDialog extends Window {
 		for (GroupDef tmp : person.getPersongroups()) {
 			selected.add(tmp);
 		}
-		for (GroupDef g: groups) {
+		for (GroupDef g : groups) {
 			Switch sw = new Switch(g.getName());
 			sw.setData(g);
 			sw.setValue(selected.contains(g));
@@ -55,9 +56,9 @@ public class PersonEditDialog extends Window {
 		binder.forField(textPrename).bind(Person::getPrename, Person::setPrename);
 		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
 		binder.forField(birthday).bind(Person::getBirth, Person::setBirth);
-		
+
 		binder.readBean(person);
-		
+
 		Button close = new Button("Schließen");
 		close.addClickListener(ev -> PersonEditDialog.this.close());
 		Button ok = new Button("Speichern");
@@ -73,14 +74,13 @@ public class PersonEditDialog extends Window {
 	}
 
 	private void groupChanged(ValueChangeEvent<Boolean> ev) {
-		GroupDef group = (GroupDef) ((Switch)ev.getComponent()).getData();
-		List<GroupDef> pg = person.getPersongroups();
+		GroupDef group = (GroupDef) ((Switch) ev.getComponent()).getData();
+		Set<GroupDef> pg = person.getPersongroups();
 		if (ev.getValue()) {
 			pg.add(group);
 		} else {
 			pg.remove(group);
 		}
 	}
-	
-	
+
 }

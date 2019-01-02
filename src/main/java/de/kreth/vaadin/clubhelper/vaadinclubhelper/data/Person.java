@@ -2,6 +2,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class Person extends BaseEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "persongroup", joinColumns = { @JoinColumn(name = "person_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "group_id") })
-	private List<GroupDef> groups;
+	private Set<GroupDef> groups;
 
 	// bi-directional many-to-one association to Relative
 	@OneToMany(mappedBy = "person1Bean")
@@ -114,16 +115,19 @@ public class Person extends BaseEntity implements Serializable {
 		this.username = username;
 	}
 
-	public List<GroupDef> getGroups() {
+	public Set<GroupDef> getGroups() {
 		return groups;
 	}
 
-	public void setGroups(List<GroupDef> groups) {
+	public void setGroups(Set<GroupDef> groups) {
 		this.groups = groups;
 	}
 
 	public void add(GroupDef group) {
-
+		if (this.groups == null) {
+			this.groups = new HashSet<>();
+		}
+		this.groups.add(group);
 	}
 
 	public Set<ClubEvent> getEvents() {
@@ -211,20 +215,29 @@ public class Person extends BaseEntity implements Serializable {
 		return contact;
 	}
 
-	public List<GroupDef> getPersongroups() {
+	public Set<GroupDef> getPersongroups() {
 		return this.groups;
 	}
 
-	public void setPersongroups(List<GroupDef> persongroups) {
-		this.groups = persongroups;
+	public void setPersongroups(Collection<GroupDef> persongroups) {
+		if (persongroups instanceof Set) {
+			this.groups = (Set<GroupDef>) persongroups;
+		} else {
+			this.groups = new HashSet<>(persongroups);
+		}
 	}
 
 	public void addPersongroup(GroupDef persongroup) {
-		getPersongroups().add(persongroup);
+		if (this.groups == null) {
+			this.groups = new HashSet<>();
+		}
+		this.groups.add(persongroup);
 	}
 
 	public void removePersongroup(GroupDef persongroup) {
-		getPersongroups().remove(persongroup);
+		if (this.groups == null) {
+			this.groups.remove(persongroup);
+		}
 	}
 
 	public List<Relative> getRelatives1() {

@@ -141,7 +141,7 @@ public class PersonGrid extends CustomComponent {
 			});
 
 			filter = filter.and(p -> {
-				List<GroupDef> personGroups = p.getPersongroups();
+				Set<GroupDef> personGroups = p.getPersongroups();
 				for (GroupDef pg : personGroups) {
 					if (groupIds.contains(pg.getId())) {
 						return true;

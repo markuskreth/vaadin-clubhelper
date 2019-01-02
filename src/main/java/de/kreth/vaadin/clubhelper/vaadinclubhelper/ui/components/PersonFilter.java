@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,14 +24,17 @@ public class PersonFilter implements SerializablePredicate<Person> {
 		if (personSelected(t) == false) {
 			return false;
 		}
-//		if (personInGroup(t) == false) {
-//			return false;
-//		}
+		if (personInGroup(t) == false) {
+			return false;
+		}
 		return true;
 	}
 
 	private boolean personInGroup(Person t) {
-		return selectedGroups != null;
+		if (selectedGroups != null) {
+			return t.getGroups() != null && !Collections.disjoint(t.getGroups(), selectedGroups);
+		}
+		return true;
 	}
 
 	private boolean personSelected(Person t) {
@@ -42,7 +46,7 @@ public class PersonFilter implements SerializablePredicate<Person> {
 		return true;
 	}
 
-	public void setSelected(Set<Person> selected) {
+	public void setSelectedPersons(Set<Person> selected) {
 		if (selected == null) {
 			selectedPersons = null;
 			return;
@@ -51,6 +55,10 @@ public class PersonFilter implements SerializablePredicate<Person> {
 		for (Person p : selected) {
 			selectedPersons.add(p.getId());
 		}
+	}
+
+	public void setSelectedGroups(Set<GroupDef> selected) {
+		this.selectedGroups = selected;
 	}
 
 }
