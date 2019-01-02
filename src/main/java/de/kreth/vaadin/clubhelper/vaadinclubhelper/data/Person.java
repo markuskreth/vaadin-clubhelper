@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @NamedQuery(name = Person.QUERY_FINDALL, query = "SELECT p FROM Person p")
 public class Person extends BaseEntity implements Serializable {
 
-	public final static String QUERY_FINDALL = "Person.findAll";
+	public static final String QUERY_FINDALL = "Person.findAll";
 
 	private static final long serialVersionUID = -8361264400619997123L;
 
@@ -303,6 +303,76 @@ public class Person extends BaseEntity implements Serializable {
 		getStartpaesses().remove(startpaess);
 		startpaess.setPerson(null);
 		return startpaess;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((birth == null) ? 0 : birth.hashCode());
+		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((prename == null) ? 0 : prename.hashCode());
+		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Person other = (Person) obj;
+		if (birth == null) {
+			if (other.birth != null) {
+				return false;
+			}
+		} else if (!birth.equals(other.birth)) {
+			return false;
+		}
+		if (groups == null) {
+			if (other.groups != null) {
+				return false;
+			}
+		} else if (!groups.equals(other.groups)) {
+			return false;
+		}
+		if (password == null) {
+			if (other.password != null) {
+				return false;
+			}
+		} else if (!password.equals(other.password)) {
+			return false;
+		}
+		if (prename == null) {
+			if (other.prename != null) {
+				return false;
+			}
+		} else if (!prename.equals(other.prename)) {
+			return false;
+		}
+		if (surname == null) {
+			if (other.surname != null) {
+				return false;
+			}
+		} else if (!surname.equals(other.surname)) {
+			return false;
+		}
+		if (username == null) {
+			if (other.username != null) {
+				return false;
+			}
+		} else if (!username.equals(other.username)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -2,25 +2,20 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.HasValue.ValueChangeEvent;
-import com.vaadin.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.event.selection.SingleSelectionEvent;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
@@ -34,6 +29,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -44,7 +40,7 @@ public class PersonGrid extends CustomComponent {
 	private final transient Logger log = LoggerFactory.getLogger(getClass());
 
 	private final transient DateTimeFormatter birthFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
-	private final ConfigurableFilterDataProvider<Person, Void, SerializablePredicate<Person>> dataProvider;
+	private final ListDataProvider<Person> dataProvider;
 
 	private final Grid<Person> grid;
 	private final CheckBox checkIncluded;
@@ -57,8 +53,9 @@ public class PersonGrid extends CustomComponent {
 
 	private Set<GroupDef> groupMemberFilter;
 	private List<GroupDef> allGroups;
+	private PersonFilter filter;
 
-	public PersonGrid(GroupDao groupDao) {
+	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
 		textTitle = new TextField();
 		textTitle.setId("event.title");
@@ -82,7 +79,10 @@ public class PersonGrid extends CustomComponent {
 
 		HorizontalLayout filters = new HorizontalLayout();
 		filters.addComponents(checkIncluded, comboGroups);
-		dataProvider = new ListDataProvider<Person>(new ArrayList<>()).withConfigurableFilter();
+
+		filter = new PersonFilter(personDao);
+		dataProvider = DataProvider.ofCollection(filter.asCollection());
+		dataProvider.addDataProviderListener(filter);
 
 		grid = new Grid<>();
 		grid.setDataProvider(dataProvider);
@@ -129,33 +129,14 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	private void updateFilter() {
-		Predicate<Person> filter = p -> true;
 		if (selectedOnlyFilter != null && selectedOnlyFilter.equals(Boolean.TRUE)) {
-			Set<Person> selected = grid.getSelectedItems();
-			filter = p -> selected.contains(p);
-		}
-		if (groupMemberFilter != null && groupMemberFilter.isEmpty() == false) {
-			final Set<Integer> groupIds = new HashSet<>();
-			groupMemberFilter.forEach(gm -> {
-				groupIds.add(gm.getId());
-			});
-
-			filter = filter.and(p -> {
-				Set<GroupDef> personGroups = p.getPersongroups();
-				for (GroupDef pg : personGroups) {
-					if (groupIds.contains(pg.getId())) {
-						return true;
-					}
-				}
-				return false;
-			});
+			filter.setSelectedPersons(grid.getSelectedItems());
+		} else {
+			filter.setSelectedPersons(null);
 		}
 
-		setFilter(filter);
-	}
+		filter.setSelectedGroups(groupMemberFilter);
 
-	public void setFilter(Predicate<Person> filter) {
-		dataProvider.setFilter(p -> filter.test(p));
 		dataProvider.refreshAll();
 	}
 
@@ -193,6 +174,9 @@ public class PersonGrid extends CustomComponent {
 	private void onGroupSelected(SingleSelectionEvent<GroupDef> ev) {
 
 		groupMemberFilter = ev.getAllSelectedItems();
+		if (groupMemberFilter.isEmpty()) {
+			groupMemberFilter = null;
+		}
 		updateFilter();
 	}
 
@@ -201,14 +185,6 @@ public class PersonGrid extends CustomComponent {
 			value = "";
 		}
 		textTitle.setValue(value);
-	}
-
-	public void setItems(Collection<Person> items) {
-		grid.setItems(items);
-	}
-
-	public void setItems(Person... items) {
-		grid.setItems(items);
 	}
 
 	public interface ClosedFunction {

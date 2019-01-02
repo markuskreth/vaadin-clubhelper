@@ -56,10 +56,8 @@ public class MainUi extends UI {
 
 		LOGGER.debug("Starting Vaadin UI with {}", getClass().getName());
 
-		List<Person> persons = personDao.listAll();
-		personGrid = new PersonGrid(groupDao);
+		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setId("main.person");
-		personGrid.setItems(persons);
 		personGrid.setCaption("Personen");
 		personGrid.onClosedFunction(() -> detailClosed());
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));

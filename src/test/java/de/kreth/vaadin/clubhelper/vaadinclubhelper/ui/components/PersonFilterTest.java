@@ -3,6 +3,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,8 +13,11 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
@@ -22,6 +26,8 @@ class PersonFilterTest {
 	private PersonFilter filter;
 	private List<Person> persons;
 	private final List<GroupDef> groups;
+	@Mock
+	private PersonDao dao;
 
 	public PersonFilterTest() {
 		GroupDef adminGroup = new GroupDef();
@@ -47,10 +53,12 @@ class PersonFilterTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		filter = new PersonFilter();
-		persons = AbstractDatabaseTest.createPersons(5);
+		MockitoAnnotations.initMocks(this);
+		filter = new PersonFilter(dao);
+		persons = Collections.unmodifiableList(AbstractDatabaseTest.createPersons(5));
 		assertEquals(5, persons.size());
 
+		when(dao.listAll()).thenReturn(persons);
 		for (int i = 0; i < groups.size(); i++) {
 			persons.get(i).add(groups.get(i));
 			persons.get(0).add(groups.get(i)); // Person1 has all Rights.
@@ -97,6 +105,11 @@ class PersonFilterTest {
 
 		assertFalse(filter.test(persons.get(1)));
 		assertFalse(filter.test(persons.get(3)));
+		assertFalse(filter.test(persons.get(4)));
+
+		selected.add(groups.get(3));
+		assertTrue(filter.test(persons.get(3)));
+		assertFalse(filter.test(persons.get(1)));
 		assertFalse(filter.test(persons.get(4)));
 
 	}
