@@ -176,7 +176,7 @@ public class CalendarComponent extends CustomComponent {
 		}
 	}
 
-	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException, JRException {
+	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException {
 
 		PipedInputStream in = new PipedInputStream();
 		final PipedOutputStream out = new PipedOutputStream(in);
@@ -194,6 +194,12 @@ public class CalendarComponent extends CustomComponent {
 			} catch (JRException e) {
 				log.error("Error on Export to Pdf.", e);
 				throw new RuntimeException(e);
+			} finally {
+				try {
+					out.close();
+				} catch (IOException e) {
+					log.warn("Error closing Jasper output stream.", e);
+				}
 			}
 		});
 		exec.shutdown();
