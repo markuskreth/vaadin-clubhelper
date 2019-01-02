@@ -83,6 +83,7 @@ public class PersonGrid extends CustomComponent {
 		HorizontalLayout filters = new HorizontalLayout();
 		filters.addComponents(checkIncluded, comboGroups);
 		dataProvider = new ListDataProvider<Person>(new ArrayList<>()).withConfigurableFilter();
+
 		grid = new Grid<>();
 		grid.setDataProvider(dataProvider);
 		grid.setId("person.grid");
@@ -140,15 +141,13 @@ public class PersonGrid extends CustomComponent {
 			});
 
 			filter = filter.and(p -> {
-				{
-					List<GroupDef> personGroups = p.getPersongroups();
-					for (GroupDef pg : personGroups) {
-						if (groupIds.contains(pg.getId())) {
-							return true;
-						}
+				List<GroupDef> personGroups = p.getPersongroups();
+				for (GroupDef pg : personGroups) {
+					if (groupIds.contains(pg.getId())) {
+						return true;
 					}
-					return false;
 				}
+				return false;
 			});
 		}
 
@@ -157,7 +156,7 @@ public class PersonGrid extends CustomComponent {
 
 	public void setFilter(Predicate<Person> filter) {
 		dataProvider.setFilter(p -> filter.test(p));
-		grid.getDataProvider().refreshAll();
+		dataProvider.refreshAll();
 	}
 
 	public void onPersonSelect(SelectionListener<Person> listener) throws UnsupportedOperationException {
