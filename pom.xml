@@ -32,7 +32,7 @@
 		<google-api-version>1.23.0</google-api-version>
 		<google-api-sheets-version>v4-rev488-1.23.0</google-api-sheets-version>
 		<google-api-calendar-version>v3-rev271-1.23.0</google-api-calendar-version>
-      <start-class>de.kreth.vaadin.clubhelper.vaadinclubhelper.VaadinClubhelperApplication</start-class>
+		<start-class>de.kreth.vaadin.clubhelper.vaadinclubhelper.VaadinClubhelperApplication</start-class>
 
 		<sonar.login>7af449877bbf41d707e8ae7d322b1d6e9b15a89d</sonar.login>
 		<sonar.jacoco.reportPaths>target/surefire-reports</sonar.jacoco.reportPaths>
@@ -99,37 +99,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.google.apis</groupId>
-			<artifactId>google-api-services-calendar</artifactId>
-			<version>${google-api-calendar-version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava-jdk5</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.google.api-client</groupId>
-			<artifactId>google-api-client-appengine</artifactId>
-			<version>${google-api-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.api-client</groupId>
-			<artifactId>google-api-client-gson</artifactId>
-			<version>${google-api-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.oauth-client</groupId>
-			<artifactId>google-oauth-client-java6</artifactId>
-			<version>${google-api-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.oauth-client</groupId>
-			<artifactId>google-oauth-client-jetty</artifactId>
-			<version>${google-api-version}</version>
-		</dependency>
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.6</version>
@@ -157,11 +126,11 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.springframework.security</groupId> -->
-<!-- 			<artifactId>spring-security-test</artifactId> -->
-<!-- 			<scope>test</scope> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework.security</groupId> -->
+		<!-- <artifactId>spring-security-test</artifactId> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
@@ -246,6 +215,11 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-functions</artifactId>
 			<version>6.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.kreth.googleconnect</groupId>
+			<artifactId>GoogleConnectors</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

@@ -107,18 +107,18 @@ public class MainUi extends UI {
 	}
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
-		ClubEvent ev = (ClubEvent) event.getCalendarItem();
-		LOGGER.debug("Opening detail view for {}", ev);
-
-		contentLayout.removeComponent(personGrid);
-		contentLayout.addComponent(personGrid);
-
-		eventBusiness.setSelected(null);
-		personGrid.setEnabled(false);
-		personGrid.setEvent(ev);
-		personGrid.setEnabled(true);
-		personGrid.setVisible(true);
-		eventBusiness.setSelected(ev);
+//		ClubEvent ev = (ClubEvent) event.getCalendarItem();
+//		LOGGER.debug("Opening detail view for {}", ev);
+//
+//		contentLayout.removeComponent(personGrid);
+//		contentLayout.addComponent(personGrid);
+//
+//		eventBusiness.setSelected(null);
+//		personGrid.setEnabled(false);
+//		personGrid.setEvent(ev);
+//		personGrid.setEnabled(true);
+//		personGrid.setVisible(true);
+//		eventBusiness.setSelected(ev);
 	}
 
 }

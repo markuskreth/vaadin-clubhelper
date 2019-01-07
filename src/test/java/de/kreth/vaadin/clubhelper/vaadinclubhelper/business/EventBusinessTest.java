@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.kreth.clubhelperbackend.google.calendar.CalendarAdapter;
+import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;

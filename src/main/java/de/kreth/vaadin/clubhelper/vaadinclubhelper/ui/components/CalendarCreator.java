@@ -18,10 +18,8 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CalendarTaskRefresher;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDaoImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Attendance;
@@ -86,7 +84,7 @@ public abstract class CalendarCreator {
 		Locale.setDefault(Locale.GERMANY);
 
 		int year = 2019;
-		List<ClubEvent> allevents = loadAllEvents(true).stream().filter(ev -> {
+		List<ClubEvent> allevents = loadAllEvents().stream().filter(ev -> {
 			return ev.getStart().toLocalDate().getYear() <= year && ev.getEnd().toLocalDate().getYear() >= year;
 		}).collect(Collectors.toList());
 
@@ -160,24 +158,14 @@ public abstract class CalendarCreator {
 		txt.append(ev.getCaption());
 	}
 
-	public static List<ClubEvent> loadAllEvents(boolean withRefresh) {
+	public static List<ClubEvent> loadAllEvents() {
 		Configuration configuration = createConfig();
 		SessionFactory sessionFactory = configuration.buildSessionFactory();
 		Session session = sessionFactory.openSession();
 		ClubEventDaoImpl dao = new ClubEventDaoImpl();
 		dao.setEntityManager(session);
-		if (withRefresh) {
-			updateEventsFromGoogleCalendar(session, dao);
-		}
-		return dao.listAll();
-	}
 
-	public static void updateEventsFromGoogleCalendar(Session session, ClubEventDaoImpl dao) {
-		CalendarTaskRefresher refresh = new CalendarTaskRefresher();
-		refresh.setDao(dao);
-		Transaction tx = session.beginTransaction();
-		refresh.synchronizeCalendarTasks();
-		tx.commit();
+		return dao.listAll();
 	}
 
 	static Calendar toCalendar(long time) {

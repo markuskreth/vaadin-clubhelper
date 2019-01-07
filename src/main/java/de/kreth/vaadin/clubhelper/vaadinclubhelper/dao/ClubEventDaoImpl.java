@@ -43,6 +43,9 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 		} else {
 			persons2 = new HashSet<>();
 			event.setPersons(persons2);
+			for (Person p : updated) {
+				event.add(p);
+			}
 		}
 
 		Query insertQuery = em.createNativeQuery(

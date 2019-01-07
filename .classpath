@@ -30,7 +30,7 @@
 			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/classes" path="target/generated-resources/gwt">
+	<classpathentry excluding="**" kind="src" output="target/classes" path="target/generated-resources/gwt">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="optional" value="true"/>

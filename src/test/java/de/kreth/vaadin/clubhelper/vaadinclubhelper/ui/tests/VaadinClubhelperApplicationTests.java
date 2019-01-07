@@ -36,7 +36,6 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CalendarTaskRefresher;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
@@ -71,7 +70,6 @@ public class VaadinClubhelperApplicationTests {
 		options = new ChromeOptions();
 		options.setHeadless(GraphicsEnvironment.isHeadless());
 
-		System.setProperty(CalendarTaskRefresher.SKIP_EVENT_UPDATE, Boolean.TRUE.toString());
 	}
 
 	@BeforeEach
