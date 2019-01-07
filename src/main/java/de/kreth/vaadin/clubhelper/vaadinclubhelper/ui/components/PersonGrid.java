@@ -54,6 +54,7 @@ public class PersonGrid extends CustomComponent {
 	private Set<GroupDef> groupMemberFilter;
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
+	private ClubEvent currentEvent;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -81,6 +82,9 @@ public class PersonGrid extends CustomComponent {
 		filters.addComponents(checkIncluded, comboGroups);
 
 		filter = new PersonFilter(personDao);
+		filter.add(() -> {
+			setEvent(currentEvent);
+		});
 		dataProvider = DataProvider.ofCollection(filter.asCollection());
 		dataProvider.addDataProviderListener(filter);
 
@@ -196,20 +200,27 @@ public class PersonGrid extends CustomComponent {
 	}
 
 	public void setEvent(ClubEvent ev) {
+
 		if (ev != null) {
 
 			setCaption(ev.getCaption());
 			setTitle(ev.getCaption());
 
-			Set<Person> persons = ev.getPersons();
-			if (persons != null) {
-				selectItems(persons.toArray(new Person[0]));
-			} else {
-				selectItems(new Person[0]);
-			}
+			updateSelection(ev);
 		} else {
 			setCaption("");
 			setTitle("");
+			selectItems(new Person[0]);
+		}
+		this.currentEvent = ev;
+	}
+
+	public void updateSelection(ClubEvent ev) {
+		Set<Person> persons = ev.getPersons();
+		if (persons != null) {
+			selectItems(persons.toArray(new Person[0]));
+		} else {
+			selectItems(new Person[0]);
 		}
 	}
 

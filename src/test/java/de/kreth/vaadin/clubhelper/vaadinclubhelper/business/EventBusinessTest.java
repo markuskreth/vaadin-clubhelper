@@ -3,8 +3,6 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,7 +24,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;
@@ -75,11 +72,6 @@ class EventBusinessTest {
 		@Bean
 		public ClubEventDao getClubEventDao() {
 			return new ClubEventDaoImpl();
-		}
-
-		@Bean
-		public CalendarAdapter getCalendarAdapter() throws GeneralSecurityException, IOException {
-			return new CalendarAdapter();
 		}
 
 		@Bean

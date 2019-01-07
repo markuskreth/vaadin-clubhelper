@@ -14,6 +14,8 @@ import com.vaadin.server.SerializablePredicate;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DataUpdatedEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DefaultDataUpdateHandler;
 
 public class PersonFilter implements SerializablePredicate<Person>, DataProviderListener<Person> {
 
@@ -22,10 +24,12 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	private Set<GroupDef> selectedGroups = null;
 	private final List<Person> publishedList;
 	private final PersonDao personDao;
+	private final DefaultDataUpdateHandler updateHandler;
 
 	public PersonFilter(PersonDao personDao) {
 		this.personDao = personDao;
 		publishedList = new ArrayList<>(personDao.listAll());
+		this.updateHandler = new DefaultDataUpdateHandler();
 	}
 
 	@Override
@@ -94,6 +98,15 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	public void onDataChange(DataChangeEvent<Person> event) {
 		publishedList.clear();
 		publishedList.addAll(personDao.listAll().stream().filter(this).collect(Collectors.toList()));
+		updateHandler.fireUpdateEvent();
+	}
+
+	public void add(DataUpdatedEvent ev) {
+		updateHandler.add(ev);
+	}
+
+	public boolean remove(DataUpdatedEvent o) {
+		return updateHandler.remove(o);
 	}
 
 }
