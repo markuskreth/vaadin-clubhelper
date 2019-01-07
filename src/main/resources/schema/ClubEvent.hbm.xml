@@ -4,7 +4,7 @@
 <hibernate-mapping>
 	<class
 		name="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent"
-		table="ClubEvent">
+		table="clubevent">
 		<id column="id" name="id" type="string" />
 		<property column="caption" generated="never" lazy="false"
 			name="caption" type="string" />
