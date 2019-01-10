@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.springframework.lang.NonNull;
+
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.calendar.Year;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -21,13 +23,8 @@ public class YearlyCalendarCreator extends CalendarCreator {
 		this(year, values, Collections.emptyList());
 	}
 
-	public YearlyCalendarCreator(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays) {
-		if (values == null) {
-			throw new NullPointerException("Calendar values must not be null!");
-		}
-		if (holidays == null) {
-			throw new NullPointerException("holidays values must not be null!");
-		}
+	public YearlyCalendarCreator(int year, @NonNull Map<LocalDate, CharSequence> values,
+			@NonNull Collection<LocalDate> holidays) {
 		this.year = new Year(year, values, holidays);
 	}
 
