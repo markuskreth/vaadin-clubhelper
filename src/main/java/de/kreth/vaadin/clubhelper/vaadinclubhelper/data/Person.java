@@ -26,9 +26,13 @@ import javax.persistence.Table;
 @Table(name = "person")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = Person.QUERY_FINDALL, query = "SELECT p FROM Person p")
+@NamedQuery(name = Person.QUERY_FINDLOGIN, query = "FROM Person WHERE username = :username AND password = :password")
 public class Person extends BaseEntity implements Serializable {
 
+	public static final String SESSION_LOGIN = "SESSION_LOGIN_USER";
+
 	public static final String QUERY_FINDALL = "Person.findAll";
+	public static final String QUERY_FINDLOGIN = "Person.findLogin";
 
 	private static final long serialVersionUID = -8361264400619997123L;
 

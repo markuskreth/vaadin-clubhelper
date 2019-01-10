@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 public class Year {
 
@@ -24,16 +27,20 @@ public class Year {
 		this(year, Collections.emptyMap(), Collections.emptyList(), Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays) {
+	public Year(int year, @Nonnull Map<LocalDate, CharSequence> values, @Nonnull Collection<LocalDate> holidays) {
 		this(year, values, holidays, Locale.getDefault());
 	}
 
-	public Year(int year, Map<LocalDate, CharSequence> values, Collection<LocalDate> holidays, Locale locale) {
+	public Year(int year, @Nonnull Map<LocalDate, CharSequence> values, @Nonnull Collection<LocalDate> holidays,
+			Locale locale) {
 		if (year < 1900 || year > 2100) {
 			throw new IllegalArgumentException("Year value must be between 1900 and 2100");
 		}
+		Objects.requireNonNull(values);
+		Objects.requireNonNull(holidays);
+
 		this.date = LocalDate.of(year, 1, 1);
-		this.locale = locale;
+		this.locale = locale == null ? Locale.getDefault() : locale;
 		this.holidays = new HashSet<>(holidays);
 		this.monthWeeks = new HashMap<>();
 		for (Month m : Month.values()) {
