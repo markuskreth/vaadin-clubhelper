@@ -33,6 +33,10 @@
   @include valo;
 
   // Insert your own theme rules here
+  .title_caption {
+      font-weight: bold;
+      font-size: xx-large;
+  }
   .title_label {
       font-weight: bold;
       font-size: large;

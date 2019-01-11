@@ -21,6 +21,7 @@ import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -50,18 +51,30 @@ public class HeadComponent extends HorizontalLayout {
 
 	private ClubEventProvider dataProvider;
 
+	private int monthItemId;
+
 	public HeadComponent(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider) {
 
 		monthName = new Label();
 		monthName.setId("calendar.month");
-		monthName.setStyleName("title_label");
+		monthName.setStyleName("title_caption");
+		monthName.setWidth(null);
 
 		Button popupButton = new Button(VaadinIcons.MENU);
 		popupButton.setId("calendar.menu");
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
-		this.addComponent(monthName);
+		popupButton.setWidth(null);
+
 		this.addComponent(popupButton);
+		this.addComponent(monthName);
+
+		setComponentAlignment(popupButton, Alignment.MIDDLE_LEFT);
+		setComponentAlignment(monthName, Alignment.MIDDLE_CENTER);
+		setExpandRatio(monthName, 1.0f);
+
+		setSizeFull();
+
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.dataProvider = dataProvider;
@@ -74,31 +87,34 @@ public class HeadComponent extends HorizontalLayout {
 	}
 
 	private void openPopupMenu(ClickEvent ev) {
-		ContextMenu contextMenu = new ContextMenu(ev.getButton(), true);
-		contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1));
-		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
-		contextMenu.open(210, 40);
+		Button button = ev.getButton();
+
+		ContextMenu contextMenu = new ContextMenu(button, true);
+		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
+		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1)).getId();
+		contextMenu.open(50, 50);
 	}
 
 	private void calendarExport(MenuItem ev1) {
 
-		boolean monthOnly = ev1.getText().contains("Monat");
+		boolean monthOnly = ev1.getId() == monthItemId;
 		List<ClubEvent> items;
 		ZonedDateTime start;
+		ZonedDateTime end;
 		if (monthOnly) {
 			start = startTime.get();
-			ZonedDateTime end = endTime.get();
-			log.debug("exporting Calendar from {} to {}", start, end);
+			end = endTime.get();
 			items = dataProvider.getItems(start, end);
 		} else {
 			start = startTime.get().withDayOfYear(1);
-			ZonedDateTime end = start.withMonth(12).withDayOfMonth(31);
-			log.debug("exporting Calendar from {} to {}", start, end);
+			end = start.withMonth(12).withDayOfMonth(31);
 			items = dataProvider.getItems(start, end);
 		}
 
 		Map<LocalDate, StringBuilder> values = new HashMap<>();
 		List<LocalDate> holidays = CalendarCreator.filterHolidays(items);
+
+		log.debug("exporting Calendar from {} to {}, itemCount = {}", start, end, items.size());
 
 		for (ClubEvent ev : items) {
 

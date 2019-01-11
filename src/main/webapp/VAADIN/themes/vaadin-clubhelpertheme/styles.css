@@ -15603,6 +15603,11 @@ div.v-layout.v-horizontal.v-widget {
 	overflow: hidden;
 }
 
+.vaadin-clubhelpertheme .title_caption {
+	font-weight: bold;
+	font-size: xx-large;
+}
+
 .vaadin-clubhelpertheme .title_label {
 	font-weight: bold;
 	font-size: large;

@@ -37,6 +37,7 @@ public class CalendarComponent extends CustomComponent {
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));
+
 		head = new HeadComponent(() -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
 		head.updateMonthText(calendar.getStartDate());
 

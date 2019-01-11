@@ -55,6 +55,7 @@ public class PersonGrid extends CustomComponent {
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
+	private TextField textLocation;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -64,6 +65,13 @@ public class PersonGrid extends CustomComponent {
 		textTitle.setCaption("Veranstaltung");
 		textTitle.setEnabled(false);
 		textTitle.setSizeFull();
+
+		textLocation = new TextField();
+		textLocation.setId("event.location");
+		textLocation.setStyleName("title_label");
+		textLocation.setCaption("Ort");
+		textLocation.setEnabled(false);
+		textLocation.setSizeFull();
 
 		checkIncluded = new CheckBox("Nur gemeldete");
 		checkIncluded.setId("person.filter.checked");
@@ -106,7 +114,7 @@ public class PersonGrid extends CustomComponent {
 		close.setId("person.close");
 
 		VerticalLayout panel = new VerticalLayout();
-		panel.addComponents(textTitle, filters, grid, close);
+		panel.addComponents(textTitle, textLocation, filters, grid, close);
 		setCompositionRoot(panel);
 	}
 
@@ -191,6 +199,13 @@ public class PersonGrid extends CustomComponent {
 		textTitle.setValue(value);
 	}
 
+	private void setLocation(String value) {
+		if (value == null) {
+			value = "";
+		}
+		textLocation.setValue(value);
+	}
+
 	public interface ClosedFunction {
 		void closed();
 	}
@@ -205,6 +220,7 @@ public class PersonGrid extends CustomComponent {
 
 			setCaption(ev.getCaption());
 			setTitle(ev.getCaption());
+			setLocation(ev.getLocation());
 
 			updateSelection(ev);
 		} else {
