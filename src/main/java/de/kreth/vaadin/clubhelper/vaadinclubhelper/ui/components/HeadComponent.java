@@ -135,6 +135,9 @@ public class HeadComponent extends HorizontalLayout {
 					values.put(day, content);
 				}
 				content.append(ev.getCaption());
+				if (ev.getLocation() != null && ev.getLocation().isBlank() == false) {
+					content.append(" (").append(ev.getLocation()).append(")");
+				}
 			});
 		}
 
