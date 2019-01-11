@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper;
 
 import java.time.YearMonth;
 import java.util.Calendar;

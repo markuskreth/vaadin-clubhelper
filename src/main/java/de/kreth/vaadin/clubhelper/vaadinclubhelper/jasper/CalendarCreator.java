@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper;
 
 import java.io.InputStream;
 import java.time.LocalDate;
@@ -168,7 +168,7 @@ public abstract class CalendarCreator {
 		return dao.listAll();
 	}
 
-	static Calendar toCalendar(long time) {
+	public static Calendar toCalendar(long time) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(time);
 		return cal;

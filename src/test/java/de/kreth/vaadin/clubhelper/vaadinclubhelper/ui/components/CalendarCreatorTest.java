@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import com.ibm.icu.util.Calendar;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.DateMetadata;
+
 class CalendarCreatorTest {
 
 	@Test

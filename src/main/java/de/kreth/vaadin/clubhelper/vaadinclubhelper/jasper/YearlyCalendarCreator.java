@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper;
 
 import java.io.InputStream;
 import java.time.LocalDate;
