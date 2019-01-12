@@ -67,29 +67,28 @@ public class GroupDef extends BaseEntity implements Serializable {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((persongroups == null) ? 0 : persongroups.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		GroupDef other = (GroupDef) obj;
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
-		if (persongroups == null) {
-			if (other.persongroups != null)
-				return false;
-		} else if (!persongroups.equals(other.persongroups))
-			return false;
+		}
 		return true;
 	}
 

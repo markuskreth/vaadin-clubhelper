@@ -19,10 +19,10 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.MultiSelect;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -33,7 +33,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
-public class PersonGrid extends CustomComponent {
+public class PersonGrid extends VerticalLayout {
 
 	private static final long serialVersionUID = -8148097982839343673L;
 	private final transient Logger log = LoggerFactory.getLogger(getClass());
@@ -58,37 +58,20 @@ public class PersonGrid extends CustomComponent {
 
 		setCaption("Teilnehmer");
 		addStyleName("bold-caption");
+
 		checkIncluded = new CheckBox("Nur gemeldete");
-		checkIncluded.setId("person.filter.checked");
-		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));
 		comboGroups = new ComboBox<>("Gruppenfilter");
-		comboGroups.setId("person.filter.groups");
-		comboGroups.setEmptySelectionAllowed(true);
-		comboGroups.setEmptySelectionCaption("Alle");
-		comboGroups.setItemCaptionGenerator(GroupDef::getName);
-		comboGroups.addSelectionListener(ev -> onGroupSelected(ev));
+		Layout filters = setupFilterComponents();
+
 		allGroups = groupDao.listAll();
 		comboGroups.setItems(allGroups);
 		log.info("Loaded Groups: {}", allGroups);
 
-		HorizontalLayout filters = new HorizontalLayout();
-		filters.addComponents(checkIncluded, comboGroups);
-
 		filter = new PersonFilter(personDao);
-		filter.add(() -> {
-			setEvent(currentEvent);
-		});
 		dataProvider = DataProvider.ofCollection(filter.asCollection());
-		dataProvider.addDataProviderListener(filter);
-
 		grid = new Grid<>();
-		grid.setDataProvider(dataProvider);
-		grid.setId("person.grid");
-		grid.addColumn(Person::getPrename).setCaption("Vorname");
-		grid.addColumn(Person::getSurname).setCaption("Nachname");
-		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
-		grid.addComponentColumn(this::buildDeleteButton);
-		grid.setSelectionMode(SelectionMode.MULTI);
+
+		setupPersonGrid(personDao);
 
 		Button close = new Button("Schließen", ev -> {
 			PersonGrid.this.setVisible(false);
@@ -98,12 +81,41 @@ public class PersonGrid extends CustomComponent {
 		});
 		close.setId("person.close");
 
-		VerticalLayout panel = new VerticalLayout();
-		panel.addComponents(filters, grid, close);
-		setCompositionRoot(panel);
+		setMargin(false);
+		addComponents(filters, grid, close);
 	}
 
-	private Button buildDeleteButton(Person p) {
+	public void setupPersonGrid(PersonDao personDao) {
+		filter.add(() -> {
+			setEvent(currentEvent);
+		});
+		dataProvider.addDataProviderListener(filter);
+
+		grid.setDataProvider(dataProvider);
+		grid.setId("person.grid");
+		grid.addColumn(Person::getPrename).setCaption("Vorname");
+		grid.addColumn(Person::getSurname).setCaption("Nachname");
+		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
+		grid.addComponentColumn(this::buildPersonEditButton);
+		grid.setSelectionMode(SelectionMode.MULTI);
+	}
+
+	private Layout setupFilterComponents() {
+		checkIncluded.setId("person.filter.checked");
+		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));
+		comboGroups.setId("person.filter.groups");
+		comboGroups.setEmptySelectionAllowed(true);
+		comboGroups.setEmptySelectionCaption("Alle");
+		comboGroups.setItemCaptionGenerator(GroupDef::getName);
+		comboGroups.addSelectionListener(ev -> onGroupSelected(ev));
+
+		HorizontalLayout filters = new HorizontalLayout();
+		filters.setMargin(false);
+		filters.addComponents(checkIncluded, comboGroups);
+		return filters;
+	}
+
+	private Button buildPersonEditButton(Person p) {
 		Button button = new Button(VaadinIcons.EDIT);
 		button.addStyleName(ValoTheme.BUTTON_SMALL);
 		button.addClickListener(e -> showPersonDetails(p));

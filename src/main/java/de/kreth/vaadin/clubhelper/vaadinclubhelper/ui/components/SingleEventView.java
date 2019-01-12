@@ -32,6 +32,7 @@ public class SingleEventView extends CustomComponent {
 		textLocation.setSizeFull();
 
 		VerticalLayout panel = new VerticalLayout();
+		panel.setMargin(false);
 		panel.addComponents(textTitle, textLocation);
 		setCompositionRoot(panel);
 	}
