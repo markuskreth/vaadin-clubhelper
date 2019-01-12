@@ -88,9 +88,15 @@ public class MainView extends HorizontalLayout implements View {
 			exec.shutdown();
 			LOGGER.info("Loaded UI and started fetch of Events");
 		} else {
-			LOGGER.info("{} already initialized - opening Person View.");
-			openPersonViewForEvent(eventBusiness.getCurrent());
-			calendar.setToday(eventBusiness.getCurrent().getStart());
+
+			loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
+			if (loggedinPerson != null) {
+				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
+				openPersonViewForEvent(eventBusiness.getCurrent());
+				calendar.setToday(eventBusiness.getCurrent().getStart());
+			} else {
+				LOGGER.info("{} already initialized - but not loggedin.", getClass().getName());
+			}
 		}
 	}
 
