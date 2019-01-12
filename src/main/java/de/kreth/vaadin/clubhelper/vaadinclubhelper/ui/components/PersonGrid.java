@@ -24,7 +24,6 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.MultiSelect;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -45,7 +44,6 @@ public class PersonGrid extends CustomComponent {
 	private final Grid<Person> grid;
 	private final CheckBox checkIncluded;
 	private final ComboBox<GroupDef> comboGroups;
-	private final TextField textTitle;
 
 	private transient ClosedFunction closedFunction = null;
 	private transient Consumer<Person> onPersonEdit;
@@ -55,24 +53,11 @@ public class PersonGrid extends CustomComponent {
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
-	private TextField textLocation;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
-		textTitle = new TextField();
-		textTitle.setId("event.title");
-		textTitle.setStyleName("title_label");
-		textTitle.setCaption("Veranstaltung");
-		textTitle.setEnabled(false);
-		textTitle.setSizeFull();
-
-		textLocation = new TextField();
-		textLocation.setId("event.location");
-		textLocation.setStyleName("title_label");
-		textLocation.setCaption("Ort");
-		textLocation.setEnabled(false);
-		textLocation.setSizeFull();
-
+		setCaption("Teilnehmer");
+		addStyleName("bold-caption");
 		checkIncluded = new CheckBox("Nur gemeldete");
 		checkIncluded.setId("person.filter.checked");
 		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));
@@ -114,7 +99,7 @@ public class PersonGrid extends CustomComponent {
 		close.setId("person.close");
 
 		VerticalLayout panel = new VerticalLayout();
-		panel.addComponents(textTitle, textLocation, filters, grid, close);
+		panel.addComponents(filters, grid, close);
 		setCompositionRoot(panel);
 	}
 
@@ -192,20 +177,6 @@ public class PersonGrid extends CustomComponent {
 		updateFilter();
 	}
 
-	private void setTitle(String value) {
-		if (value == null) {
-			value = "";
-		}
-		textTitle.setValue(value);
-	}
-
-	private void setLocation(String value) {
-		if (value == null) {
-			value = "";
-		}
-		textLocation.setValue(value);
-	}
-
 	public interface ClosedFunction {
 		void closed();
 	}
@@ -217,15 +188,8 @@ public class PersonGrid extends CustomComponent {
 	public void setEvent(ClubEvent ev) {
 
 		if (ev != null) {
-
-			setCaption(ev.getCaption());
-			setTitle(ev.getCaption());
-			setLocation(ev.getLocation());
-
 			updateSelection(ev);
 		} else {
-			setCaption("");
-			setTitle("");
 			selectItems(new Person[0]);
 		}
 		this.currentEvent = ev;

@@ -3,7 +3,10 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +18,6 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
 
 import com.vaadin.shared.Registration;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
@@ -24,13 +26,15 @@ public class CalendarComponent extends CustomComponent {
 	private static final long serialVersionUID = -9152173211931554059L;
 	private transient final Logger log = LoggerFactory.getLogger(getClass());
 
-	private ClubEventProvider dataProvider;
+	private final ClubEventProvider dataProvider;
 	private Calendar<ClubEvent> calendar;
-	private HeadComponent head;
+	private List<Consumer<ZonedDateTime>> dateUpdateEvents;
 
-	public CalendarComponent() {
+	public CalendarComponent(ClubEventProvider dataProvider) {
 
-		dataProvider = new ClubEventProvider();
+		this.dataProvider = dataProvider;
+		dateUpdateEvents = new ArrayList<>();
+
 		calendar = new Calendar<>(dataProvider).withMonth(Month.from(LocalDateTime.now()));
 		calendar.setId("calendar.calendar");
 
@@ -38,18 +42,24 @@ public class CalendarComponent extends CustomComponent {
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));
 
-		head = new HeadComponent(() -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
-		head.updateMonthText(calendar.getStartDate());
+		setSizeFull();
+		setCompositionRoot(calendar);
+	}
 
-		VerticalLayout layout = new VerticalLayout(head, calendar);
-		layout.setSizeFull();
-		setCompositionRoot(layout);
+	public boolean add(Consumer<ZonedDateTime> e) {
+		return dateUpdateEvents.add(e);
+	}
+
+	public boolean remove(Consumer<ZonedDateTime> o) {
+		return dateUpdateEvents.remove(o);
 	}
 
 	private void calendarEvent(Event ev) {
 		log.debug("Event on calendar: {}", ev);
 		if (ev instanceof BackwardEvent || ev instanceof ForwardEvent) {
-			head.updateMonthText(calendar.getStartDate());
+			for (Consumer<ZonedDateTime> l : dateUpdateEvents) {
+				l.accept(calendar.getStartDate());
+			}
 		}
 	}
 
@@ -76,6 +86,14 @@ public class CalendarComponent extends CustomComponent {
 			fireItemSetChanged();
 		}
 
+	}
+
+	public ZonedDateTime getStartDate() {
+		return calendar.getStartDate();
+	}
+
+	public ZonedDateTime getEndDate() {
+		return calendar.getEndDate();
 	}
 
 }

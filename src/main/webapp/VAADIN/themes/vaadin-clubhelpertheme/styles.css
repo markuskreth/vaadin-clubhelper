@@ -15613,6 +15613,11 @@ div.v-layout.v-horizontal.v-widget {
 	font-size: large;
 }
 
+.vaadin-clubhelpertheme .v-caption-bold-caption {
+	font-weight: bolder !important;
+	font-size: large !important;
+}
+
 .vaadin-clubhelpertheme .v-calendar-next {
 	height: 50px;
 	width: 50px;

@@ -10,8 +10,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 public class EventGrid extends Grid<ClubEvent> {
 
 	private static final long serialVersionUID = -5435770187868470290L;
-	private transient final DateTimeFormatter df = DateTimeFormatter
-			.ofLocalizedDate(FormatStyle.MEDIUM);
+	private transient final DateTimeFormatter df = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
 
 	public EventGrid() {
 
