@@ -59,5 +59,26 @@
     background-size: cover;
     cursor: pointer; /* Mouse pointer on hover */
   }
-  
+  .mtv_allgemein {
+  	background:#ffff00;
+  }
+  .v-calendar-event-mtv_allgemein {
+  	background:#ffff00;
+  }
+  .v-calendar-event-mtv_allgemein-all-day {
+  	background:#ffff00;
+  }
+  .mtv_wettkampf {
+  	background:#99ff33;
+  }
+  .v-calendar-event-mtv_wettkampf {
+  	background:#99ff33;
+  }
+  .v-calendar-event-mtv_wettkampf-all-day {
+  	background:#99ff33;
+  }
+  .Schulferien {
+  }
+  .v-calendar-event-Schulferien {
+  }
 }

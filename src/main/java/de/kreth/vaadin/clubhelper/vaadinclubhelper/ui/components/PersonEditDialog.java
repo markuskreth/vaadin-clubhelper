@@ -53,7 +53,6 @@ public class PersonEditDialog extends Window {
 			Switch sw = new Switch(g.getName());
 			sw.setData(g);
 			sw.setValue(selected.contains(g));
-//			sw.addValueChangeListener(ev -> groupChanged(ev));
 			glay.addComponent(sw);
 
 			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
@@ -99,15 +98,5 @@ public class PersonEditDialog extends Window {
 			close();
 		}
 	}
-
-//	private void groupChanged(ValueChangeEvent<Boolean> ev) {
-//		GroupDef group = (GroupDef) ((Switch) ev.getComponent()).getData();
-//		Set<GroupDef> pg = person.getPersongroups();
-//		if (ev.getValue()) {
-//			pg.add(group);
-//		} else {
-//			pg.remove(group);
-//		}
-//	}
 
 }

@@ -82,6 +82,11 @@ public class ClubEvent extends BasicItem {
 		return organizerDisplayName;
 	}
 
+	@Override
+	public String getStyleName() {
+		return organizerDisplayName;
+	}
+
 	public Set<Person> getPersons() {
 		return persons;
 	}

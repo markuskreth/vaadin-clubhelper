@@ -15633,3 +15633,27 @@ div.v-layout.v-horizontal.v-widget {
 	background-size: cover;
 	cursor: pointer;
 }
+
+.vaadin-clubhelpertheme .mtv_allgemein {
+	background: #ffff00;
+}
+
+.vaadin-clubhelpertheme .v-calendar-event-mtv_allgemein {
+	background: #ffff00;
+}
+
+.vaadin-clubhelpertheme .v-calendar-event-mtv_allgemein-all-day {
+	background: #ffff00;
+}
+
+.vaadin-clubhelpertheme .mtv_wettkampf {
+	background: #99ff33;
+}
+
+.vaadin-clubhelpertheme .v-calendar-event-mtv_wettkampf {
+	background: #99ff33;
+}
+
+.vaadin-clubhelpertheme .v-calendar-event-mtv_wettkampf-all-day {
+	background: #99ff33;
+}

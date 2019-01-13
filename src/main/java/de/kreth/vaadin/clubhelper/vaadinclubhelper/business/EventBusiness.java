@@ -23,11 +23,9 @@ public class EventBusiness {
 	private ClubEvent current;
 
 	public synchronized List<ClubEvent> loadEvents() {
-
 		List<ClubEvent> list = dao.listAll();
 		log.trace("Returning events from database: {}", list);
 		return list;
-
 	}
 
 	public ClubEvent getCurrent() {
