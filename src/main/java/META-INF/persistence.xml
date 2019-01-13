@@ -11,7 +11,7 @@
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relative</class>
-		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpaesse</class>
+		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version</class>
 		<properties>

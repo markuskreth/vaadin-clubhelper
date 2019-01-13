@@ -30,7 +30,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relative;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpaesse;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -184,7 +184,7 @@ public abstract class CalendarCreator {
 		configuration.addAnnotatedClass(Person.class);
 		configuration.addAnnotatedClass(Persongroup.class);
 		configuration.addAnnotatedClass(Relative.class);
-		configuration.addAnnotatedClass(Startpaesse.class);
+		configuration.addAnnotatedClass(Startpass.class);
 		configuration.addAnnotatedClass(StartpassStartrechte.class);
 		configuration.addAnnotatedClass(Version.class);
 		configuration.addInputStream(CalendarCreator.class.getResourceAsStream("/schema/ClubEvent.hbm.xml"));

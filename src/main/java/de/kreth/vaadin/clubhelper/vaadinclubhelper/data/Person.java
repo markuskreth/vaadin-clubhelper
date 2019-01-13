@@ -16,6 +16,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -46,6 +47,9 @@ public class Person extends BaseEntity implements Serializable {
 
 	private String username;
 
+	@OneToOne
+	private Startpass startpass;
+
 	// bi-directional many-to-one association to Adress
 	@OneToMany(mappedBy = "person")
 	private List<Adress> adresses;
@@ -71,10 +75,6 @@ public class Person extends BaseEntity implements Serializable {
 	// bi-directional many-to-one association to Relative
 	@OneToMany(mappedBy = "person2Bean")
 	private List<Relative> relatives2;
-
-	// bi-directional many-to-one association to Startpaesse
-	@OneToMany(mappedBy = "person")
-	private List<Startpaesse> startpaesses;
 
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "persons")
 	private Set<ClubEvent> events;
@@ -288,25 +288,12 @@ public class Person extends BaseEntity implements Serializable {
 		return relatives2;
 	}
 
-	public List<Startpaesse> getStartpaesses() {
-		return this.startpaesses;
+	public Startpass getStartpass() {
+		return startpass;
 	}
 
-	public void setStartpaesses(List<Startpaesse> startpaesses) {
-		this.startpaesses = startpaesses;
-	}
-
-	public Startpaesse addStartpaess(Startpaesse startpaess) {
-		getStartpaesses().add(startpaess);
-		startpaess.setPerson(this);
-
-		return startpaess;
-	}
-
-	public Startpaesse removeStartpaess(Startpaesse startpaess) {
-		getStartpaesses().remove(startpaess);
-		startpaess.setPerson(null);
-		return startpaess;
+	public void setStartpass(Startpass startpass) {
+		this.startpass = startpass;
 	}
 
 	@Override

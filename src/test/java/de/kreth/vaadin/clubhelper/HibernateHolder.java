@@ -13,7 +13,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relative;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpaesse;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 
@@ -32,7 +32,7 @@ public enum HibernateHolder {
 		configuration.addAnnotatedClass(Person.class);
 		configuration.addAnnotatedClass(Persongroup.class);
 		configuration.addAnnotatedClass(Relative.class);
-		configuration.addAnnotatedClass(Startpaesse.class);
+		configuration.addAnnotatedClass(Startpass.class);
 		configuration.addAnnotatedClass(StartpassStartrechte.class);
 		configuration.addAnnotatedClass(Version.class);
 		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));

@@ -33,7 +33,7 @@ public class StartpassStartrechte extends BaseEntity implements Serializable {
 	//bi-directional many-to-one association to Startpaesse
 	@ManyToOne
 	@JoinColumn(name="startpass_id")
-	private Startpaesse startpaesse;
+	private Startpass startpaesse;
 
 	public String getFachgebiet() {
 		return this.fachgebiet;
@@ -67,11 +67,11 @@ public class StartpassStartrechte extends BaseEntity implements Serializable {
 		this.vereinName = vereinName;
 	}
 
-	public Startpaesse getStartpaesse() {
+	public Startpass getStartpaesse() {
 		return this.startpaesse;
 	}
 
-	public void setStartpaesse(Startpaesse startpaesse) {
+	public void setStartpaesse(Startpass startpaesse) {
 		this.startpaesse = startpaesse;
 	}
 
