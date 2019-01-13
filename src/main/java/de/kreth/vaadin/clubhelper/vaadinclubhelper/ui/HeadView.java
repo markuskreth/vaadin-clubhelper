@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -38,7 +38,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
-public class HeadComponent extends HorizontalLayout {
+public class HeadView extends HorizontalLayout {
 
 	private static final long serialVersionUID = -7915475211371903028L;
 
@@ -54,7 +54,7 @@ public class HeadComponent extends HorizontalLayout {
 
 	private int monthItemId;
 
-	public HeadComponent(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
+	public HeadView(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider) {
 
 		monthName = new Label();

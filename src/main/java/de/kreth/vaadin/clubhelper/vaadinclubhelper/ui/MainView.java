@@ -24,7 +24,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.HeadComponent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
@@ -46,7 +45,7 @@ public class MainView extends BorderLayout implements View {
 	private EventBusiness eventBusiness;
 	private Navigator navigator;
 
-	private HeadComponent head;
+	private HeadView head;
 
 	private SingleEventView eventView;
 
@@ -98,7 +97,7 @@ public class MainView extends BorderLayout implements View {
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new HeadComponent(() -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
+		head = new HeadView(() -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
 		head.updateMonthText(calendar.getStartDate());
 		calendar.add(dateTime -> head.updateMonthText(dateTime));
 
