@@ -1,8 +1,12 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.DateField;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
@@ -13,9 +17,14 @@ public class SingleEventView extends CustomComponent {
 	private final TextField textTitle;
 	private final TextField textLocation;
 
+	private DateField startDate;
+
+	private DateField endDate;
+
 	public SingleEventView() {
 		setCaption("Gewählte Veranstaltung");
 		addStyleName("bold-caption");
+		setWidth(40.0f, Unit.PERCENTAGE);
 
 		textTitle = new TextField();
 		textTitle.setId("event.title");
@@ -31,20 +40,28 @@ public class SingleEventView extends CustomComponent {
 		textLocation.setEnabled(false);
 		textLocation.setSizeFull();
 
-		VerticalLayout panel = new VerticalLayout();
-		panel.setMargin(false);
-		panel.addComponents(textTitle, textLocation);
-		setCompositionRoot(panel);
+		startDate = new DateField("Beginn");
+		startDate.setEnabled(false);
+		endDate = new DateField("Ende");
+		endDate.setEnabled(false);
+
+		textLocation.setHeight(endDate.getHeight(), endDate.getHeightUnits());
+
+		GridLayout layout = new GridLayout(2, 2);
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.addComponents(textTitle, startDate, textLocation, endDate);
+		setCompositionRoot(layout);
 	}
 
-	public void setTitle(String value) {
+	void setTitle(String value) {
 		if (value == null) {
 			value = "";
 		}
 		textTitle.setValue(value);
 	}
 
-	public void setLocation(String value) {
+	void setLocation(String value) {
 		if (value == null) {
 			value = "";
 		}
@@ -57,11 +74,30 @@ public class SingleEventView extends CustomComponent {
 
 			setTitle(ev.getCaption());
 			setLocation(ev.getLocation());
+			setStartDate(ev.getStart());
+			setEndDate(ev);
 
 		} else {
 			setTitle("");
 			setLocation("");
+			endDate.setVisible(false);
 		}
+	}
+
+	private void setEndDate(ClubEvent ev) {
+		ZonedDateTime start = ev.getStart();
+		ZonedDateTime end = ev.getEnd();
+		if (start.until(end, ChronoUnit.DAYS) > 0) {
+			endDate.setValue(end.toLocalDate());
+			endDate.setVisible(true);
+		} else {
+			endDate.setValue(null);
+			endDate.setVisible(false);
+		}
+	}
+
+	private void setStartDate(ZonedDateTime start) {
+		startDate.setValue(start.toLocalDate());
 	}
 
 }
