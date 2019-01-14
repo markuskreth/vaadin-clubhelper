@@ -24,7 +24,7 @@ public class SingleEventView extends CustomComponent {
 	public SingleEventView() {
 		setCaption("Gewählte Veranstaltung");
 		addStyleName("bold-caption");
-		setWidth(40.0f, Unit.PERCENTAGE);
+		setWidth(50.0f, Unit.PERCENTAGE);
 
 		textTitle = new TextField();
 		textTitle.setId("event.title");

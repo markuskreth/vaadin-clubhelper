@@ -47,7 +47,7 @@ public class Person extends BaseEntity implements Serializable {
 
 	private String username;
 
-	@OneToOne
+	@OneToOne(mappedBy = "person")
 	private Startpass startpass;
 
 	// bi-directional many-to-one association to Adress

@@ -32,6 +32,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
 import net.sf.jasperreports.engine.JRException;
@@ -90,10 +91,18 @@ public class HeadView extends HorizontalLayout {
 	private void openPopupMenu(ClickEvent ev) {
 		Button button = ev.getButton();
 
+		Person loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
 		ContextMenu contextMenu = new ContextMenu(button, true);
 		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
-		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1)).getId();
+		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
+		if (loggedinPerson != null) {
+			contextMenu.addItem("Personen verwalten", ev1 -> switchToPersonEditUi());
+		}
 		contextMenu.open(50, 50);
+	}
+
+	private void switchToPersonEditUi() {
+
 	}
 
 	private void calendarExport(MenuItem ev1) {

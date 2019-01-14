@@ -24,7 +24,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
@@ -82,11 +81,9 @@ public class MainView extends BorderLayout implements View {
 		eventView.setVisible(false);
 
 		personGrid = new PersonGrid(groupDao, personDao);
-		personGrid.setId("main.person");
 		personGrid.setCaption("Personen");
 		personGrid.onClosedFunction(() -> detailClosed());
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
-		personGrid.onPersonEdit(p -> onPersonEdit(p));
 		personGrid.setVisible(false);
 
 		VerticalLayout eastLayout = new VerticalLayout();
@@ -119,11 +116,6 @@ public class MainView extends BorderLayout implements View {
 
 		});
 		exec.shutdown();
-	}
-
-	private void onPersonEdit(Person p) {
-		PersonEditDialog dlg = new PersonEditDialog(groupDao.listAll(), p, personDao);
-		getUI().addWindow(dlg);
 	}
 
 	private void personSelectionChange(SelectionEvent<Person> ev) {

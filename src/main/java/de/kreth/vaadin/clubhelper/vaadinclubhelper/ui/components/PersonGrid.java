@@ -20,6 +20,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
@@ -32,6 +33,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 
 public class PersonGrid extends VerticalLayout {
 
@@ -53,9 +55,12 @@ public class PersonGrid extends VerticalLayout {
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
+	private Column<Person, Startpass> startpassColumn;
+	private Column<Person, Button> editButtonColumn;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
+		setId("main.person");
 		setCaption("Teilnehmer");
 		addStyleName("bold-caption");
 
@@ -96,8 +101,12 @@ public class PersonGrid extends VerticalLayout {
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
 		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
-		grid.addComponentColumn(this::buildPersonEditButton);
+		startpassColumn = grid.addColumn(Person::getStartpass).setCaption("Startpass Nr.");
+		editButtonColumn = grid.addComponentColumn(this::buildPersonEditButton);
 		grid.setSelectionMode(SelectionMode.MULTI);
+
+		startpassColumn.setHidden(false);
+		editButtonColumn.setHidden(true);
 	}
 
 	private Layout setupFilterComponents() {
@@ -195,6 +204,8 @@ public class PersonGrid extends VerticalLayout {
 
 	public void onPersonEdit(Consumer<Person> function) {
 		this.onPersonEdit = function;
+		startpassColumn.setHidden(true);
+		editButtonColumn.setHidden(false);
 	}
 
 	public void setEvent(ClubEvent ev) {

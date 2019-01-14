@@ -48,6 +48,7 @@ public class MainUi extends UI {
 		// Create and register the views
 		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness));
 		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao));
+		navigator.addView(PersonEditView.VIEW_NAME, new PersonEditView(groupDao, personDao));
 		navigator.navigateTo(MainView.VIEW_NAME);
 	}
 
