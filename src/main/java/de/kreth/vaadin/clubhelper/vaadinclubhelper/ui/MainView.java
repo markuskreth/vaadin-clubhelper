@@ -12,8 +12,9 @@ import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -27,7 +28,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarCompone
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
-public class MainView extends BorderLayout implements View {
+public class MainView extends BorderLayout implements NamedView {
 
 	public static final String VIEW_NAME = "";
 
@@ -48,6 +49,8 @@ public class MainView extends BorderLayout implements View {
 
 	private SingleEventView eventView;
 
+	private HorizontalLayout eventButtonLayout;
+
 	public MainView(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness) {
 		this.personDao = personDao;
 		this.groupDao = groupDao;
@@ -56,20 +59,21 @@ public class MainView extends BorderLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		View.super.enter(event);
 		if (this.navigator == null) {
-
 			initUI(event);
 			LOGGER.info("Loaded UI and started fetch of Events");
 		} else {
 
 			loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
+
 			if (loggedinPerson != null) {
 				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
 				openPersonViewForEvent(eventBusiness.getCurrent());
 				calendar.setToday(eventBusiness.getCurrent().getStart());
+				head.updateLoggedinPerson();
 			} else {
 				LOGGER.info("{} already initialized - but not loggedin.", getClass().getName());
+				head.updateLoggedinPerson();
 			}
 		}
 	}
@@ -82,15 +86,30 @@ public class MainView extends BorderLayout implements View {
 
 		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setCaption("Personen");
-		personGrid.onClosedFunction(() -> detailClosed());
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
 		personGrid.setVisible(false);
 
+		Button close = new Button("Schließen", ev -> {
+			detailClosed();
+		});
+		close.setId("person.close");
+
+		Button eventDetails = new Button("Veranstaltung Details", ev -> {
+			navigator.navigateTo(EventDetails.VIEW_NAME);
+		});
+		eventDetails.setId("person.eventDetails");
+
+		eventButtonLayout = new HorizontalLayout();
+		eventButtonLayout.setSpacing(true);
+		eventButtonLayout.addComponents(close, eventDetails);
+		eventButtonLayout.setVisible(false);
+
 		VerticalLayout eastLayout = new VerticalLayout();
-		eastLayout.addComponents(eventView, personGrid);
+		eastLayout.addComponents(eventView, personGrid, eventButtonLayout);
 
 		ClubEventProvider dataProvider = new ClubEventProvider();
 		calendar = new CalendarComponent(dataProvider);
+		calendar.setSizeFull();
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
@@ -128,6 +147,7 @@ public class MainView extends BorderLayout implements View {
 		LOGGER.debug("Closing detail view.");
 		personGrid.setVisible(false);
 		eventView.setVisible(false);
+		eventButtonLayout.setVisible(false);
 	}
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
@@ -155,8 +175,14 @@ public class MainView extends BorderLayout implements View {
 
 		personGrid.setVisible(true);
 		eventView.setVisible(true);
+		eventButtonLayout.setVisible(true);
 
 		eventBusiness.setSelected(ev);
+	}
+
+	@Override
+	public String getViewName() {
+		return VIEW_NAME;
 	}
 
 }

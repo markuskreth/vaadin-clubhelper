@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.StreamResource;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
@@ -32,6 +34,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
@@ -55,6 +58,10 @@ public class HeadView extends HorizontalLayout {
 
 	private int monthItemId;
 
+	private Label personLabel;
+
+	private Person loggedinPerson;
+
 	public HeadView(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider) {
 
@@ -68,11 +75,16 @@ public class HeadView extends HorizontalLayout {
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
 		popupButton.setWidth(null);
 
+		personLabel = new Label();
+		personLabel.setStyleName("title_caption");
+
 		this.addComponent(popupButton);
 		this.addComponent(monthName);
+		this.addComponent(personLabel);
 
 		setComponentAlignment(popupButton, Alignment.MIDDLE_LEFT);
 		setComponentAlignment(monthName, Alignment.MIDDLE_CENTER);
+		setComponentAlignment(personLabel, Alignment.MIDDLE_RIGHT);
 		setExpandRatio(monthName, 1.0f);
 
 		setSizeFull();
@@ -80,6 +92,16 @@ public class HeadView extends HorizontalLayout {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.dataProvider = dataProvider;
+	}
+
+	public void updateLoggedinPerson() {
+
+		loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
+		if (loggedinPerson != null) {
+			personLabel.setCaption(loggedinPerson.getSurname() + ", " + loggedinPerson.getPrename());
+		} else {
+			personLabel.setCaption("");
+		}
 	}
 
 	public void updateMonthText(ZonedDateTime startDate) {
@@ -91,14 +113,28 @@ public class HeadView extends HorizontalLayout {
 	private void openPopupMenu(ClickEvent ev) {
 		Button button = ev.getButton();
 
-		Person loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
+		VaadinSession session = getSession();
+		Person loggedinPerson = (Person) session.getAttribute(Person.SESSION_LOGIN);
 		ContextMenu contextMenu = new ContextMenu(button, true);
 		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
 		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
 		if (loggedinPerson != null) {
-			contextMenu.addItem("Personen verwalten", ev1 -> switchToPersonEditUi());
+			Set<GroupDef> groups = loggedinPerson.getGroups();
+			if (contains(groups, "ADMIN") || contains(groups, "Übungsleiter")) {
+				contextMenu.addItem("Personen verwalten", ev1 -> switchToPersonEditUi());
+			}
+			contextMenu.addItem("Abmelden", ev1 -> session.setAttribute(Person.SESSION_LOGIN, null));
 		}
 		contextMenu.open(50, 50);
+	}
+
+	public boolean contains(Set<GroupDef> groups, String name) {
+		for (GroupDef g : groups) {
+			if (g.getName().toLowerCase().contentEquals(name.toLowerCase())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void switchToPersonEditUi() {

@@ -26,6 +26,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.MultiSelect;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.GridSelectionModel;
 import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
@@ -47,7 +48,6 @@ public class PersonGrid extends VerticalLayout {
 	private final CheckBox checkIncluded;
 	private final ComboBox<GroupDef> comboGroups;
 
-	private transient ClosedFunction closedFunction = null;
 	private transient Consumer<Person> onPersonEdit;
 	private Boolean selectedOnlyFilter;
 
@@ -57,6 +57,7 @@ public class PersonGrid extends VerticalLayout {
 	private ClubEvent currentEvent;
 	private Column<Person, Startpass> startpassColumn;
 	private Column<Person, Button> editButtonColumn;
+	private Layout filters;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -66,7 +67,7 @@ public class PersonGrid extends VerticalLayout {
 
 		checkIncluded = new CheckBox("Nur gemeldete");
 		comboGroups = new ComboBox<>("Gruppenfilter");
-		Layout filters = setupFilterComponents();
+		filters = setupFilterComponents();
 
 		allGroups = groupDao.listAll();
 		comboGroups.setItems(allGroups);
@@ -78,16 +79,8 @@ public class PersonGrid extends VerticalLayout {
 
 		setupPersonGrid(personDao);
 
-		Button close = new Button("Schließen", ev -> {
-			PersonGrid.this.setVisible(false);
-			if (closedFunction != null) {
-				closedFunction.closed();
-			}
-		});
-		close.setId("person.close");
-
 		setMargin(false);
-		addComponents(filters, grid, close);
+		addComponents(filters, grid);
 	}
 
 	public void setupPersonGrid(PersonDao personDao) {
@@ -98,15 +91,21 @@ public class PersonGrid extends VerticalLayout {
 
 		grid.setDataProvider(dataProvider);
 		grid.setId("person.grid");
+		setSelectionMode(SelectionMode.MULTI);
+		grid.setSizeFull();
+
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
 		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
+
 		startpassColumn = grid.addColumn(Person::getStartpass).setCaption("Startpass Nr.");
 		editButtonColumn = grid.addComponentColumn(this::buildPersonEditButton);
-		grid.setSelectionMode(SelectionMode.MULTI);
-
 		startpassColumn.setHidden(false);
 		editButtonColumn.setHidden(true);
+	}
+
+	public GridSelectionModel<Person> setSelectionMode(SelectionMode selectionMode) {
+		return grid.setSelectionMode(selectionMode);
 	}
 
 	private Layout setupFilterComponents() {
@@ -131,18 +130,23 @@ public class PersonGrid extends VerticalLayout {
 		return button;
 	}
 
+	public void hideFilter() {
+		filters.setVisible(false);
+	}
+
 	private void showPersonDetails(Person p) {
 		if (onPersonEdit != null) {
 			onPersonEdit.accept(p);
 		}
 	}
 
-	public void onClosedFunction(ClosedFunction closedFunction) {
-		this.closedFunction = closedFunction;
-	}
-
 	private void onSelectedOnly(ValueChangeEvent<Boolean> ev) {
 		this.selectedOnlyFilter = ev.getValue();
+		updateFilter();
+	}
+
+	public void setSelectedOnly() {
+		this.selectedOnlyFilter = true;
 		updateFilter();
 	}
 
@@ -154,7 +158,6 @@ public class PersonGrid extends VerticalLayout {
 		}
 
 		filter.setSelectedGroups(groupMemberFilter);
-
 		dataProvider.refreshAll();
 	}
 
@@ -198,10 +201,6 @@ public class PersonGrid extends VerticalLayout {
 		updateFilter();
 	}
 
-	public interface ClosedFunction {
-		void closed();
-	}
-
 	public void onPersonEdit(Consumer<Person> function) {
 		this.onPersonEdit = function;
 		startpassColumn.setHidden(true);
@@ -216,6 +215,7 @@ public class PersonGrid extends VerticalLayout {
 			selectItems(new Person[0]);
 		}
 		this.currentEvent = ev;
+//		updateFilter();
 	}
 
 	public void updateSelection(ClubEvent ev) {

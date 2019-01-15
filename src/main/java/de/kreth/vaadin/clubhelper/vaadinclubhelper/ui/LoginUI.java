@@ -1,7 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
 import com.vaadin.navigator.Navigator;
-import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.LoginForm;
@@ -11,7 +10,7 @@ import com.vaadin.ui.VerticalLayout;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
-public class LoginUI extends VerticalLayout implements View {
+public class LoginUI extends VerticalLayout implements NamedView {
 
 	private static final long serialVersionUID = 4339018452507960084L;
 	public static final String VIEW_NAME = "LoginUI";
@@ -45,8 +44,12 @@ public class LoginUI extends VerticalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		View.super.enter(event);
 		navigator = event.getNavigator();
 		parameters = event.getParameters();
+	}
+
+	@Override
+	public String getViewName() {
+		return VIEW_NAME;
 	}
 }

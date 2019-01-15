@@ -97,7 +97,9 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	@Override
 	public void onDataChange(DataChangeEvent<Person> event) {
 		publishedList.clear();
-		publishedList.addAll(personDao.listAll().stream().filter(this).collect(Collectors.toList()));
+		List<Person> listAll = personDao.listAll();
+		List<Person> filtered = listAll.stream().filter(this).collect(Collectors.toList());
+		publishedList.addAll(filtered);
 		updateHandler.fireUpdateEvent();
 	}
 

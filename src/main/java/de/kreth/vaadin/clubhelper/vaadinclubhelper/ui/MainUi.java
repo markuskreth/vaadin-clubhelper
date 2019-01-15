@@ -42,13 +42,13 @@ public class MainUi extends UI {
 
 		getPage().setTitle("Vereinshelfer");
 
-		// Create a navigator to control the views
 		Navigator navigator = new Navigator(this, this);
 
 		// Create and register the views
 		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness));
 		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao));
 		navigator.addView(PersonEditView.VIEW_NAME, new PersonEditView(groupDao, personDao));
+		navigator.addView(EventDetails.VIEW_NAME, new EventDetails(personDao, groupDao, eventBusiness));
 		navigator.navigateTo(MainView.VIEW_NAME);
 	}
 
