@@ -24,10 +24,15 @@
 		</property>
 		<property column="organizerDisplayName" generated="never"
 			lazy="false" name="organizerDisplayName" type="string" />
-			
         <set name="persons" table="clubevent_has_person" lazy="false">
             <key column="clubevent_id"/>
             <many-to-many column="person_id" class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person" />
+        </set>
+        <set name="altersgruppen" table="altersgruppe" lazy="false">
+            <key>
+                <column name="clubevent_id" not-null="true" />
+            </key>
+            <one-to-many class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe" />
         </set>
 	</class>
 	<query name="ClubEvent.findAll">

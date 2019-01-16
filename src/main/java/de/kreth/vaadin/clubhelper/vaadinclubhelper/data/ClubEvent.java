@@ -7,19 +7,26 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Transient;
 
 import org.vaadin.addon.calendar.item.BasicItem;
 
+// Entity must not be used, this class is persisted by ClubEvent.hbm.xml
+@Entity
 public class ClubEvent extends BasicItem {
 
 	private static final long serialVersionUID = -3600971939167437577L;
+
+	@Id
+	private String id;
 	private String location;
 	private String iCalUID;
 
-	private String id;
 	private String organizerDisplayName;
 	private Set<Person> persons;
+	private Set<Altersgruppe> altersgruppen;
 
 	ClubEvent() {
 	}
@@ -109,6 +116,14 @@ public class ClubEvent extends BasicItem {
 	public void remove(Person person) {
 		persons.remove(person);
 		person.remove(this);
+	}
+
+	public Set<Altersgruppe> getAltersgruppen() {
+		return altersgruppen;
+	}
+
+	public void setAltersgruppen(Set<Altersgruppe> altersgruppen) {
+		this.altersgruppen = altersgruppen;
 	}
 
 	@Transient
