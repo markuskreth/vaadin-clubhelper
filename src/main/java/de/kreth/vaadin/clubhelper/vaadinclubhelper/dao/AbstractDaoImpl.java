@@ -23,7 +23,12 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	@Override
 	@Transactional
 	public void save(T obj) {
-		em.persist(obj);
+
+		if (em.contains(obj)) {
+			em.merge(obj);
+		} else {
+			em.persist(obj);
+		}
 	}
 
 	@Override

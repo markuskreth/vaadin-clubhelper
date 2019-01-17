@@ -20,6 +20,8 @@ public class Altersgruppe extends BaseEntity implements Serializable {
 	private String bezeichnung;
 	private int start;
 	private int end;
+
+	@ManyToOne
 	private Pflicht pflicht;
 	@ManyToOne
 	@JoinColumn(name = "event_id")

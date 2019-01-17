@@ -30,7 +30,7 @@
         </set>
         <set name="altersgruppen" table="altersgruppe" lazy="false">
             <key>
-                <column name="clubevent_id" not-null="true" />
+                <column name="event_id" not-null="true" />
             </key>
             <one-to-many class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe" />
         </set>

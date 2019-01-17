@@ -1,5 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -8,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
@@ -19,6 +23,9 @@ public class EventBusiness {
 
 	@Autowired
 	ClubEventDao dao;
+
+	@Autowired
+	AltersgruppeDao altersgruppeDao;
 
 	private ClubEvent current;
 
@@ -47,5 +54,31 @@ public class EventBusiness {
 				throw e;
 			}
 		}
+	}
+
+	public Altersgruppe createAltersgruppe() {
+		Altersgruppe e = new Altersgruppe();
+		e.setStart(LocalDateTime.now().getYear() - 1);
+		e.setEnd(LocalDateTime.now().getYear());
+		e.setChanged(new Date());
+		e.setCreated(e.getChanged());
+		Set<Altersgruppe> altersgruppen = current.getAltersgruppen();
+		if (altersgruppen.contains(e)) {
+			for (Altersgruppe el : altersgruppen) {
+				if (el.equals(e)) {
+					return el;
+				}
+			}
+		} else {
+			altersgruppen.add(e);
+			e.setClubEvent(current);
+		}
+
+		return e;
+	}
+
+	public void storeAltersgruppe(Altersgruppe edited) {
+		altersgruppeDao.save(edited);
+		dao.update(current);
 	}
 }

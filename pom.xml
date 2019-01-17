@@ -93,6 +93,11 @@
 			<artifactId>border-layout-addon</artifactId>
 			<version>1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.vaadin.ui</groupId>
+			<artifactId>numberfield</artifactId>
+			<version>0.2.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>

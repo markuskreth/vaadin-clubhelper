@@ -14,9 +14,11 @@
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte</class>
 		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version</class>
+		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht</class>
+		<class>de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-			<property name="javax.persistence.jdbc.url" value="localhost:3306"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/clubhelper?useUnicode=yes;characterEncoding=utf8"/>
 			<property name="javax.persistence.jdbc.user" value="root"/>
 			<property name="javax.persistence.jdbc.password" value="07!73"/>
 			<property name="javax.persistence.schema-generation.scripts.action" value="create"/>
