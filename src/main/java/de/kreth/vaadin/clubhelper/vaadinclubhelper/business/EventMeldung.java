@@ -37,6 +37,10 @@ public class EventMeldung {
 		throw new IllegalStateException("No Group found for " + p);
 	}
 
+	public String getCaption() {
+		return event.getCaption();
+	}
+
 	public Map<Altersgruppe, List<Person>> getGroups() {
 		return Collections.unmodifiableMap(groups);
 	}

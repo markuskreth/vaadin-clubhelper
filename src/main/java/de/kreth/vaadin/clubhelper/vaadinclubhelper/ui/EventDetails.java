@@ -2,12 +2,14 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventMeldung;
@@ -64,7 +66,7 @@ public class EventDetails extends GridLayout implements NamedView {
 			Button createMeldung = new Button("Meldung");
 			createMeldung.addClickListener(ev -> show(eventBusiness.createMeldung()));
 
-			VerticalLayout buttonLayout = new VerticalLayout(back, createMeldung);
+			HorizontalLayout buttonLayout = new HorizontalLayout(back, createMeldung);
 			buttonLayout.setMargin(true);
 			buttonLayout.setSpacing(true);
 
@@ -81,8 +83,14 @@ public class EventDetails extends GridLayout implements NamedView {
 	}
 
 	private void show(EventMeldung createMeldung) {
-		Notification.show("Meldung für " + eventBusiness.getCurrent().getCaption(), createMeldung.toString(),
-				Type.HUMANIZED_MESSAGE);
+		VerticalLayout content = new VerticalLayout();
+		content.addComponent(new Label(createMeldung.toString(), ContentMode.PREFORMATTED));
+
+		Window dlg = new Window("Meldung für " + eventBusiness.getCurrent().getCaption());
+		dlg.setContent(content);
+		dlg.center();
+		getUI().addWindow(dlg);
+
 	}
 
 	@Override
