@@ -13,29 +13,24 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDaoImpl;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDaoImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfiguration.class)
 class EventBusinessSpringTest {
 
 	private List<Person> persons;
@@ -48,40 +43,6 @@ class EventBusinessSpringTest {
 	private EntityManager entityManager;
 
 	private TypedQuery<ClubeventHasPerson> all;
-
-	@Configuration
-	public static class InnerConfig {
-
-		private SessionFactory sessionFactory;
-
-		public InnerConfig() {
-
-			org.hibernate.cfg.Configuration configuration = HibernateHolder.configuration();
-
-			sessionFactory = configuration.buildSessionFactory();
-		}
-
-		@Bean
-		public EntityManager getEntityManager() {
-			return sessionFactory.openSession();
-		}
-
-		@Bean
-		public ClubEventDao getClubEventDao() {
-			return new ClubEventDaoImpl();
-		}
-
-		@Bean
-		public AltersgruppeDao getAltersgruppeDao() {
-			return new AltersgruppeDaoImpl();
-		}
-
-		@Bean
-		public EventBusiness getEventBusiness() {
-			return new EventBusiness();
-		}
-
-	}
 
 	@BeforeEach
 	void setUp() throws Exception {
