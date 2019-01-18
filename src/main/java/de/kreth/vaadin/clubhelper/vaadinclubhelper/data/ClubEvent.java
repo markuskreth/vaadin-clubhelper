@@ -16,7 +16,7 @@ import org.vaadin.addon.calendar.item.BasicItem;
 
 // Entity must not be used, this class is persisted by ClubEvent.hbm.xml
 @Entity
-public class ClubEvent extends BasicItem {
+public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	private static final long serialVersionUID = -3600971939167437577L;
 
@@ -194,6 +194,11 @@ public class ClubEvent extends BasicItem {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public boolean hasValidId() {
+		return id != null && !id.isBlank();
 	}
 
 }

@@ -1,168 +1,89 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import de.kreth.vaadin.clubhelper.HibernateHolder;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDaoImpl;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestAltersgruppen;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestPersonGenerator;
 
-@ExtendWith(SpringExtension.class)
 class EventBusinessTest {
 
 	EventBusiness eventBusiness;
 
-	private List<Person> persons;
-	private ClubEvent event;
+	ZonedDateTime startDate = ZonedDateTime.of(LocalDateTime.of(2019, 1, 1, 0, 0), ZoneId.systemDefault());
 
-	@Autowired
-	private EventBusiness business;
+	@Mock
+	ClubEventDao dao;
 
-	@Autowired
-	private EntityManager entityManager;
-
-	private TypedQuery<ClubeventHasPerson> all;
-//
-//	@Autowired
-//	private InnerConfig innerConfig;
-
-	@Configuration
-	public static class InnerConfig {
-
-		private SessionFactory sessionFactory;
-
-		public InnerConfig() {
-
-			org.hibernate.cfg.Configuration configuration = HibernateHolder.configuration();
-
-			sessionFactory = configuration.buildSessionFactory();
-		}
-
-		@Bean
-		public EntityManager getEntityManager() {
-			return sessionFactory.openSession();
-		}
-
-		@Bean
-		public ClubEventDao getClubEventDao() {
-			return new ClubEventDaoImpl();
-		}
-
-		@Bean
-		public EventBusiness getEventBusiness() {
-			return new EventBusiness();
-		}
-
-	}
+	@Mock
+	AltersgruppeDao altersgruppeDao;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		insertTestData();
-		business.setSelected(event);
-
-		all = entityManager.createQuery("from ClubeventHasPerson", ClubeventHasPerson.class);
-	}
-
-	@AfterEach
-	void shutdown() {
-		entityManager.clear();
-		((Session) entityManager).doWork(conn -> AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2));
-//		entityManager.flush();
-	}
-
-	private void insertTestData() {
-		persons = new ArrayList<>();
-
-		entityManager.getTransaction().begin();
-		for (int i = 0; i < 3; i++) {
-
-			Person p = new Person();
-			p.setPrename("prename_" + i);
-			p.setSurname("surname_" + i);
-			p.setBirth(LocalDate.now());
-			entityManager.persist(p);
-			persons.add(p);
-		}
-		event = AbstractDatabaseTest.creteEvent();
-		assertNull(event.getPersons());
-		entityManager.persist(event);
-		entityManager.getTransaction().commit();
+		MockitoAnnotations.initMocks(this);
+		eventBusiness = new EventBusiness();
+		eventBusiness.dao = dao;
+		eventBusiness.altersgruppeDao = altersgruppeDao;
 	}
 
 	@Test
-	void testDataCorrectlyCreated() {
+	void testCreateMeldung() {
+		ClubEvent ev = new ClubEventBuilder().withId("id").withiCalUID("iCalUID").withLocation("location")
+				.withCaption("caption").withDescription("description").withOrganizerDisplayName("organizerDisplayName")
+				.withStart(startDate).withEnd(startDate).withAllDay(true).build();
 
-		assertEquals(0, all.getResultList().size());
+		List<Altersgruppe> altersgruppen = TestAltersgruppen.getAltersgruppen();
+		List<Person> personen = TestPersonGenerator.generatePersonen(10);
+		int count = 1;
+		for (Person p : personen) {
+			p.setEvents(new HashSet<>(Arrays.asList(ev)));
+			p.setBirth(LocalDate.of(1993 + (count * 3), count, count + 2));
+			count++;
+		}
 
-		List<Person> stored = entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class).getResultList();
-		assertEquals(3, stored.size());
+		ev.setAltersgruppen(new HashSet<>(altersgruppen));
+		ev.setPersons(new HashSet<>(personen));
 
-		List<ClubEvent> events = business.loadEvents();
-		assertEquals(1, events.size());
-//		assertNotNull(events.get(0).getPersons());
+		eventBusiness.setSelected(ev);
+		EventMeldung meldung = eventBusiness.createMeldung();
+		assertNotNull(meldung);
 
 	}
 
 	@Test
-	@Disabled
-	void testAddPersonsToEvent() {
-		assertEquals(0, all.getResultList().size());
+	void testAltersgruppeBetween() {
+		Altersgruppe gruppe = new Altersgruppe();
+		gruppe.setBezeichnung("bezeichnung");
+		gruppe.setStart(2000);
+		gruppe.setEnd(2005);
 
-		entityManager.getTransaction().begin();
-		business.changePersons(new HashSet<>(persons.subList(0, 1)));
-		entityManager.getTransaction().commit();
+		assertFalse(gruppe.isBetween(startDate));
+		assertTrue(gruppe.isBetween(ZonedDateTime.of(LocalDateTime.of(2000, 1, 1, 0, 0), ZoneId.systemDefault())));
+		assertTrue(gruppe.isBetween(ZonedDateTime.of(LocalDateTime.of(2005, 12, 31, 23, 59), ZoneId.systemDefault())));
+		assertTrue(gruppe.isBetween(ZonedDateTime.of(LocalDateTime.of(2002, 1, 1, 0, 0), ZoneId.systemDefault())));
 
-		entityManager.getTransaction().begin();
-		business.changePersons(new HashSet<>(persons.subList(0, 2)));
-		entityManager.getTransaction().commit();
+		assertFalse(gruppe.isBetween(ZonedDateTime.of(LocalDateTime.of(1999, 12, 31, 23, 59), ZoneId.systemDefault())));
+		assertFalse(gruppe.isBetween(ZonedDateTime.of(LocalDateTime.of(2006, 1, 1, 0, 0), ZoneId.systemDefault())));
 
-		List<ClubeventHasPerson> result = all.getResultList();
-		assertEquals(2, result.size());
-	}
-
-	class DatabaseHelper extends AbstractDatabaseTest {
-		public DatabaseHelper(EntityManager em) {
-			this((Session) em);
-		}
-
-		public DatabaseHelper(Session session) {
-			this.session = session;
-		}
-
-		@Override
-		public void transactional(Runnable r) {
-			super.transactional(r);
-		}
-
-		@Override
-		public void transactional(Consumer<Session> r) {
-			super.transactional(r);
-		}
 	}
 }

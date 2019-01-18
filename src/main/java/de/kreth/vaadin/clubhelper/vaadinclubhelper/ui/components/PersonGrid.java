@@ -3,6 +3,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -24,9 +25,8 @@ import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
-import com.vaadin.ui.MultiSelect;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.components.grid.GridSelectionModel;
+import com.vaadin.ui.components.grid.GridMultiSelect;
 import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
@@ -58,6 +58,7 @@ public class PersonGrid extends VerticalLayout {
 	private Column<Person, Startpass> startpassColumn;
 	private Column<Person, Button> editButtonColumn;
 	private Layout filters;
+	private SelectionMode currentSelectionMode;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -104,8 +105,9 @@ public class PersonGrid extends VerticalLayout {
 		editButtonColumn.setHidden(true);
 	}
 
-	public GridSelectionModel<Person> setSelectionMode(SelectionMode selectionMode) {
-		return grid.setSelectionMode(selectionMode);
+	public void setSelectionMode(SelectionMode selectionMode) {
+		grid.setSelectionMode(selectionMode);
+		currentSelectionMode = selectionMode;
 	}
 
 	private Layout setupFilterComponents() {
@@ -166,13 +168,15 @@ public class PersonGrid extends VerticalLayout {
 	}
 
 	private void selectItems(Person... items) {
-		MultiSelect<Person> asMultiSelect = grid.asMultiSelect();
-		asMultiSelect.deselectAll();
-		if (items == null || items.length == 0) {
-			log.debug("No Persons selected.");
-		} else {
-			log.debug("Selecting Persons: {}", Arrays.asList(items));
-			asMultiSelect.select(items);
+		if (currentSelectionMode == SelectionMode.MULTI) {
+			GridMultiSelect<Person> asMultiSelect = grid.asMultiSelect();
+			asMultiSelect.deselectAll();
+			if (items == null || items.length == 0) {
+				log.debug("No Persons selected.");
+			} else {
+				log.debug("Selecting Persons: {}", Arrays.asList(items));
+				asMultiSelect.selectItems(items);
+			}
 		}
 	}
 
@@ -209,13 +213,18 @@ public class PersonGrid extends VerticalLayout {
 
 	public void setEvent(ClubEvent ev) {
 
-		if (ev != null) {
-			updateSelection(ev);
+		if (currentSelectionMode == SelectionMode.MULTI) {
+			if (ev != null) {
+				updateSelection(ev);
+			} else {
+				selectItems(new Person[0]);
+			}
 		} else {
-			selectItems(new Person[0]);
+			Collection<Person> items = dataProvider.getItems();
+			items.clear();
+			items.addAll(ev.getPersons());
 		}
 		this.currentEvent = ev;
-//		updateFilter();
 	}
 
 	public void updateSelection(ClubEvent ev) {

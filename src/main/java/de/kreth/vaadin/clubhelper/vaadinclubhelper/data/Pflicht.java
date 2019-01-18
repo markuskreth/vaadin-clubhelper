@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "pflichten")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = "Pflicht.findAll", query = "SELECT p FROM Pflicht p")
-public class Pflicht extends BaseEntity implements Serializable {
+public class Pflicht extends BaseEntity implements Serializable, Comparable<Pflicht> {
 
 	private static final long serialVersionUID = -1309514158086518524L;
 
@@ -66,5 +66,10 @@ public class Pflicht extends BaseEntity implements Serializable {
 	@Override
 	public String toString() {
 		return name;
+	}
+
+	@Override
+	public int compareTo(Pflicht o) {
+		return Integer.compare(ordered, o.ordered);
 	}
 }

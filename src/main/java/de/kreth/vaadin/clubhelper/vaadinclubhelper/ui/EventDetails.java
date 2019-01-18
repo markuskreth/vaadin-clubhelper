@@ -5,8 +5,12 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.Notification.Type;
+import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
@@ -41,29 +45,44 @@ public class EventDetails extends GridLayout implements NamedView {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		Navigator navigator = event.getNavigator();
 
 		currentEvent = eventBusiness.getCurrent();
+		if (eventView == null) {
 
-		eventView = new SingleEventView();
+			Navigator navigator = event.getNavigator();
+
+			eventView = new SingleEventView();
+
+			personGrid = new PersonGrid(groupDao, personDao);
+			personGrid.hideFilter();
+			personGrid.setSelectionMode(SelectionMode.NONE);
+
+			eventAltersgruppen = new EventAltersgruppen(pflichtenDao, eventBusiness);
+
+			Button back = new Button("Zurück");
+			back.addClickListener(ev -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));
+			Button createMeldung = new Button("Meldung");
+			createMeldung.addClickListener(ev -> show(eventBusiness.createMeldung()));
+
+			VerticalLayout buttonLayout = new VerticalLayout(back, createMeldung);
+			buttonLayout.setMargin(true);
+			buttonLayout.setSpacing(true);
+
+			addComponent(eventView, 0, 0);
+			addComponent(eventAltersgruppen, 1, 0);
+			addComponent(personGrid, 2, 0);
+			addComponent(buttonLayout, 0, 4, 2, 4);
+			setSizeFull();
+		} else {
+			eventAltersgruppen.updateData();
+		}
 		eventView.setEvent(currentEvent);
-
-		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setEvent(currentEvent);
-		personGrid.setSelectedOnly();
-		personGrid.hideFilter();
-		personGrid.setSelectionMode(SelectionMode.NONE);
+	}
 
-		eventAltersgruppen = new EventAltersgruppen(pflichtenDao, eventBusiness);
-
-		Button back = new Button("Zurück");
-		back.addClickListener(ev -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));
-
-		addComponent(eventView, 0, 0);
-		addComponent(eventAltersgruppen, 1, 0);
-		addComponent(personGrid, 2, 0);
-		addComponent(back, 0, 4);
-		setSizeFull();
+	private void show(EventMeldung createMeldung) {
+		Notification.show("Meldung für " + eventBusiness.getCurrent().getCaption(), createMeldung.toString(),
+				Type.HUMANIZED_MESSAGE);
 	}
 
 	@Override

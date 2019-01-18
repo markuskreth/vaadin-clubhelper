@@ -10,7 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity implements EntityAccessor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,6 +55,11 @@ public abstract class BaseEntity {
 
 	public void setDeleted(Date deleted) {
 		this.deleted = new Date(deleted.getTime());
+	}
+
+	@Override
+	public boolean hasValidId() {
+		return id > 0;
 	}
 
 	@Override

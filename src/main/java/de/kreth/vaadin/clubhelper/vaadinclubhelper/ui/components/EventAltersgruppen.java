@@ -1,9 +1,10 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import com.vaadin.ui.components.grid.EditorSaveEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht;
 
 public class EventAltersgruppen extends VerticalLayout {
@@ -47,18 +49,18 @@ public class EventAltersgruppen extends VerticalLayout {
 	private final Grid<Altersgruppe> gruppen;
 	private final ListDataProvider<Altersgruppe> provider;
 	private final Binder<Altersgruppe> binder;
-	private final EventBusiness eventSupplier;
+	private final EventBusiness eventBusiness;
 
 	public EventAltersgruppen(PflichtenDao pflichtenDao, EventBusiness eventBusiness) {
 
 		setCaption("Altersklassen");
-		this.eventSupplier = eventBusiness;
+		this.eventBusiness = eventBusiness;
 		Button addButton = new Button("Hinzufügen");
 		addButton.addClickListener(ev -> addGruppe());
 
 		HorizontalLayout buttonLayout = new HorizontalLayout(addButton);
 
-		provider = DataProvider.ofCollection(new ArrayList<Altersgruppe>());
+		provider = DataProvider.ofCollection(eventBusiness.getCurrent().getAltersgruppen());
 
 		gruppen = new Grid<>();
 		gruppen.setDataProvider(provider);
@@ -100,9 +102,9 @@ public class EventAltersgruppen extends VerticalLayout {
 
 	private void gridRowSaved(EditorSaveEvent<Altersgruppe> ev) {
 		binder.validate();
-		if (binder.isValid()) {
-			Altersgruppe edited = binder.getBean();
-			validateAndStore(edited);
+		Altersgruppe bean = ev.getBean();
+		if (binder.writeBeanIfValid(bean)) {
+			validateAndStore(bean);
 		}
 		provider.refreshAll();
 	}
@@ -127,10 +129,21 @@ public class EventAltersgruppen extends VerticalLayout {
 		LOGGER.trace("Changed: {}, value={}, old={}", componentId, value, oldValue);
 	}
 
+	public void updateData() {
+		Collection<Altersgruppe> items = provider.getItems();
+		items.clear();
+		ClubEvent current = eventBusiness.getCurrent();
+		Set<Altersgruppe> altersgruppen = current.getAltersgruppen();
+		items.addAll(altersgruppen);
+	}
+
 	public void validateAndStore(Altersgruppe edited) {
+		if (edited == null) {
+			return;
+		}
 		if (edited.getBezeichnung() != null && !edited.getBezeichnung().isBlank() && edited.getPflicht() != null
 				&& edited.getClubEvent() != null) {
-			eventSupplier.storeAltersgruppe(edited);
+			eventBusiness.storeAltersgruppe(edited);
 			LOGGER.info("Stored: {}", edited);
 		}
 	}
@@ -150,7 +163,7 @@ public class EventAltersgruppen extends VerticalLayout {
 
 	private void addGruppe() {
 
-		Altersgruppe e = eventSupplier.createAltersgruppe();
+		Altersgruppe e = eventBusiness.createAltersgruppe();
 		provider.getItems().add(e);
 		binder.setBean(e);
 		provider.refreshAll();

@@ -1,6 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
+import java.time.temporal.ChronoField;
+import java.time.temporal.Temporal;
 
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -117,6 +119,11 @@ public class Altersgruppe extends BaseEntity implements Serializable {
 	public String toString() {
 		return "Altersgruppe [bezeichnung=" + bezeichnung + ", pflicht=" + pflicht + ", jahre=" + start + " - " + end
 				+ "]";
+	}
+
+	public boolean isBetween(Temporal startDate) {
+		int year = startDate.get(ChronoField.YEAR);
+		return year >= start && year <= end;
 	}
 
 }

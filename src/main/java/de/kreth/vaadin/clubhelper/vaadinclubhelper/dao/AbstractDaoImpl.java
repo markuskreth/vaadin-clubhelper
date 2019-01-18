@@ -8,7 +8,9 @@ import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-public abstract class AbstractDaoImpl<T> implements IDao<T> {
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
+
+public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<T> {
 
 	@Autowired
 	protected EntityManager em;
@@ -24,7 +26,7 @@ public abstract class AbstractDaoImpl<T> implements IDao<T> {
 	@Transactional
 	public void save(T obj) {
 
-		if (em.contains(obj)) {
+		if (em.contains(obj) || obj.hasValidId()) {
 			em.merge(obj);
 		} else {
 			em.persist(obj);

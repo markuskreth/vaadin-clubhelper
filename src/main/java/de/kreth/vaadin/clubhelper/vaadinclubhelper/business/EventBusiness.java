@@ -81,4 +81,8 @@ public class EventBusiness {
 		altersgruppeDao.save(edited);
 		dao.update(current);
 	}
+
+	public EventMeldung createMeldung() {
+		return new EventMeldung(current);
+	}
 }
