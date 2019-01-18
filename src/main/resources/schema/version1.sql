@@ -51,3 +51,6 @@ CREATE TABLE `event_has_altersgruppe` (
     REFERENCES `altersgruppe` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
+ALTER TABLE `person` 
+ADD COLUMN `gender` SMALLINT(1) NULL AFTER `birth`;
+

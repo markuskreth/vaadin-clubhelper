@@ -39,13 +39,13 @@ public class Person extends BaseEntity implements Serializable {
 
 	private LocalDate birth;
 
-	private String password;
-
 	private String prename;
-
 	private String surname;
 
 	private String username;
+	private String password;
+
+	private Integer gender;
 
 	@OneToOne(mappedBy = "person")
 	private Startpass startpass;
@@ -117,6 +117,18 @@ public class Person extends BaseEntity implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Gender getGender() {
+		return Gender.valueOf(gender);
+	}
+
+	public void setGender(Gender gender) {
+		if (gender == null) {
+			this.gender = null;
+		} else {
+			this.gender = gender.getId();
+		}
 	}
 
 	public Set<GroupDef> getGroups() {
