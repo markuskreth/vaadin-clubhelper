@@ -27,6 +27,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDaoImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDaoImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -36,21 +38,16 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 @ExtendWith(SpringExtension.class)
 class EventBusinessSpringTest {
 
-	EventBusiness eventBusiness;
-
 	private List<Person> persons;
 	private ClubEvent event;
 
 	@Autowired
-	private EventBusiness business;
+	private EventBusiness eventBusiness;
 
 	@Autowired
 	private EntityManager entityManager;
 
 	private TypedQuery<ClubeventHasPerson> all;
-//
-//	@Autowired
-//	private InnerConfig innerConfig;
 
 	@Configuration
 	public static class InnerConfig {
@@ -75,6 +72,11 @@ class EventBusinessSpringTest {
 		}
 
 		@Bean
+		public AltersgruppeDao getAltersgruppeDao() {
+			return new AltersgruppeDaoImpl();
+		}
+
+		@Bean
 		public EventBusiness getEventBusiness() {
 			return new EventBusiness();
 		}
@@ -84,7 +86,7 @@ class EventBusinessSpringTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		insertTestData();
-		business.setSelected(event);
+		eventBusiness.setSelected(event);
 
 		all = entityManager.createQuery("from ClubeventHasPerson", ClubeventHasPerson.class);
 	}
@@ -93,7 +95,6 @@ class EventBusinessSpringTest {
 	void shutdown() {
 		entityManager.clear();
 		((Session) entityManager).doWork(conn -> AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2));
-//		entityManager.flush();
 	}
 
 	private void insertTestData() {
@@ -123,9 +124,8 @@ class EventBusinessSpringTest {
 		List<Person> stored = entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class).getResultList();
 		assertEquals(3, stored.size());
 
-		List<ClubEvent> events = business.loadEvents();
+		List<ClubEvent> events = eventBusiness.loadEvents();
 		assertEquals(1, events.size());
-//		assertNotNull(events.get(0).getPersons());
 
 	}
 
@@ -135,11 +135,11 @@ class EventBusinessSpringTest {
 		assertEquals(0, all.getResultList().size());
 
 		entityManager.getTransaction().begin();
-		business.changePersons(new HashSet<>(persons.subList(0, 1)));
+		eventBusiness.changePersons(new HashSet<>(persons.subList(0, 1)));
 		entityManager.getTransaction().commit();
 
 		entityManager.getTransaction().begin();
-		business.changePersons(new HashSet<>(persons.subList(0, 2)));
+		eventBusiness.changePersons(new HashSet<>(persons.subList(0, 2)));
 		entityManager.getTransaction().commit();
 
 		List<ClubeventHasPerson> result = all.getResultList();
