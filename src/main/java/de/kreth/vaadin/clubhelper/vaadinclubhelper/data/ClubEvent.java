@@ -9,7 +9,9 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.vaadin.addon.calendar.item.BasicItem;
@@ -29,6 +31,9 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 	@ManyToMany
 	private Set<Person> persons;
 	private Set<Altersgruppe> altersgruppen;
+	@OneToOne
+	@JoinColumn(name = "id", nullable = true)
+	private CompetitionType competitionType;
 
 	ClubEvent() {
 	}

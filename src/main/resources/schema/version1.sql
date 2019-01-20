@@ -53,4 +53,13 @@ CREATE TABLE `event_has_altersgruppe` (
     ON UPDATE NO ACTION);
 ALTER TABLE `person` 
 ADD COLUMN `gender` SMALLINT(1) NULL AFTER `birth`;
+CREATE TABLE `clubhelper`.`clubevent_addon` (
+  `id` VARCHAR(250) NOT NULL,
+  `competition_type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `fk_event_addon_id`
+    FOREIGN KEY (`id`)
+    REFERENCES `clubhelper`.`clubevent` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE NO ACTION);
 
