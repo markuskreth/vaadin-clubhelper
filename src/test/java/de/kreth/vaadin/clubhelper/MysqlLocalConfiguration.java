@@ -12,8 +12,6 @@ public class MysqlLocalConfiguration extends AbstractHibernateConfiguration {
 		configuration.setProperty("hibernate.connection.url", getUrl());
 		configuration.setProperty("hibernate.connection.username", getUsername());
 		configuration.setProperty("hibernate.connection.password", getPassword());
-		configuration.setProperty("hibernate.hbm2ddl.auto", "update");
-		configuration.setProperty("spring.jpa.hibernate.ddl-auto", "update");
 	}
 
 	public String getPassword() {

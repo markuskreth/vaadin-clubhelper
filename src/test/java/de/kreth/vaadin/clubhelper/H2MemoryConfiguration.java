@@ -9,10 +9,7 @@ public class H2MemoryConfiguration extends AbstractHibernateConfiguration {
 		super.configure(configuration);
 		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
 		configuration.setProperty("hibernate.connection.driver_class", "org.h2.Driver");
-
 		configuration.setProperty("hibernate.connection.url", getUrl());
-		configuration.setProperty("hibernate.hbm2ddl.auto", "update");
-		configuration.setProperty("spring.jpa.hibernate.ddl-auto", "update");
 	}
 
 	public String getUrl() {

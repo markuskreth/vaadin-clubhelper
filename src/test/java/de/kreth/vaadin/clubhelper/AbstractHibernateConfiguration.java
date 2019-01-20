@@ -37,6 +37,8 @@ public class AbstractHibernateConfiguration implements HibernateConfiguration {
 		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
 		configuration.addAnnotatedClass(ClubeventHasPerson.class);
 
+		configuration.setProperty("hibernate.hbm2ddl.auto", "update");
+		configuration.setProperty("spring.jpa.hibernate.ddl-auto", "update");
 	}
 
 }
