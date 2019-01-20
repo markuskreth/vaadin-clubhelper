@@ -8,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht;
@@ -28,8 +27,7 @@ public class TestPflichten {
 	}
 
 	public static void main(String[] args) {
-		Configuration config = HibernateHolder.configuration();
-		SessionFactory sf = config.buildSessionFactory();
+		SessionFactory sf = HibernateHolder.sessionFactory();
 		EntityManager em = sf.createEntityManager();
 
 		List<Pflicht> pflichten = getFixedPflichten();

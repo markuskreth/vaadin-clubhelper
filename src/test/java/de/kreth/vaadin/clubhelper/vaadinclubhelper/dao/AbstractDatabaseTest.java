@@ -20,7 +20,6 @@ import javax.persistence.EntityTransaction;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,12 +39,7 @@ public abstract class AbstractDatabaseTest {
 
 	@BeforeAll
 	public static void setUpDatabase() throws Exception {
-
-		// setup the session factory
-		Configuration configuration = HibernateHolder.configuration();
-
-		sessionFactory = configuration.buildSessionFactory();
-
+		sessionFactory = HibernateHolder.sessionFactory();
 	}
 
 	public enum DB_TYPE {
