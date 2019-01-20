@@ -4,7 +4,7 @@ public class MysqlTestConfiguration extends MysqlLocalConfiguration {
 
 	@Override
 	public String getUrl() {
-		return "jdbc:mysql://localhost/clubhelper?useUnicode=yes&characterEncoding=utf8&serverTimezone=Europe/Berlin";
+		return "jdbc:mysql://localhost/clubhelper?useUnicode=yes&characterEncoding=utf8";
 	}
 
 	@Override

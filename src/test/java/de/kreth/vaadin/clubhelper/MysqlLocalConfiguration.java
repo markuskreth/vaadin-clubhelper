@@ -8,7 +8,6 @@ public class MysqlLocalConfiguration extends AbstractHibernateConfiguration {
 	public void configure(Configuration configuration) {
 		super.configure(configuration);
 		configuration.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-//		configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
 		configuration.setProperty("hibernate.connection.url", getUrl());
 		configuration.setProperty("hibernate.connection.username", getUsername());
 		configuration.setProperty("hibernate.connection.password", getPassword());
@@ -23,7 +22,7 @@ public class MysqlLocalConfiguration extends AbstractHibernateConfiguration {
 	}
 
 	public String getUrl() {
-		return "jdbc:mysql://localhost/test?useUnicode=yes&characterEncoding=utf8&serverTimezone=Europe/Berlin";
+		return "jdbc:mysql://localhost/test?useUnicode=yes&characterEncoding=utf8";
 	}
 
 }
