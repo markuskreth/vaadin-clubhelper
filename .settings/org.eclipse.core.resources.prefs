@@ -5,4 +5,5 @@ encoding//src/main/resources/jasper/calendar_month.jrxml=UTF-8
 encoding//src/main/resources/jasper/calendar_year.jrxml=UTF-8
 encoding//src/test/java=UTF-8
 encoding//src/test/resources=UTF-8
+encoding//target/generated-resources/gwt=UTF-8
 encoding/<project>=UTF-8

@@ -1,7 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
-import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -46,6 +46,7 @@ class EventBusinessSpringTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
+		testDatabaseHelper.cleanDatabase();
 		insertTestData();
 		eventBusiness.setSelected(event);
 
@@ -60,21 +61,20 @@ class EventBusinessSpringTest {
 
 	private void insertTestData() {
 		persons = new ArrayList<>();
+		testDatabaseHelper.transactional(() -> {
+			for (int i = 0; i < 3; i++) {
 
-		entityManager.getTransaction().begin();
-		for (int i = 0; i < 3; i++) {
-
-			Person p = new Person();
-			p.setPrename("prename_" + i);
-			p.setSurname("surname_" + i);
-			p.setBirth(LocalDate.now());
-			entityManager.persist(p);
-			persons.add(p);
-		}
-		event = testDatabaseHelper.creteEvent();
-		assertNull(event.getPersons());
-		entityManager.persist(event);
-		entityManager.getTransaction().commit();
+				Person p = new Person();
+				p.setPrename("prename_" + i);
+				p.setSurname("surname_" + i);
+				p.setBirth(LocalDate.now());
+				entityManager.persist(p);
+				persons.add(p);
+			}
+			event = testDatabaseHelper.creteEvent();
+			assertNull(event.getPersons());
+			entityManager.persist(event);
+		});
 	}
 
 	@Test
@@ -94,14 +94,8 @@ class EventBusinessSpringTest {
 	@Disabled
 	void testAddPersonsToEvent() {
 		assertEquals(0, all.getResultList().size());
-
-		entityManager.getTransaction().begin();
-		eventBusiness.changePersons(new HashSet<>(persons.subList(0, 1)));
-		entityManager.getTransaction().commit();
-
-		entityManager.getTransaction().begin();
-		eventBusiness.changePersons(new HashSet<>(persons.subList(0, 2)));
-		entityManager.getTransaction().commit();
+		testDatabaseHelper.transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 1))));
+		testDatabaseHelper.transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 2))));
 
 		List<ClubeventHasPerson> result = all.getResultList();
 		assertEquals(2, result.size());

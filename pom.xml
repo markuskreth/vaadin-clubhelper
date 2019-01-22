@@ -152,16 +152,20 @@
 			<scope>test</scope>
 		</dependency>
 
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.seleniumhq.selenium</groupId> -->
+<!-- 			<artifactId>selenium-server</artifactId> -->
+<!-- 			<version>${selenium.version}</version> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-server</artifactId>
-			<version>${selenium.version}</version>
+			<artifactId>selenium-java</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
-			<artifactId>selenium-java</artifactId>
-			<version>${selenium.version}</version>
+			<artifactId>selenium-api</artifactId>
 			<scope>test</scope>
 		</dependency>
 
