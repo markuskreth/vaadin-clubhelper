@@ -13,7 +13,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<T> {
 
 	@Autowired
-	protected EntityManager em;
+	protected EntityManager entityManager;
 
 	private final Class<T> entityClass;
 
@@ -26,27 +26,27 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	@Transactional
 	public void save(T obj) {
 
-		if (em.contains(obj) || obj.hasValidId()) {
-			em.merge(obj);
+		if (entityManager.contains(obj) || obj.hasValidId()) {
+			entityManager.merge(obj);
 		} else {
-			em.persist(obj);
+			entityManager.persist(obj);
 		}
 	}
 
 	@Override
 	@Transactional
 	public T update(T obj) {
-		return em.merge(obj);
+		return entityManager.merge(obj);
 	}
 
 	@Override
 	public T get(Object primaryKey) {
-		return em.find(entityClass, primaryKey);
+		return entityManager.find(entityClass, primaryKey);
 	}
 
 	@Override
 	public List<T> listAll() {
-		TypedQuery<T> query = em.createNamedQuery(entityClass.getSimpleName() + ".findAll", entityClass);
+		TypedQuery<T> query = entityManager.createNamedQuery(entityClass.getSimpleName() + ".findAll", entityClass);
 		return query.getResultList();
 	}
 

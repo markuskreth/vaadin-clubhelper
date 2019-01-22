@@ -10,26 +10,38 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.TestDatabaseHelper;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
+@SpringBootTest
+@ContextConfiguration(classes = TestConfiguration.class)
 class PersonFilterTest {
 
 	private PersonFilter filter;
 	private List<Person> persons;
-	private final List<GroupDef> groups;
+	private final List<GroupDef> groups = setupData();
+
+	@Autowired
+	TestDatabaseHelper testDatabaseHelper;
+
 	@Mock
 	private PersonDao dao;
 
-	public PersonFilterTest() {
+	static List<GroupDef> setupData() {
+
 		GroupDef adminGroup = new GroupDef();
 		adminGroup.setId(1);
 		adminGroup.setName("ADMIN");
@@ -46,8 +58,7 @@ class PersonFilterTest {
 		judgesGroup.setName("Kampfrichter");
 		judgesGroup.setId(4);
 
-		groups = Collections
-				.unmodifiableList(Arrays.asList(adminGroup, competitorGroup, participantGroup, judgesGroup));
+		return Collections.unmodifiableList(Arrays.asList(adminGroup, competitorGroup, participantGroup, judgesGroup));
 
 	}
 
@@ -55,7 +66,9 @@ class PersonFilterTest {
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		filter = new PersonFilter(dao);
-		persons = Collections.unmodifiableList(AbstractDatabaseTest.createPersons(5));
+		persons = Collections.unmodifiableList(testDatabaseHelper.createPersons(5));
+		AtomicInteger id = new AtomicInteger(0);
+		persons.forEach(p -> p.setId(id.incrementAndGet()));
 		assertEquals(5, persons.size());
 
 		when(dao.listAll()).thenReturn(persons);

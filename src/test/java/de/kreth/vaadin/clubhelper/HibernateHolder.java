@@ -8,14 +8,12 @@ import org.hibernate.cfg.Configuration;
 public enum HibernateHolder {
 
 	INSTANCE;
-	private final Configuration configuration = createConfig();
+	private final Configuration configuration;
 
-	private org.hibernate.cfg.Configuration createConfig() {
-		Configuration configuration = new Configuration();
+	private HibernateHolder() {
+		configuration = new Configuration();
 		HibernateConfiguration config = new H2MemoryConfiguration();
 		config.configure(configuration);
-
-		return configuration;
 	}
 
 	public static Properties getProperties() {
@@ -26,7 +24,4 @@ public enum HibernateHolder {
 		return INSTANCE.configuration.buildSessionFactory();
 	}
 
-//	public static Configuration configuration() {
-//		return INSTANCE.configuration;
-//	}
 }

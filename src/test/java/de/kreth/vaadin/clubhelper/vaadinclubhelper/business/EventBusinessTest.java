@@ -42,7 +42,7 @@ class EventBusinessTest {
 	void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		eventBusiness = new EventBusiness();
-		eventBusiness.dao = dao;
+		eventBusiness.clubEventDao = dao;
 		eventBusiness.altersgruppeDao = altersgruppeDao;
 	}
 

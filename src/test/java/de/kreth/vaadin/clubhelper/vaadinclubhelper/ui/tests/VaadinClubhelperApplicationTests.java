@@ -20,7 +20,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import org.hamcrest.Matchers;
-import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.TestPropertySource;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.TestDatabaseHelper;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -46,6 +46,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWebTestClient
 @Disabled
+@TestPropertySource(locations = "classpath:test.properties")
 public class VaadinClubhelperApplicationTests {
 
 	private static ChromeOptions options;
@@ -57,6 +58,9 @@ public class VaadinClubhelperApplicationTests {
 
 	@Autowired
 	EntityManager entityManager;
+
+	@Autowired
+	TestDatabaseHelper testDatabaseHelper;
 
 	private WebDriver driver;
 	private ZonedDateTime now;
@@ -166,11 +170,7 @@ public class VaadinClubhelperApplicationTests {
 		if (driver != null) {
 			driver.close();
 		}
-		org.hibernate.Session session = (Session) entityManager;
-
-		session.doWork(connection -> {
-			AbstractDatabaseTest.cleanDatabase(connection, AbstractDatabaseTest.DB_TYPE.H2);
-		});
+		testDatabaseHelper.cleanDatabase();
 	}
 
 	@Test

@@ -22,7 +22,7 @@ public class EventBusiness {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	ClubEventDao dao;
+	ClubEventDao clubEventDao;
 
 	@Autowired
 	AltersgruppeDao altersgruppeDao;
@@ -30,7 +30,7 @@ public class EventBusiness {
 	private ClubEvent current;
 
 	public synchronized List<ClubEvent> loadEvents() {
-		List<ClubEvent> list = dao.listAll();
+		List<ClubEvent> list = clubEventDao.listAll();
 		log.trace("Returning events from database: {}", list);
 		return list;
 	}
@@ -46,7 +46,7 @@ public class EventBusiness {
 	public void changePersons(Set<Person> selected) {
 		if (current != null) {
 			try {
-				dao.addPersons(current, selected);
+				clubEventDao.addPersons(current, selected);
 				log.info("Updated {}, {} with participants: {}", current.getCaption(), current.getStart(), selected);
 			} catch (Exception e) {
 				log.error("Unable to update Event {}, {}, {} with participants: {}", current.getId(),
@@ -79,7 +79,7 @@ public class EventBusiness {
 
 	public void storeAltersgruppe(Altersgruppe edited) {
 		altersgruppeDao.save(edited);
-		dao.update(current);
+		clubEventDao.update(current);
 	}
 
 	public EventMeldung createMeldung() {

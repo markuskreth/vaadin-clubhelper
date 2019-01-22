@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
@@ -24,16 +23,6 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
-
-	@Override
-	public EntityManager getEntityManager() {
-		return em;
-	}
-
-	@Override
 	public void addPersons(ClubEvent event, Collection<Person> updated) {
 		List<Person> added = new ArrayList<>(updated);
 
@@ -48,7 +37,7 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 			}
 		}
 
-		Query insertQuery = em.createNativeQuery(
+		Query insertQuery = entityManager.createNativeQuery(
 				"INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (:eventId,:personId)");
 		for (Person p : added) {
 			insertQuery.setParameter("eventId", event.getId());

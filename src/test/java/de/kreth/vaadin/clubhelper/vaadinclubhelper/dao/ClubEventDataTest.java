@@ -9,32 +9,49 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.IdentifierLoadAccess;
-import org.hibernate.query.Query;
+import javax.persistence.EntityManager;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
-public class ClubEventDataTest extends AbstractDatabaseTest {
+@SpringBootTest
+@ContextConfiguration(classes = TestConfiguration.class)
+public class ClubEventDataTest {
+
+	@Autowired
+	private EntityManager entityManager;
+
+	@Autowired
+	TestDatabaseHelper testDatabaseHelper;
+
+	@AfterEach
+	public void cleanDatabase() {
+		testDatabaseHelper.cleanDatabase();
+	}
 
 	@Test
 	public void testSaveAndSelectEvent() {
-		ClubEvent ev = creteEvent();
+		ClubEvent ev = testDatabaseHelper.creteEvent();
 
-		transactional(() -> session.save(ev));
-		Query<ClubEvent> query = session.createNamedQuery("ClubEvent.findAll", ClubEvent.class);
-		List<ClubEvent> result = query.list();
+		testDatabaseHelper.transactional(() -> entityManager.persist(ev));
+		List<ClubEvent> result = testDatabaseHelper.allClubEvent();
 		assertEquals(1, result.size());
 	}
 
 	@Test
 	public void testEventWithPerson() {
 
-		ClubEvent ev = creteEvent();
+		ClubEvent ev = testDatabaseHelper.creteEvent();
 
-		Person person = testInsertPerson();
+		Person person = testDatabaseHelper.testInsertPerson();
 		Set<Person> persons = ev.getPersons();
 		if (persons == null) {
 			persons = new HashSet<>();
@@ -42,9 +59,9 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 		}
 		persons.add(person);
 
-		transactional(() -> session.save(ev));
+		testDatabaseHelper.transactional(() -> entityManager.persist(ev));
 
-		List<ClubeventHasPerson> loadEventPersons = loadEventPersons();
+		List<ClubeventHasPerson> loadEventPersons = testDatabaseHelper.loadEventPersons();
 		assertFalse(loadEventPersons.isEmpty());
 		ClubeventHasPerson link = loadEventPersons.get(0);
 		assertEquals(person.getId(), link.getPersonId());
@@ -54,62 +71,60 @@ public class ClubEventDataTest extends AbstractDatabaseTest {
 
 	@Test
 	public void changeEventsPersons() {
-		ClubEvent ev = creteEvent();
+		ClubEvent ev = testDatabaseHelper.creteEvent();
 
-		transactional(() -> session.save(ev));
+		testDatabaseHelper.transactional(() -> entityManager.persist(ev));
 
-		Person person = testInsertPerson();
+		Person person = testDatabaseHelper.testInsertPerson();
 
 		Person person2 = new Person();
-		person2.setId(person.getId() + 1);
 		person2.setPrename(person.getPrename() + "_2");
 		person2.setSurname(person.getSurname() + "_2");
 		person2.setBirth(LocalDate.now());
 
-		transactional(() -> session.save(person2));
+		testDatabaseHelper.transactional(() -> entityManager.persist(person2));
 
-		IdentifierLoadAccess<ClubEvent> idLoadAccess = session.byId(ClubEvent.class);
-		ClubEvent loaded = idLoadAccess.load(ev.getId());
+		ClubEvent loaded = entityManager.find(ClubEvent.class, ev.getId());
 		assertNotNull(loaded);
 		if (loaded.getPersons() == null) {
 			loaded.setPersons(new HashSet<>());
 		}
 
 		loaded.add(person);
-		transactional(() -> session.update(ev));
+		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 
 		loaded.add(person2);
-		transactional(() -> session.update(ev));
+		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 
-		List<ClubeventHasPerson> entries = loadEventPersons();
+		List<ClubeventHasPerson> entries = testDatabaseHelper.loadEventPersons();
 		assertEquals(2, entries.size());
 	}
 
 	@Test
 	public void testChangeEventParticipantsRapidly() {
 
-		final ClubEvent created = creteEvent();
-		transactional(() -> {
-			session.save(created);
+		final ClubEvent created = testDatabaseHelper.creteEvent();
+		testDatabaseHelper.transactional(() -> {
+			entityManager.persist(created);
 		});
 
-		final ClubEvent ev = session.byId(ClubEvent.class).load(created.getId());
-		List<Person> persons = insertPersons(6);
+		final ClubEvent ev = entityManager.find(ClubEvent.class, created.getId());
+		List<Person> persons = testDatabaseHelper.insertPersons(6);
 		for (Person p : persons) {
 			ev.add(p);
-			transactional(() -> session.merge(ev));
+			testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 		}
 		ev.remove(persons.get(2));
-		transactional(() -> session.merge(ev));
+		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 
 		ev.remove(persons.get(4));
-		transactional(() -> session.merge(ev));
+		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 
 		ev.getPersons().add(persons.get(2));
 		ev.getPersons().add(persons.get(4));
-		transactional(() -> session.merge(ev));
+		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 
-		List<ClubeventHasPerson> result = loadEventPersons();
+		List<ClubeventHasPerson> result = testDatabaseHelper.loadEventPersons();
 		assertEquals(6, result.size());
 	}
 

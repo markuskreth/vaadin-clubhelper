@@ -2,109 +2,56 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Connection;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import de.kreth.vaadin.clubhelper.HibernateHolder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
-public abstract class AbstractDatabaseTest {
+@Component
+public final class TestDatabaseHelperImpl implements TestDatabaseHelper {
 
 	private static final AtomicInteger eventIdSequence = new AtomicInteger();
 
-	protected static SessionFactory sessionFactory;
-	protected Session session;
+	private final String truncateString = createTruncateString();
 
-	@BeforeAll
-	public static void setUpDatabase() throws Exception {
-		sessionFactory = HibernateHolder.sessionFactory();
+	@Autowired
+	protected EntityManager entityManager;
+
+	private String createTruncateString() {
+		try {
+			InputStream resource = getClass().getResourceAsStream("/truncateTables.sql");
+			return IOUtils.toString(resource, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	public enum DB_TYPE {
-		MYSQL("SET @@foreign_key_checks = 0", "SET @@foreign_key_checks = 1"),
-		H2("SET REFERENTIAL_INTEGRITY FALSE", "SET REFERENTIAL_INTEGRITY TRUE");
-
-		private DB_TYPE(String disableReferentialIntegrety, String enableReferentialIntegrety) {
-			this.disableReferentialIntegrety = disableReferentialIntegrety;
-			this.enableReferentialIntegrety = enableReferentialIntegrety;
-		}
-
-		final String disableReferentialIntegrety;
-		final String enableReferentialIntegrety;
-	}
-
-	@AfterEach
-	public void cleanH2Database() {
-		if (session.getTransaction().isActive()) {
-			session.flush();
-		}
-
-		session.doWork(conn -> {
-			AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2);
-		});
-
-	}
-
-	@BeforeEach
-	void createSession() {
-		if (session != null) {
-			session.close();
-		}
-		session = sessionFactory.openSession();
-	}
-
-	public static void cleanDatabase(Connection connection, DB_TYPE type) throws SQLException {
-
-		String TABLE_NAME = "TABLE_NAME";
-		String[] TABLE_TYPES = { "TABLE" };
-		Set<String> tableNames = new HashSet<>();
-
-		try (ResultSet tables = connection.getMetaData().getTables(null, null, null, TABLE_TYPES)) {
-			while (tables.next()) {
-				tableNames.add(tables.getString(TABLE_NAME));
-			}
-		}
-
-		try (Statement stm = connection.createStatement()) {
-			stm.execute(type.disableReferentialIntegrety);
-			try {
-				for (String tableName : tableNames) {
-					try {
-						stm.executeUpdate("TRUNCATE TABLE " + tableName);
-					} catch (SQLException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			} finally {
-				stm.execute(type.enableReferentialIntegrety);
-			}
-		}
-
-		if (connection.getAutoCommit() == false) {
-			connection.commit();
-		}
+	@Override
+	public void cleanDatabase() {
+		Query truncateQuery = entityManager.createNativeQuery(truncateString);
+		transactional(() -> truncateQuery.executeUpdate());
 	}
 
 	/**
@@ -112,12 +59,15 @@ public abstract class AbstractDatabaseTest {
 	 * 
 	 * @param r
 	 */
-	protected void transactional(Runnable r) {
+	@Override
+	public void transactional(Runnable r) {
 		transactional(session -> r.run());
 	}
 
-	protected void transactional(Consumer<Session> r) {
+	@Override
+	public void transactional(Consumer<Session> r) {
 
+		Session session = (Session) entityManager;
 		EntityTransaction tx = session.getTransaction();
 		tx.begin();
 		try {
@@ -129,23 +79,25 @@ public abstract class AbstractDatabaseTest {
 		}
 	}
 
+	@Override
 	public Person testInsertPerson() {
 		Person p = new Person();
 		p.setPrename("prename");
 		p.setSurname("surname");
 		p.setBirth(LocalDate.now());
 
-		transactional(() -> session.save(p));
+		transactional(() -> entityManager.persist(p));
 		return p;
 	}
 
+	@Override
 	public List<Person> insertPersons(int count) {
 
 		final List<Person> inserted = createPersons(count);
 
 		transactional(() -> {
 			for (Person p : inserted) {
-				session.save(p);
+				entityManager.persist(p);
 			}
 		});
 		for (Person p : inserted) {
@@ -154,14 +106,14 @@ public abstract class AbstractDatabaseTest {
 		return inserted;
 	}
 
-	public static List<Person> createPersons(int count) {
+	@Override
+	public List<Person> createPersons(int count) {
 
 		final List<Person> inserted = new ArrayList<>();
 
 		for (int i = 0; i < count; i++) {
 
 			Person p = new Person();
-			p.setId(i + 1);
 			p.setPrename("prename_" + i);
 			p.setSurname("surname_" + i);
 			p.setBirth(LocalDate.now());
@@ -170,7 +122,8 @@ public abstract class AbstractDatabaseTest {
 		return inserted;
 	}
 
-	public static ClubEvent creteEvent() {
+	@Override
+	public ClubEvent creteEvent() {
 		ClubEvent ev = ClubEventBuilder.builder().withId("id_" + eventIdSequence.getAndIncrement()).withAllDay(true)
 				.withCaption("caption").withDescription("description")
 				.withStart(ZonedDateTime.of(2018, 8, 13, 0, 0, 0, 0, ZoneId.systemDefault()))
@@ -179,8 +132,10 @@ public abstract class AbstractDatabaseTest {
 		return ev;
 	}
 
+	@Override
 	public List<ClubeventHasPerson> loadEventPersons() {
 
+		Session session = (Session) entityManager;
 		return session.doReturningWork(conn -> {
 
 			List<ClubeventHasPerson> link = new ArrayList<>();
@@ -199,6 +154,11 @@ public abstract class AbstractDatabaseTest {
 			return link;
 		});
 
+	}
+
+	@Override
+	public List<ClubEvent> allClubEvent() {
+		return entityManager.createNamedQuery("ClubEvent.findAll", ClubEvent.class).getResultList();
 	}
 
 }

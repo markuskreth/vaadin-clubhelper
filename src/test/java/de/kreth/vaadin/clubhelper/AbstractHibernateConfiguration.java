@@ -17,7 +17,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 
-public class AbstractHibernateConfiguration implements HibernateConfiguration {
+public abstract class AbstractHibernateConfiguration implements HibernateConfiguration {
 
 	@Override
 	public void configure(Configuration configuration) {

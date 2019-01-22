@@ -7,12 +7,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.Session;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -22,8 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AbstractDatabaseTest.DB_TYPE;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.TestDatabaseHelper;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -42,6 +39,9 @@ class EventBusinessSpringTest {
 	@Autowired
 	private EntityManager entityManager;
 
+	@Autowired
+	private TestDatabaseHelper testDatabaseHelper;
+
 	private TypedQuery<ClubeventHasPerson> all;
 
 	@BeforeEach
@@ -55,7 +55,7 @@ class EventBusinessSpringTest {
 	@AfterEach
 	void shutdown() {
 		entityManager.clear();
-		((Session) entityManager).doWork(conn -> AbstractDatabaseTest.cleanDatabase(conn, DB_TYPE.H2));
+		testDatabaseHelper.cleanDatabase();
 	}
 
 	private void insertTestData() {
@@ -71,7 +71,7 @@ class EventBusinessSpringTest {
 			entityManager.persist(p);
 			persons.add(p);
 		}
-		event = AbstractDatabaseTest.creteEvent();
+		event = testDatabaseHelper.creteEvent();
 		assertNull(event.getPersons());
 		entityManager.persist(event);
 		entityManager.getTransaction().commit();
@@ -107,23 +107,4 @@ class EventBusinessSpringTest {
 		assertEquals(2, result.size());
 	}
 
-	class DatabaseHelper extends AbstractDatabaseTest {
-		public DatabaseHelper(EntityManager em) {
-			this((Session) em);
-		}
-
-		public DatabaseHelper(Session session) {
-			this.session = session;
-		}
-
-		@Override
-		public void transactional(Runnable r) {
-			super.transactional(r);
-		}
-
-		@Override
-		public void transactional(Consumer<Session> r) {
-			super.transactional(r);
-		}
-	}
 }

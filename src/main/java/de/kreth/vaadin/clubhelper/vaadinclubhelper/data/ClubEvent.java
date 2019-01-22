@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
@@ -30,6 +31,7 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 	private String organizerDisplayName;
 	@ManyToMany
 	private Set<Person> persons;
+	@OneToMany
 	private Set<Altersgruppe> altersgruppen;
 	@OneToOne
 	@JoinColumn(name = "id", nullable = true)

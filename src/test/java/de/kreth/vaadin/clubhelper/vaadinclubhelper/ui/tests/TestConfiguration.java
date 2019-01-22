@@ -7,29 +7,23 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 import de.kreth.vaadin.clubhelper.HibernateHolder;
 
-//@Configuration
 @SpringBootConfiguration
 @ComponentScan(basePackages = { "de.kreth" })
 @EnableAutoConfiguration
 public class TestConfiguration {
 
+	static {
+		System.setProperty("spring.config.location", "classpath:test.properties");
+		System.setProperty("spring.config.name", "test");
+	}
+
 	private SessionFactory sessionFactory;
 
 	public TestConfiguration() {
 		sessionFactory = HibernateHolder.sessionFactory();
-	}
-
-	@Bean
-	public LocalSessionFactoryBean sessionFactory() throws Exception {
-
-		LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-		sessionFactoryBean.setHibernateProperties(HibernateHolder.getProperties());
-
-		return sessionFactoryBean;
 	}
 
 	@Bean
