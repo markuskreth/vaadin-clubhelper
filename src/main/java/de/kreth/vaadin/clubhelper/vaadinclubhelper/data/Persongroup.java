@@ -10,26 +10,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
 /**
  * The persistent class for the persongroup database table.
  * 
  */
 @Entity
-@Table(name="persongroup")
+@Table(name = "persongroup")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@NamedQuery(name="Persongroup.findAll", query="SELECT p FROM Persongroup p")
+@NamedQuery(name = "Persongroup.findAll", query = "SELECT p FROM Persongroup p")
 public class Persongroup extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -2466223964213904302L;
 
-	//bi-directional many-to-one association to Person
+	// bi-directional many-to-one association to Person
 	@ManyToOne
 	private Person person;
 
-	//bi-directional many-to-one association to GroupDef
+	// bi-directional many-to-one association to GroupDef
 	@ManyToOne
-	@JoinColumn(name="group_id")
+	@JoinColumn(name = "group_id")
 	private GroupDef groupDef;
 
 	public Persongroup() {

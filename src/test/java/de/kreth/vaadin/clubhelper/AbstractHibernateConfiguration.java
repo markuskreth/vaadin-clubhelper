@@ -1,41 +1,32 @@
 package de.kreth.vaadin.clubhelper;
 
-import org.hibernate.cfg.Configuration;
+import java.util.HashSet;
+import java.util.Set;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Attendance;
+import org.hibernate.cfg.Configuration;
+import org.reflections.Reflections;
+
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.BaseEntity;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.DeletedEntry;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Persongroup;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relative;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.StartpassStartrechte;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Version;
 
 public abstract class AbstractHibernateConfiguration implements HibernateConfiguration {
 
+	private Set<Class<?>> entityClasses;
+
+	public AbstractHibernateConfiguration() {
+		Reflections reflections = new Reflections("de.kreth.vaadin.clubhelper.vaadinclubhelper.data");
+		entityClasses = new HashSet<>(reflections.getSubTypesOf(BaseEntity.class));
+		entityClasses.add(ClubeventHasPerson.class);
+	}
+
 	@Override
 	public void configure(Configuration configuration) {
-		configuration.addAnnotatedClass(Adress.class);
-		configuration.addAnnotatedClass(Altersgruppe.class);
-		configuration.addAnnotatedClass(Attendance.class);
-		configuration.addAnnotatedClass(Contact.class);
-		configuration.addAnnotatedClass(DeletedEntry.class);
-		configuration.addAnnotatedClass(GroupDef.class);
-		configuration.addAnnotatedClass(Person.class);
-		configuration.addAnnotatedClass(Persongroup.class);
-		configuration.addAnnotatedClass(Pflicht.class);
-		configuration.addAnnotatedClass(Relative.class);
-		configuration.addAnnotatedClass(Startpass.class);
-		configuration.addAnnotatedClass(StartpassStartrechte.class);
-		configuration.addAnnotatedClass(Version.class);
+
+		for (Class<?> entityClass : entityClasses) {
+			configuration.addAnnotatedClass(entityClass);
+		}
+
 		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
-		configuration.addAnnotatedClass(ClubeventHasPerson.class);
 
 		configuration.setProperty("hibernate.hbm2ddl.auto", "update");
 		configuration.setProperty("spring.jpa.hibernate.ddl-auto", "update");
