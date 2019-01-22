@@ -17,6 +17,8 @@ import javax.persistence.Transient;
 
 import org.vaadin.addon.calendar.item.BasicItem;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
+
 // Entity must not be used, this class is persisted by ClubEvent.hbm.xml
 @Entity
 public class ClubEvent extends BasicItem implements EntityAccessor {
@@ -92,6 +94,18 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	public String getiCalUID() {
 		return iCalUID;
+	}
+
+	public Type getCompetitionType() {
+		if (competitionType != null) {
+			return competitionType.getType();
+		} else {
+			return null;
+		}
+	}
+
+	public void setCompetitionType(CompetitionType competitionType) {
+		this.competitionType = competitionType;
 	}
 
 	public String getOrganizerDisplayName() {
