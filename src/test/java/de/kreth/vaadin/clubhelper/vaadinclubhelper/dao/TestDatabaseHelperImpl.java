@@ -2,10 +2,10 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -17,9 +17,7 @@ import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 
-import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,28 +28,46 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Component
-public final class TestDatabaseHelperImpl implements TestDatabaseHelper {
+public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 
 	private static final AtomicInteger eventIdSequence = new AtomicInteger();
-
-	private final String truncateString = createTruncateString();
 
 	@Autowired
 	protected EntityManager entityManager;
 
-	private String createTruncateString() {
-		try {
-			InputStream resource = getClass().getResourceAsStream("/truncateTables.sql");
-			return IOUtils.toString(resource, StandardCharsets.UTF_8);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Override
 	public void cleanDatabase() {
-		Query truncateQuery = entityManager.createNativeQuery(truncateString);
-		transactional(() -> truncateQuery.executeUpdate());
+
+		Session session = (Session) entityManager;
+		session.doWork(conn -> {
+
+			List<String> tableNames = loadTables(conn);
+			try (Statement stm = conn.createStatement()) {
+
+				stm.addBatch("SET FOREIGN_KEY_CHECKS=0");
+				for (String table : tableNames) {
+					stm.addBatch("TRUNCATE TABLE " + table);
+				}
+				stm.addBatch("SET FOREIGN_KEY_CHECKS=1");
+				stm.executeBatch();
+			}
+			if (conn.getAutoCommit() == false) {
+				conn.commit();
+			}
+		});
+	}
+
+	public List<String> loadTables(Connection conn) throws SQLException {
+		List<String> tableNames = new ArrayList<>();
+
+		DatabaseMetaData meta = conn.getMetaData();
+		String[] types = { "TABLE" };
+		try (ResultSet tables = meta.getTables(null, null, null, types)) {
+			while (tables.next()) {
+				tableNames.add(tables.getString("TABLE_NAME"));
+			}
+		}
+		return tableNames;
 	}
 
 	/**
