@@ -53,13 +53,15 @@ public class EventDetails extends GridLayout implements NamedView {
 
 			Navigator navigator = event.getNavigator();
 
-			eventView = new SingleEventView();
+			eventView = new SingleEventView(true);
+			eventView.addDataUpdatedListener(() -> eventBusiness.storeEventType());
+
+			eventAltersgruppen = new EventAltersgruppen(pflichtenDao, eventBusiness);
+			eventView.addDataUpdatedListener(eventAltersgruppen);
 
 			personGrid = new PersonGrid(groupDao, personDao);
 			personGrid.hideFilter();
 			personGrid.setSelectionMode(SelectionMode.NONE);
-
-			eventAltersgruppen = new EventAltersgruppen(pflichtenDao, eventBusiness);
 
 			Button back = new Button("Zurück");
 			back.addClickListener(ev -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));

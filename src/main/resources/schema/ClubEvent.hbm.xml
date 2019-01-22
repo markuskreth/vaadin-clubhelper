@@ -34,6 +34,8 @@
             </key>
             <one-to-many class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe" />
         </set>
+		<one-to-one name="competitionType" class="de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType"
+			 foreign-key="id" cascade="save-update"></one-to-one>
 	</class>
 	<query name="ClubEvent.findAll">
         <![CDATA[from ClubEvent]]>

@@ -85,4 +85,8 @@ public class EventBusiness {
 	public EventMeldung createMeldung() {
 		return new EventMeldung(current);
 	}
+
+	public void storeEventType() {
+		clubEventDao.updateEventType(current);
+	}
 }

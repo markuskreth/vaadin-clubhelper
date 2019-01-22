@@ -96,12 +96,24 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		return iCalUID;
 	}
 
-	public Type getCompetitionType() {
+	public Type getType() {
 		if (competitionType != null) {
 			return competitionType.getType();
 		} else {
 			return null;
 		}
+	}
+
+	public CompetitionType getCompetitionType() {
+		return competitionType;
+	}
+
+	public void setType(Type competitionType) {
+		if (this.competitionType == null) {
+			this.competitionType = new CompetitionType();
+			this.competitionType.setClubEvent(this);
+		}
+		this.competitionType.setType(competitionType);
 	}
 
 	public void setCompetitionType(CompetitionType competitionType) {

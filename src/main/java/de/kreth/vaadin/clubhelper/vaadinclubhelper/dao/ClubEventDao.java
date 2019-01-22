@@ -15,4 +15,6 @@ public interface ClubEventDao extends IDao<ClubEvent> {
 	 * @param persons complete List of Persons, including Persons already persisted.
 	 */
 	void addPersons(ClubEvent event, Collection<Person> persons);
+
+	void updateEventType(ClubEvent obj);
 }

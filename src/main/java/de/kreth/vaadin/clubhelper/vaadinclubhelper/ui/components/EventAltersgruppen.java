@@ -25,6 +25,7 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomField;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TextField;
@@ -36,9 +37,12 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DataUpdatedEvent;
 
-public class EventAltersgruppen extends VerticalLayout {
+public class EventAltersgruppen extends VerticalLayout implements DataUpdatedEvent {
 
 	private static final long serialVersionUID = -7777374233838542085L;
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -50,6 +54,7 @@ public class EventAltersgruppen extends VerticalLayout {
 	private final ListDataProvider<Altersgruppe> provider;
 	private final Binder<Altersgruppe> binder;
 	private final EventBusiness eventBusiness;
+	private Column<Altersgruppe, Pflicht> pflichtColumn;
 
 	public EventAltersgruppen(PflichtenDao pflichtenDao, EventBusiness eventBusiness) {
 
@@ -88,7 +93,9 @@ public class EventAltersgruppen extends VerticalLayout {
 		gruppen.addColumn(Altersgruppe::getBezeichnung).setCaption("Bezeichnung").setEditorBinding(bezBinding);
 		gruppen.addColumn(Altersgruppe::getStart).setCaption("Von").setEditorBinding(bindingStart);
 		gruppen.addColumn(Altersgruppe::getEnd).setCaption("Bis").setEditorBinding(bindingEnd);
-		gruppen.addColumn(Altersgruppe::getPflicht).setCaption("Pflicht").setEditorBinding(pflichtBinding);
+		pflichtColumn = gruppen.addColumn(Altersgruppe::getPflicht).setCaption("Pflicht")
+				.setEditorBinding(pflichtBinding);
+		updateFinisched();
 
 		binder.addValueChangeListener(this::valueChange);
 		gruppen.addSelectionListener(this::selectionChange);
@@ -249,5 +256,21 @@ public class EventAltersgruppen extends VerticalLayout {
 			field.setValue(value.doubleValue());
 		}
 
+	}
+
+	@Override
+	public void updateFinisched() {
+		Type type = currentType();
+		pflichtColumn.setHidden(Type.DOPPELMINI == type);
+	}
+
+	public Type currentType() {
+		ClubEvent current = eventBusiness.getCurrent();
+		CompetitionType competitionType = current.getCompetitionType();
+		if (competitionType == null) {
+			return null;
+		}
+		Type type = competitionType.getType();
+		return type;
 	}
 }

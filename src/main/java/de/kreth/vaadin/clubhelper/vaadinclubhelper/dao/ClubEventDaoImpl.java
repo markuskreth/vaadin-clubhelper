@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Repository
@@ -20,6 +21,17 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 
 	public ClubEventDaoImpl() {
 		super(ClubEvent.class);
+	}
+
+	@Override
+	public ClubEvent update(ClubEvent obj) {
+		CompetitionType competitionType = obj.getCompetitionType();
+		if (competitionType != null) {
+			if (obj.getCompetitionType().getId() == null) {
+				obj.getCompetitionType().setId(obj.getId());
+			}
+		}
+		return super.update(obj);
 	}
 
 	@Override
@@ -46,6 +58,26 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 
 		}
 		persons2.addAll(added);
+	}
+
+	@Override
+	public void updateEventType(ClubEvent obj) {
+		CompetitionType type = obj.getCompetitionType();
+		if (type != null) {
+			Query query;
+			if (type.getId() == null) {
+				type.setId(obj.getId());
+				query = entityManager.createNativeQuery(
+						"INSERT INTO clubevent_addon (id, competition_type) VALUES (:eventId,:eventtype)");
+			} else {
+				query = entityManager
+						.createNativeQuery("UPDATE clubevent_addon SET competition_type=:eventtype WHERE id=:eventId");
+			}
+
+			query.setParameter("eventId", obj.getId());
+			query.setParameter("eventtype", type.getType().name());
+			query.executeUpdate();
+		}
 	}
 
 }

@@ -81,7 +81,7 @@ public class MainView extends BorderLayout implements NamedView {
 	public void initUI(ViewChangeEvent event) {
 		navigator = event.getNavigator();
 
-		eventView = new SingleEventView();
+		eventView = new SingleEventView(false);
 		eventView.setVisible(false);
 
 		personGrid = new PersonGrid(groupDao, personDao);

@@ -19,7 +19,6 @@ import org.springframework.test.context.ContextConfiguration;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
@@ -43,20 +42,21 @@ public class ClubEventDataTest {
 	public void testEventAddon() {
 
 		ClubEvent ev = testDatabaseHelper.creteEvent();
-		CompetitionType competitionType = new CompetitionType();
-		competitionType.setType(Type.EINZEL);
-		ev.setCompetitionType(competitionType);
+		ev.setType(Type.EINZEL);
 
-		testDatabaseHelper.transactional(() -> entityManager.persist(ev));
+		testDatabaseHelper.transactional(() -> {
+			entityManager.persist(ev);
+//			entityManager.persist(ev.getCompetitionType());
+		});
 		List<ClubEvent> allClubEvent = testDatabaseHelper.allClubEvent();
 		assertEquals(1, allClubEvent.size());
-		assertEquals(Type.EINZEL, allClubEvent.get(0).getCompetitionType());
+		assertEquals(Type.EINZEL, allClubEvent.get(0).getType());
 
-		competitionType.setType(Type.DOPPELMINI);
+		ev.setType(Type.DOPPELMINI);
 		testDatabaseHelper.transactional(() -> entityManager.merge(ev));
 		allClubEvent = testDatabaseHelper.allClubEvent();
 		assertEquals(1, allClubEvent.size());
-		assertEquals(Type.DOPPELMINI, allClubEvent.get(0).getCompetitionType());
+		assertEquals(Type.DOPPELMINI, allClubEvent.get(0).getType());
 	}
 
 	@Test

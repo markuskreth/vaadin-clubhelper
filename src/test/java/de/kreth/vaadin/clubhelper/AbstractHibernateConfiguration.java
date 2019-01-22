@@ -8,6 +8,7 @@ import org.reflections.Reflections;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.BaseEntity;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 
 public abstract class AbstractHibernateConfiguration implements HibernateConfiguration {
 
@@ -17,6 +18,7 @@ public abstract class AbstractHibernateConfiguration implements HibernateConfigu
 		Reflections reflections = new Reflections("de.kreth.vaadin.clubhelper.vaadinclubhelper.data");
 		entityClasses = new HashSet<>(reflections.getSubTypesOf(BaseEntity.class));
 		entityClasses.add(ClubeventHasPerson.class);
+		entityClasses.add(CompetitionType.class);
 	}
 
 	@Override

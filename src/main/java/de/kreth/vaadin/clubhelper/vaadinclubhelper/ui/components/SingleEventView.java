@@ -1,14 +1,22 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
+import com.vaadin.data.Binder;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.TextField;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DataUpdatedEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DefaultDataUpdateHandler;
 
 public class SingleEventView extends CustomComponent {
 
@@ -20,8 +28,12 @@ public class SingleEventView extends CustomComponent {
 	private DateField startDate;
 
 	private DateField endDate;
+	private ComboBox<CompetitionType.Type> competitionType;
 
-	public SingleEventView() {
+	private Binder<ClubEvent> binder;
+	private DefaultDataUpdateHandler updateHandler = new DefaultDataUpdateHandler();
+
+	public SingleEventView(boolean showCompetitionType) {
 		setCaption("Gewählte Veranstaltung");
 		addStyleName("bold-caption");
 		setWidth(50.0f, Unit.PERCENTAGE);
@@ -45,13 +57,55 @@ public class SingleEventView extends CustomComponent {
 		endDate = new DateField("Ende");
 		endDate.setEnabled(false);
 
+		endDate.addValueChangeListener(this::endDateVisibleCheck);
+
 		textLocation.setHeight(endDate.getHeight(), endDate.getHeightUnits());
 
-		GridLayout layout = new GridLayout(2, 2);
+		binder = new Binder<>(ClubEvent.class);
+		binder.forField(textTitle).bind(ClubEvent::getCaption, ClubEvent::setCaption);
+		binder.forField(textLocation).bind(ClubEvent::getLocation, ClubEvent::setLocation);
+		ZonedDateTimeConverter converter = new ZonedDateTimeConverter();
+
+		binder.forField(startDate).withConverter(converter).bind(ClubEvent::getStart, ClubEvent::setStart);
+		binder.forField(endDate).withConverter(converter).bind(ClubEvent::getEnd, ClubEvent::setEnd);
+		binder.addStatusChangeListener(ev -> updateHandler.fireUpdateEvent());
+
+		GridLayout layout;
+		if (showCompetitionType) {
+			competitionType = new ComboBox<>();
+			competitionType.setItems(Type.values());
+			binder.forField(competitionType).bind(ClubEvent::getType, ClubEvent::setType);
+			layout = new GridLayout(2, 3);
+		} else {
+			layout = new GridLayout(2, 2);
+		}
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.addComponents(textTitle, startDate, textLocation, endDate);
+		if (showCompetitionType) {
+			layout.addComponent(competitionType);
+		}
 		setCompositionRoot(layout);
+	}
+
+	void endDateVisibleCheck(ValueChangeEvent<LocalDate> event) {
+		ZonedDateTime start = binder.getBean().getStart();
+		ZonedDateTime end = binder.getBean().getEnd();
+		if (start.until(end, ChronoUnit.DAYS) > 0) {
+			endDate.setValue(end.toLocalDate());
+			endDate.setVisible(true);
+		} else {
+			endDate.setValue(null);
+			endDate.setVisible(false);
+		}
+	}
+
+	public void addDataUpdatedListener(DataUpdatedEvent ev) {
+		updateHandler.add(ev);
+	}
+
+	public boolean remove(DataUpdatedEvent o) {
+		return updateHandler.remove(o);
 	}
 
 	void setTitle(String value) {
@@ -70,34 +124,15 @@ public class SingleEventView extends CustomComponent {
 
 	public void setEvent(ClubEvent ev) {
 
-		if (ev != null) {
+		binder.setBean(ev);
 
-			setTitle(ev.getCaption());
-			setLocation(ev.getLocation());
-			setStartDate(ev.getStart());
-			setEndDate(ev);
+		if (ev != null) {
 
 		} else {
 			setTitle("");
 			setLocation("");
 			endDate.setVisible(false);
 		}
-	}
-
-	private void setEndDate(ClubEvent ev) {
-		ZonedDateTime start = ev.getStart();
-		ZonedDateTime end = ev.getEnd();
-		if (start.until(end, ChronoUnit.DAYS) > 0) {
-			endDate.setValue(end.toLocalDate());
-			endDate.setVisible(true);
-		} else {
-			endDate.setValue(null);
-			endDate.setVisible(false);
-		}
-	}
-
-	private void setStartDate(ZonedDateTime start) {
-		startDate.setValue(start.toLocalDate());
 	}
 
 }
