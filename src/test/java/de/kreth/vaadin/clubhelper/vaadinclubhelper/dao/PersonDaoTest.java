@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
@@ -43,6 +44,7 @@ public class PersonDaoTest {
 		person.setSurname("surname");
 		person.setBirth(LocalDate.of(2018, 11, 8));
 		person.setPassword("password");
+		person.setGender(Gender.MALE);
 		assertTrue(entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class).getResultList().isEmpty());
 	}
 
