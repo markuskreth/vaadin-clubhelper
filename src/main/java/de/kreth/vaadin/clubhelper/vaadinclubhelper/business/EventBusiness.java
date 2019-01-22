@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;

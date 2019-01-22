@@ -11,17 +11,20 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestAltersgruppen;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestPersonGenerator;
@@ -58,6 +61,8 @@ class EventBusinessTest {
 		for (Person p : personen) {
 			p.setEvents(new HashSet<>(Arrays.asList(ev)));
 			p.setBirth(LocalDate.of(1993 + (count * 3), count, count + 2));
+			int modulo = count % 2 + 1;
+			p.setGender(Gender.valueOf(modulo));
 			count++;
 		}
 
@@ -67,6 +72,7 @@ class EventBusinessTest {
 		eventBusiness.setSelected(ev);
 		EventMeldung meldung = eventBusiness.createMeldung();
 		assertNotNull(meldung);
+		Map<Altersgruppe, List<Person>> groups = meldung.getGroups();
 
 	}
 
