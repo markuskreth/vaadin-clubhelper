@@ -25,4 +25,17 @@ public enum Gender {
 		}
 		throw new IllegalArgumentException("No Gender for id=" + id + " defined.");
 	}
+
+	public String localized() {
+		switch (this) {
+		case FEMALE:
+			return "Weiblich";
+		case MALE:
+			return "Männlich";
+		default:
+			break;
+
+		}
+		throw new IllegalStateException("No localized String for " + this);
+	}
 }

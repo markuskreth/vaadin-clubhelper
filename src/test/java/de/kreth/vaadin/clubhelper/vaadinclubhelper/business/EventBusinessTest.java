@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -11,19 +12,20 @@ import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.AltersgruppePersonMap;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.AltersgruppeDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.ClubEventDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Altersgruppe;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestAltersgruppen;
@@ -55,6 +57,8 @@ class EventBusinessTest {
 				.withCaption("caption").withDescription("description").withOrganizerDisplayName("organizerDisplayName")
 				.withStart(startDate).withEnd(startDate).withAllDay(true).build();
 
+		ev.setType(Type.EINZEL);
+
 		List<Altersgruppe> altersgruppen = TestAltersgruppen.getAltersgruppen();
 		List<Person> personen = TestPersonGenerator.generatePersonen(10);
 		int count = 1;
@@ -72,7 +76,8 @@ class EventBusinessTest {
 		eventBusiness.setSelected(ev);
 		EventMeldung meldung = eventBusiness.createMeldung();
 		assertNotNull(meldung);
-		Map<Altersgruppe, List<Person>> groups = meldung.getGroups();
+		AltersgruppePersonMap groups = meldung.getGroups();
+		assertEquals(5, groups.altersgruppen().size());
 
 	}
 
