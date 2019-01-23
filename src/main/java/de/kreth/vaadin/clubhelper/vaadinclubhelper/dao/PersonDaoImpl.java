@@ -1,12 +1,9 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
-import java.util.List;
-
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
@@ -28,12 +25,6 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		Startpass startPass = obj.getStartpass();
 		if (startPass != null && startPass.hasValidId() == false) {
 			persistIfNew(startPass);
-		}
-		List<Contact> contacts = obj.getContacts();
-		if (contacts != null) {
-			for (Contact c : contacts) {
-				persistIfNew(c);
-			}
 		}
 	}
 
