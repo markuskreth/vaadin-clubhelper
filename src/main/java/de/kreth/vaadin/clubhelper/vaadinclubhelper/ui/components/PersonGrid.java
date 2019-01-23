@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +15,6 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.event.selection.SingleSelectionEvent;
-import com.vaadin.icons.VaadinIcons;
-import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Grid;
@@ -27,11 +24,11 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.GridMultiSelect;
-import com.vaadin.ui.themes.ValoTheme;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
@@ -48,7 +45,6 @@ public class PersonGrid extends VerticalLayout {
 	private final CheckBox checkIncluded;
 	private final ComboBox<GroupDef> comboGroups;
 
-	private transient Consumer<Person> onPersonEdit;
 	private Boolean selectedOnlyFilter;
 
 	private Set<GroupDef> groupMemberFilter;
@@ -56,9 +52,9 @@ public class PersonGrid extends VerticalLayout {
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
 	private Column<Person, Startpass> startpassColumn;
-	private Column<Person, Button> editButtonColumn;
 	private Layout filters;
 	private SelectionMode currentSelectionMode;
+	private Column<Person, String> genderColumn;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -92,7 +88,6 @@ public class PersonGrid extends VerticalLayout {
 
 		grid.setDataProvider(dataProvider);
 		grid.setId("person.grid");
-		setSelectionMode(SelectionMode.MULTI);
 		grid.setSizeFull();
 
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
@@ -100,9 +95,18 @@ public class PersonGrid extends VerticalLayout {
 		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
 
 		startpassColumn = grid.addColumn(Person::getStartpass).setCaption("Startpass Nr.");
-		editButtonColumn = grid.addComponentColumn(this::buildPersonEditButton);
+
+		genderColumn = grid.addColumn(p -> {
+
+			Gender gender = p.getGender();
+			if (gender == null) {
+				return "";
+			}
+			return gender.localized();
+		}).setCaption("Geschlecht");
+
 		startpassColumn.setHidden(false);
-		editButtonColumn.setHidden(true);
+		genderColumn.setHidden(true);
 	}
 
 	public void setSelectionMode(SelectionMode selectionMode) {
@@ -125,21 +129,8 @@ public class PersonGrid extends VerticalLayout {
 		return filters;
 	}
 
-	private Button buildPersonEditButton(Person p) {
-		Button button = new Button(VaadinIcons.EDIT);
-		button.addStyleName(ValoTheme.BUTTON_SMALL);
-		button.addClickListener(e -> showPersonDetails(p));
-		return button;
-	}
-
 	public void hideFilter() {
 		filters.setVisible(false);
-	}
-
-	private void showPersonDetails(Person p) {
-		if (onPersonEdit != null) {
-			onPersonEdit.accept(p);
-		}
 	}
 
 	private void onSelectedOnly(ValueChangeEvent<Boolean> ev) {
@@ -205,10 +196,9 @@ public class PersonGrid extends VerticalLayout {
 		updateFilter();
 	}
 
-	public void onPersonEdit(Consumer<Person> function) {
-		this.onPersonEdit = function;
+	public void onPersonEdit() {
 		startpassColumn.setHidden(true);
-		editButtonColumn.setHidden(false);
+		genderColumn.setHidden(false);
 	}
 
 	public void setEvent(ClubEvent ev) {

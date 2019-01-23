@@ -120,6 +120,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public Gender getGender() {
+		if (gender == null) {
+			return null;
+		}
 		return Gender.valueOf(gender);
 	}
 

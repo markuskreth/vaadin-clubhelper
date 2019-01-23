@@ -1,6 +1,5 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.vaadin.teemu.switchui.Switch;
@@ -11,27 +10,31 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
-public class PersonEditDialog extends Window {
+public class PersonEditDetails extends VerticalLayout {
 
 	private static final long serialVersionUID = 4692332924201974714L;
 	private final TextField textPrename;
 	private final TextField textSureName;
-	private final Person person;
 
 	private final Binder<Person> binder;
 	private DateField birthday;
+	private Person current;
 
-	public PersonEditDialog(List<GroupDef> groups, Person person, PersonDao dao) {
-		this.person = person;
+	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
+		this(groups, dao, true);
+	}
+
+	public PersonEditDetails(List<GroupDef> groups, PersonDao dao, boolean showCloseButton) {
 
 		textPrename = new TextField();
+		textPrename.setCaption("Vorname");
 		textSureName = new TextField();
+		textSureName.setCaption("Nachname");
 		birthday = new DateField();
 		birthday.setCaption("Geburtstag");
 
@@ -40,19 +43,13 @@ public class PersonEditDialog extends Window {
 		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
 		binder.forField(birthday).bind(Person::getBirth, Person::setBirth);
 
-		binder.readBean(person);
-
 		Panel groupPanel = new Panel("Gruppen");
 		VerticalLayout glay = new VerticalLayout();
 		groupPanel.setContent(glay);
-		List<GroupDef> selected = new ArrayList<>();
-		for (GroupDef tmp : person.getPersongroups()) {
-			selected.add(tmp);
-		}
+
 		for (GroupDef g : groups) {
 			Switch sw = new Switch(g.getName());
 			sw.setData(g);
-			sw.setValue(selected.contains(g));
 			glay.addComponent(sw);
 
 			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
@@ -65,17 +62,26 @@ public class PersonEditDialog extends Window {
 		}
 
 		Button close = new Button("Schließen");
-		close.addClickListener(ev -> closeWithoutSave(dao));
+		if (showCloseButton) {
+			close.addClickListener(ev -> closeWithoutSave(dao));
+		} else {
+			close.setVisible(false);
+		}
 		Button ok = new Button("Speichern");
 		ok.addClickListener(ev -> {
-			binder.writeBeanIfValid(person);
-			dao.update(person);
-			PersonEditDialog.this.close();
+			if (binder.validate().isOk()) {
+				binder.writeBeanIfValid(current);
+				dao.update(current);
+			}
 		});
-		VerticalLayout layout = new VerticalLayout();
-		layout.addComponents(textPrename, textSureName, birthday, groupPanel, close, ok);
-		setContent(layout);
-		center();
+
+		addComponents(textPrename, textSureName, birthday, groupPanel, close, ok);
+
+	}
+
+	public void setBean(Person person) {
+		this.current = person;
+		binder.readBean(person);
 	}
 
 	private void closeWithoutSave(PersonDao dao) {
@@ -85,17 +91,17 @@ public class PersonEditDialog extends Window {
 					.setMessage("Die Daten wurden geändert. Sollen die Änderungen gespeichert werden?")
 					.saveDiscardCancel().setResultHandler(button -> {
 						if (button == ConfirmDialog.Buttons.SAVE) {
-							binder.writeBeanIfValid(person);
-							dao.update(person);
-							PersonEditDialog.this.close();
+							if (binder.validate().isOk()) {
+								binder.writeBeanIfValid(current);
+								dao.update(current);
+							}
 						} else if (button == ConfirmDialog.Buttons.DISCARD) {
-							PersonEditDialog.this.close();
+							binder.readBean(current);
 						}
 					}).build();
 
 			getUI().addWindow(dlg);
 		} else {
-			close();
 		}
 	}
 

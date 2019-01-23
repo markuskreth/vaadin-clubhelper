@@ -1,11 +1,14 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
+import java.util.Optional;
+
+import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.ui.HorizontalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDialog;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
 public class PersonEditView extends HorizontalLayout implements NamedView {
@@ -14,20 +17,27 @@ public class PersonEditView extends HorizontalLayout implements NamedView {
 	private static final long serialVersionUID = 1770993670570422036L;
 
 	private PersonGrid personGrid;
-	private PersonDao personDao;
-	private GroupDao groupDao;
+	private PersonEditDetails personDetails;
 
 	public PersonEditView(GroupDao groupDao, PersonDao personDao) {
-		this.groupDao = groupDao;
-		this.personDao = personDao;
 		personGrid = new PersonGrid(groupDao, personDao);
-		personGrid.onPersonEdit(p -> onPersonEdit(p));
-		addComponent(personGrid);
+		personGrid.setSizeFull();
+		personGrid.onPersonEdit();
+		personGrid.onPersonSelect(ev -> selectedPerson(ev));
+//		personGrid.setSelectionMode(SelectionMode.SINGLE);
+
+		personDetails = new PersonEditDetails(groupDao.listAll(), personDao, false);
+		personDetails.setSizeFull();
+
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.addComponents(personGrid, personDetails);
+		layout.setSizeFull();
+		addComponent(layout);
 	}
 
-	private void onPersonEdit(Person p) {
-		PersonEditDialog dlg = new PersonEditDialog(groupDao.listAll(), p, personDao);
-		getUI().addWindow(dlg);
+	void selectedPerson(SelectionEvent<Person> p) {
+		Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
+		personDetails.setBean(firstSelectedItem.orElse(null));
 	}
 
 	@Override

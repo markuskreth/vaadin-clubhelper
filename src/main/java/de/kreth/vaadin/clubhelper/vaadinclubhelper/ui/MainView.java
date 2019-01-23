@@ -14,6 +14,7 @@ import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -86,6 +87,7 @@ public class MainView extends BorderLayout implements NamedView {
 
 		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setCaption("Personen");
+		personGrid.setSelectionMode(SelectionMode.MULTI);
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
 		personGrid.setVisible(false);
 
@@ -113,7 +115,7 @@ public class MainView extends BorderLayout implements NamedView {
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new HeadView(() -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
+		head = new HeadView(navigator, () -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
 		head.updateMonthText(calendar.getStartDate());
 		calendar.add(dateTime -> head.updateMonthText(dateTime));
 

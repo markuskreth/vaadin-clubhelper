@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractComponent;
@@ -62,9 +63,12 @@ public class HeadView extends HorizontalLayout {
 
 	private Person loggedinPerson;
 
-	public HeadView(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
+	private final Navigator navigator;
+
+	public HeadView(Navigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider) {
 
+		this.navigator = navigator;
 		monthName = new Label();
 		monthName.setId("calendar.month");
 		monthName.setStyleName("title_caption");
@@ -138,7 +142,7 @@ public class HeadView extends HorizontalLayout {
 	}
 
 	private void switchToPersonEditUi() {
-
+		navigator.navigateTo(PersonEditView.VIEW_NAME);
 	}
 
 	private void calendarExport(MenuItem ev1) {
