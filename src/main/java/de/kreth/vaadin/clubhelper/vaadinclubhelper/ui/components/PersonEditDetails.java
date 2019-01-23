@@ -40,6 +40,8 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao, boolean showCloseButton) {
 
+		setCaption("Personendetails");
+
 		textPrename = new TextField("Vorname");
 		textSureName = new TextField("Nachname");
 		birthday = new DateField("Geburtstag");

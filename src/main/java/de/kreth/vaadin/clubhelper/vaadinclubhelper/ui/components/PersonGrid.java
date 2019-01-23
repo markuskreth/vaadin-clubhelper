@@ -112,9 +112,7 @@ public class PersonGrid extends VerticalLayout {
 	public void setSelectionMode(SelectionMode selectionMode) {
 		grid.setSelectionMode(selectionMode);
 		currentSelectionMode = selectionMode;
-		if (selectionMode != SelectionMode.MULTI) {
-			checkIncluded.setVisible(false);
-		} else {
+		if (selectionMode == SelectionMode.MULTI) {
 			checkIncluded.setVisible(true);
 		}
 	}
@@ -122,6 +120,8 @@ public class PersonGrid extends VerticalLayout {
 	private Layout setupFilterComponents() {
 		checkIncluded.setId("person.filter.checked");
 		checkIncluded.addValueChangeListener(ev -> onSelectedOnly(ev));
+		checkIncluded.setVisible(false);
+
 		comboGroups.setId("person.filter.groups");
 		comboGroups.setEmptySelectionAllowed(true);
 		comboGroups.setEmptySelectionCaption("Alle");
