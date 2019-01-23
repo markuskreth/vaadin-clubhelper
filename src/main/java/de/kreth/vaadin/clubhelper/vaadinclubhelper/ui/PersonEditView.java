@@ -1,9 +1,13 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
 
 import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
@@ -11,7 +15,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
-public class PersonEditView extends HorizontalLayout implements NamedView {
+public class PersonEditView extends VerticalLayout implements NamedView {
 
 	public static final String VIEW_NAME = "PersonEditView";
 	private static final long serialVersionUID = 1770993670570422036L;
@@ -33,6 +37,19 @@ public class PersonEditView extends HorizontalLayout implements NamedView {
 		layout.addComponents(personGrid, personDetails);
 		layout.setSizeFull();
 		addComponent(layout);
+		Button addPerson = new Button("Hinzufügen");
+		addPerson.addClickListener(ev -> addPerson());
+		addComponent(addPerson);
+	}
+
+	private void addPerson() {
+		Person person = new Person();
+		person.setGroups(new HashSet<>());
+		person.setAdresses(new ArrayList<>());
+		person.setEvents(new HashSet<>());
+		person.setRelatives1(new ArrayList<>());
+		personDetails.setBean(person);
+		personGrid.deselectAll();
 	}
 
 	void selectedPerson(SelectionEvent<Person> p) {

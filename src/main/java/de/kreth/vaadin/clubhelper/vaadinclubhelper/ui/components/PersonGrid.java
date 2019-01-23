@@ -112,6 +112,11 @@ public class PersonGrid extends VerticalLayout {
 	public void setSelectionMode(SelectionMode selectionMode) {
 		grid.setSelectionMode(selectionMode);
 		currentSelectionMode = selectionMode;
+		if (selectionMode != SelectionMode.MULTI) {
+			checkIncluded.setVisible(false);
+		} else {
+			checkIncluded.setVisible(true);
+		}
 	}
 
 	private Layout setupFilterComponents() {

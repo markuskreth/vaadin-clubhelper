@@ -71,7 +71,7 @@ public class PersonDaoTest {
 		person.setSurname("surname2");
 		person.setPrename("prename2");
 
-		testDatabaseHelper.transactional(() -> personDao.update(person));
+		testDatabaseHelper.transactional(() -> personDao.save(person));
 
 		List<Person> stored = entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class).getResultList();
 		assertEquals(1, stored.size());

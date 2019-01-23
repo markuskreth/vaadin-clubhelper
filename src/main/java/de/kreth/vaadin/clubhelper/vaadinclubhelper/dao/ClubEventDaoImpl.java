@@ -24,14 +24,14 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
-	public ClubEvent update(ClubEvent obj) {
+	public void save(ClubEvent obj) {
 		CompetitionType competitionType = obj.getCompetitionType();
 		if (competitionType != null) {
 			if (obj.getCompetitionType().getId() == null) {
 				obj.getCompetitionType().setId(obj.getId());
 			}
 		}
-		return super.update(obj);
+		super.save(obj);
 	}
 
 	@Override

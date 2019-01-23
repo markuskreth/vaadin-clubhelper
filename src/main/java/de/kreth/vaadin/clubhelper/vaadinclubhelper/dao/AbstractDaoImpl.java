@@ -34,12 +34,6 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	}
 
 	@Override
-	@Transactional
-	public T update(T obj) {
-		return entityManager.merge(obj);
-	}
-
-	@Override
 	public T get(Object primaryKey) {
 		return entityManager.find(entityClass, primaryKey);
 	}

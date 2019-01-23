@@ -6,10 +6,13 @@ import java.util.function.Consumer;
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.ValidationResult;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -29,7 +32,7 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	private final Binder<Person> binder;
 	private Consumer<Person> personChangeHandler;
-	private Person current;
+	private Button okButton;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
 		this(groups, dao, true);
@@ -47,8 +50,8 @@ public class PersonEditDetails extends HorizontalLayout {
 		TextField textStartPass = new TextField("Startpass");
 
 		binder = new Binder<>();
-		binder.forField(textPrename).bind(Person::getPrename, Person::setPrename);
-		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
+		binder.forField(textPrename).asRequired().bind(Person::getPrename, Person::setPrename);
+		binder.forField(textSureName).asRequired().bind(Person::getSurname, Person::setSurname);
 		binder.forField(birthday).bind(Person::getBirth, Person::setBirth);
 		binder.forField(genderBox).bind(Person::getGender, Person::setGender);
 		binder.forField(textStartPass).bind(p -> {
@@ -77,25 +80,41 @@ public class PersonEditDetails extends HorizontalLayout {
 			});
 		}
 
+		binder.withValidator(p -> (p.getGroups() != null && p.getGroups().isEmpty() == false),
+				"Mind. eine Gruppe muss gewählt sein!");
+
 		Button close = new Button("Schließen");
 		if (showCloseButton) {
 			close.addClickListener(ev -> closeWithoutSave(dao));
 		} else {
 			close.setVisible(false);
 		}
-		Button ok = new Button("Speichern");
-		ok.addClickListener(ev -> {
-			if (binder.validate().isOk()) {
-				binder.writeBeanIfValid(current);
-				dao.update(current);
+
+		okButton = new Button("Speichern");
+		okButton.addClickListener(ev -> {
+			BinderValidationStatus<Person> validate = binder.validate();
+			if (validate.isOk()) {
+				dao.save(binder.getBean());
 				if (personChangeHandler != null) {
-					personChangeHandler.accept(current);
+					personChangeHandler.accept(binder.getBean());
 				}
+			} else {
+				List<ValidationResult> errors = validate.getBeanValidationErrors();
+				StringBuilder msg = new StringBuilder();
+				for (ValidationResult res : errors) {
+					if (res.isError()) {
+						if (msg.length() > 0) {
+							msg.append("\n");
+						}
+						msg.append(res.getErrorMessage());
+					}
+				}
+				Notification.show("Fehler korrigieren", msg.toString(), Notification.Type.ERROR_MESSAGE);
 			}
 		});
-
+		okButton.setEnabled(false);
 		VerticalLayout layout = new VerticalLayout(textPrename, textSureName, birthday, genderBox, textStartPass, close,
-				ok);
+				okButton);
 		addComponents(layout, groupPanel);
 
 	}
@@ -105,8 +124,13 @@ public class PersonEditDetails extends HorizontalLayout {
 	}
 
 	public void setBean(Person person) {
-		this.current = person;
-		binder.readBean(person);
+		binder.setBean(person);
+
+		if (person != null) {
+			okButton.setEnabled(true);
+		} else {
+			okButton.setEnabled(false);
+		}
 	}
 
 	private void closeWithoutSave(PersonDao dao) {
@@ -117,11 +141,10 @@ public class PersonEditDetails extends HorizontalLayout {
 					.saveDiscardCancel().setResultHandler(button -> {
 						if (button == ConfirmDialog.Buttons.SAVE) {
 							if (binder.validate().isOk()) {
-								binder.writeBeanIfValid(current);
-								dao.update(current);
+								dao.save(binder.getBean());
 							}
 						} else if (button == ConfirmDialog.Buttons.DISCARD) {
-							binder.readBean(current);
+							binder.removeBean();
 						}
 					}).build();
 
