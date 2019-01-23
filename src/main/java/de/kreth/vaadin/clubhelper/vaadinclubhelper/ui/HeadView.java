@@ -81,6 +81,7 @@ public class HeadView extends HorizontalLayout {
 
 		personLabel = new Label();
 		personLabel.setStyleName("title_caption");
+		personLabel.addStyleName("bold-caption");
 
 		this.addComponent(popupButton);
 		this.addComponent(monthName);
@@ -125,9 +126,14 @@ public class HeadView extends HorizontalLayout {
 		if (loggedinPerson != null) {
 			Set<GroupDef> groups = loggedinPerson.getGroups();
 			if (contains(groups, "ADMIN") || contains(groups, "Übungsleiter")) {
-				contextMenu.addItem("Personen verwalten", ev1 -> switchToPersonEditUi());
+				contextMenu.addItem("Personen verwalten", ev1 -> navigator.navigateTo(PersonEditView.VIEW_NAME));
 			}
-			contextMenu.addItem("Abmelden", ev1 -> session.setAttribute(Person.SESSION_LOGIN, null));
+			contextMenu.addItem("Abmelden", ev1 -> {
+				session.setAttribute(Person.SESSION_LOGIN, null);
+				navigator.navigateTo(MainView.VIEW_NAME);
+			});
+		} else {
+			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(LoginUI.VIEW_NAME));
 		}
 		contextMenu.open(50, 50);
 	}
@@ -139,10 +145,6 @@ public class HeadView extends HorizontalLayout {
 			}
 		}
 		return false;
-	}
-
-	private void switchToPersonEditUi() {
-		navigator.navigateTo(PersonEditView.VIEW_NAME);
 	}
 
 	private void calendarExport(MenuItem ev1) {

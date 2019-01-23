@@ -311,6 +311,17 @@ public class Person extends BaseEntity implements Serializable {
 		this.startpass = startpass;
 	}
 
+	public void setStartpass(String startpass) {
+		if (this.startpass == null) {
+			if (startpass == null || startpass.isBlank()) {
+				return;
+			}
+			this.startpass = new Startpass();
+			this.startpass.setPerson(this);
+		}
+		this.startpass.setStartpassNr(startpass);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

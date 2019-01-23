@@ -154,6 +154,10 @@ public class PersonGrid extends VerticalLayout {
 		dataProvider.refreshAll();
 	}
 
+	public void refreshItem(Person item) {
+		dataProvider.refreshItem(item);
+	}
+
 	public void onPersonSelect(SelectionListener<Person> listener) throws UnsupportedOperationException {
 		grid.addSelectionListener(listener);
 	}
@@ -209,7 +213,7 @@ public class PersonGrid extends VerticalLayout {
 			} else {
 				selectItems(new Person[0]);
 			}
-		} else {
+		} else if (ev != null) {
 			Collection<Person> items = dataProvider.getItems();
 			items.clear();
 			items.addAll(ev.getPersons());

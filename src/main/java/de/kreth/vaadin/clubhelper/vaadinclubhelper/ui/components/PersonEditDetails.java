@@ -1,28 +1,34 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 
-public class PersonEditDetails extends VerticalLayout {
+public class PersonEditDetails extends HorizontalLayout {
 
 	private static final long serialVersionUID = 4692332924201974714L;
 	private final TextField textPrename;
 	private final TextField textSureName;
+	private final DateField birthday;
 
 	private final Binder<Person> binder;
-	private DateField birthday;
+	private Consumer<Person> personChangeHandler;
 	private Person current;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
@@ -31,17 +37,27 @@ public class PersonEditDetails extends VerticalLayout {
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao, boolean showCloseButton) {
 
-		textPrename = new TextField();
-		textPrename.setCaption("Vorname");
-		textSureName = new TextField();
-		textSureName.setCaption("Nachname");
-		birthday = new DateField();
-		birthday.setCaption("Geburtstag");
+		textPrename = new TextField("Vorname");
+		textSureName = new TextField("Nachname");
+		birthday = new DateField("Geburtstag");
+		ComboBox<Gender> genderBox = new ComboBox<>("Geschlecht");
+		genderBox.setEmptySelectionAllowed(false);
+		genderBox.setItemCaptionGenerator(item -> item.localized());
+		genderBox.setItems(Gender.values());
+		TextField textStartPass = new TextField("Startpass");
 
 		binder = new Binder<>();
 		binder.forField(textPrename).bind(Person::getPrename, Person::setPrename);
 		binder.forField(textSureName).bind(Person::getSurname, Person::setSurname);
 		binder.forField(birthday).bind(Person::getBirth, Person::setBirth);
+		binder.forField(genderBox).bind(Person::getGender, Person::setGender);
+		binder.forField(textStartPass).bind(p -> {
+			Startpass startpass = p.getStartpass();
+			if (startpass == null) {
+				return null;
+			}
+			return startpass.getStartpassNr();
+		}, (p, value) -> p.setStartpass(value));
 
 		Panel groupPanel = new Panel("Gruppen");
 		VerticalLayout glay = new VerticalLayout();
@@ -72,11 +88,20 @@ public class PersonEditDetails extends VerticalLayout {
 			if (binder.validate().isOk()) {
 				binder.writeBeanIfValid(current);
 				dao.update(current);
+				if (personChangeHandler != null) {
+					personChangeHandler.accept(current);
+				}
 			}
 		});
 
-		addComponents(textPrename, textSureName, birthday, groupPanel, close, ok);
+		VerticalLayout layout = new VerticalLayout(textPrename, textSureName, birthday, genderBox, textStartPass, close,
+				ok);
+		addComponents(layout, groupPanel);
 
+	}
+
+	public void setPersonChangeHandler(Consumer<Person> personChangeHandler) {
+		this.personChangeHandler = personChangeHandler;
 	}
 
 	public void setBean(Person person) {

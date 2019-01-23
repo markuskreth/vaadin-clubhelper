@@ -14,6 +14,12 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	}
 
 	@Override
+	public Person update(Person obj) {
+
+		return super.update(obj);
+	}
+
+	@Override
 	public Person findLoginUser(String username, String password) {
 		TypedQuery<Person> query = entityManager.createNamedQuery(Person.QUERY_FINDLOGIN, Person.class);
 		query.setParameter("username", username);

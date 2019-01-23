@@ -24,10 +24,10 @@ public class PersonEditView extends HorizontalLayout implements NamedView {
 		personGrid.setSizeFull();
 		personGrid.onPersonEdit();
 		personGrid.onPersonSelect(ev -> selectedPerson(ev));
-//		personGrid.setSelectionMode(SelectionMode.SINGLE);
 
 		personDetails = new PersonEditDetails(groupDao.listAll(), personDao, false);
 		personDetails.setSizeFull();
+		personDetails.setPersonChangeHandler(personGrid::refreshItem);
 
 		HorizontalLayout layout = new HorizontalLayout();
 		layout.addComponents(personGrid, personDetails);
