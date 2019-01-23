@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import com.vaadin.event.selection.SelectionEvent;
+import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
@@ -23,7 +25,11 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 	private PersonGrid personGrid;
 	private PersonEditDetails personDetails;
 
+	private Navigator navigator;
+
 	public PersonEditView(GroupDao groupDao, PersonDao personDao) {
+		setMargin(true);
+
 		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setSizeFull();
 		personGrid.onPersonEdit();
@@ -39,7 +45,11 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 		addComponent(layout);
 		Button addPerson = new Button("Hinzufügen");
 		addPerson.addClickListener(ev -> addPerson());
+
 		addComponent(addPerson);
+		Button backButton = new Button("Zurück");
+		backButton.addClickListener(ev -> navigator.navigateTo(MainView.VIEW_NAME));
+		addComponent(backButton);
 	}
 
 	private void addPerson() {
@@ -55,6 +65,12 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 	void selectedPerson(SelectionEvent<Person> p) {
 		Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
 		personDetails.setBean(firstSelectedItem.orElse(null));
+	}
+
+	@Override
+	public void enter(ViewChangeEvent event) {
+		NamedView.super.enter(event);
+		this.navigator = event.getNavigator();
 	}
 
 	@Override
