@@ -5,6 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,9 +14,10 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 
 public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<T> {
 
+	protected final Logger log = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	protected EntityManager entityManager;
-
 	private final Class<T> entityClass;
 
 	public AbstractDaoImpl(Class<T> entityClass) {

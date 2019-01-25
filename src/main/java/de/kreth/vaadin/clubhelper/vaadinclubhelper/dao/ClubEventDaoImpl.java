@@ -37,27 +37,44 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	@Override
 	public void addPersons(ClubEvent event, Collection<Person> updated) {
 		List<Person> added = new ArrayList<>(updated);
+		List<Person> removed = new ArrayList<>();
+		Set<Person> current = event.getPersons();
 
-		Set<Person> persons2 = event.getPersons();
-		if (persons2 != null) {
-			added.removeAll(persons2);
+		if (current != null) {
+			for (Person p : current) {
+				if (added.contains(p) == false) {
+					removed.add(p);
+				}
+			}
+			added.removeAll(current);
 		} else {
-			persons2 = new HashSet<>();
-			event.setPersons(persons2);
+			current = new HashSet<>();
+			event.setPersons(current);
 			for (Person p : updated) {
 				event.add(p);
 			}
 		}
 
-		Query insertQuery = entityManager.createNativeQuery(
-				"INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (:eventId,:personId)");
-		for (Person p : added) {
-			insertQuery.setParameter("eventId", event.getId());
-			insertQuery.setParameter("personId", p.getId());
-			insertQuery.executeUpdate();
-
+		if (!added.isEmpty()) {
+			Query insertQuery = entityManager.createNativeQuery(
+					"INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (:eventId,:personId)");
+			for (Person p : added) {
+				insertQuery.setParameter("eventId", event.getId());
+				insertQuery.setParameter("personId", p.getId());
+				insertQuery.executeUpdate();
+			}
 		}
-		persons2.addAll(added);
+		if (!removed.isEmpty()) {
+			Query deleteQuery = entityManager.createNativeQuery(
+					"DELETE FROM clubevent_has_person WHERE clubevent_id=:eventId AND person_id=:personId");
+			for (Person p : removed) {
+				deleteQuery.setParameter("eventId", event.getId());
+				deleteQuery.setParameter("personId", p.getId());
+				deleteQuery.executeUpdate();
+			}
+		}
+		current.addAll(added);
+		current.removeAll(removed);
 	}
 
 	@Override
