@@ -17,6 +17,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 
 @Theme("vaadin-clubhelpertheme")
 @SpringUI
@@ -39,6 +40,9 @@ public class MainUi extends UI {
 	@Autowired
 	PflichtenDao pflichtenDao;
 
+	@Autowired
+	SecurityVerifier securityGroupVerifier;
+
 	@Override
 	protected void init(VaadinRequest request) {
 
@@ -49,10 +53,11 @@ public class MainUi extends UI {
 		Navigator navigator = new Navigator(this, this);
 
 		// Create and register the views
-		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness));
-		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao));
+		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness, securityGroupVerifier));
+		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao, securityGroupVerifier));
 		navigator.addView(PersonEditView.VIEW_NAME, new PersonEditView(groupDao, personDao));
-		navigator.addView(EventDetails.VIEW_NAME, new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao));
+		navigator.addView(EventDetails.VIEW_NAME,
+				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, securityGroupVerifier));
 		navigator.navigateTo(MainView.VIEW_NAME);
 	}
 

@@ -5,6 +5,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 public class MeldungGeneratorFactory {
 
 	public static MeldungGenerator forType(CompetitionType.Type type) {
+		if (type == null) {
+			return new MeldungEinzelWettkampfGenerator();
+		}
 		switch (type) {
 		case DOPPELMINI:
 			return new MeldungDmtWettkampfGenerator();

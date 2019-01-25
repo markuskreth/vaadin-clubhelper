@@ -9,6 +9,7 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 
 public class LoginUI extends VerticalLayout implements NamedView {
 
@@ -18,7 +19,7 @@ public class LoginUI extends VerticalLayout implements NamedView {
 	private Navigator navigator;
 	private String parameters;
 
-	public LoginUI(PersonDao personDao) {
+	public LoginUI(PersonDao personDao, SecurityVerifier securityGroupVerifier) {
 
 		LoginForm lf = new LoginForm();
 		lf.addLoginListener(e -> {
@@ -28,7 +29,7 @@ public class LoginUI extends VerticalLayout implements NamedView {
 
 			try {
 				Person loggedin = personDao.findLoginUser(username, password);
-				this.getSession().setAttribute(Person.SESSION_LOGIN, loggedin);
+				securityGroupVerifier.setLoggedinPerson(loggedin);
 				navigator.navigateTo(MainView.VIEW_NAME + '/' + parameters);
 			} catch (final Exception ex) {
 				String message = "Incorrect user or password:" + ex.getMessage() + e.getLoginParameter("username") + ":"
@@ -46,6 +47,9 @@ public class LoginUI extends VerticalLayout implements NamedView {
 	public void enter(ViewChangeEvent event) {
 		navigator = event.getNavigator();
 		parameters = event.getParameters();
+		if (parameters == null) {
+			parameters = "";
+		}
 	}
 
 	@Override

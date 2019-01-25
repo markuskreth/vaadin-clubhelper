@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,20 +28,40 @@ public class AltersgruppePersonMap {
 	}
 
 	private void group(ClubEvent event, Person p) {
+		if (event.getAltersgruppen().isEmpty()) {
+			Altersgruppe g;
+			if (groups.isEmpty()) {
+				g = new Altersgruppe();
+				g.setBezeichnung("Alle Teilnehmer");
+				g.setClubEvent(event);
+				g.setStart(1900);
+				g.setEnd(LocalDate.MAX.getYear());
+				groups.put(g, new HashMap<>());
+			} else {
+				g = groups.keySet().iterator().next();
+			}
+			addPersonToGroup(p, g);
+			return;
+		}
 		for (Altersgruppe g : event.getAltersgruppen()) {
 			if (g.isBetween(p.getBirth())) {
 				if (!groups.containsKey(g)) {
 					groups.put(g, new HashMap<>());
 				}
-				Map<Gender, List<Person>> map = groups.get(g);
-				if (!map.containsKey(p.getGender())) {
-					map.put(p.getGender(), new ArrayList<>());
-				}
-				map.get(p.getGender()).add(p);
+
+				addPersonToGroup(p, g);
 				return;
 			}
 		}
 		throw new IllegalStateException("No Group found for " + p);
+	}
+
+	public void addPersonToGroup(Person p, Altersgruppe g) {
+		Map<Gender, List<Person>> map = groups.get(g);
+		if (!map.containsKey(p.getGender())) {
+			map.put(p.getGender(), new ArrayList<>());
+		}
+		map.get(p.getGender()).add(p);
 	}
 
 	public Collection<Altersgruppe> altersgruppen() {

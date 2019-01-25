@@ -24,6 +24,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
@@ -36,26 +37,25 @@ public class MainView extends BorderLayout implements NamedView {
 	private static final long serialVersionUID = 4831071242146146399L;
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+	private final PersonDao personDao;
+	private final GroupDao groupDao;
+	private final EventBusiness eventBusiness;
+	private final SecurityVerifier securityVerifier;
+
 	private PersonGrid personGrid;
-
 	private CalendarComponent calendar;
-
-	private Person loggedinPerson;
-	private PersonDao personDao;
-	private GroupDao groupDao;
-	private EventBusiness eventBusiness;
-	private Navigator navigator;
-
 	private HeadView head;
-
 	private SingleEventView eventView;
-
 	private HorizontalLayout eventButtonLayout;
 
-	public MainView(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness) {
+	private Navigator navigator;
+
+	public MainView(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
+			SecurityVerifier securityGroupVerifier) {
 		this.personDao = personDao;
 		this.groupDao = groupDao;
 		this.eventBusiness = eventBusiness;
+		this.securityVerifier = securityGroupVerifier;
 	}
 
 	@Override
@@ -65,9 +65,7 @@ public class MainView extends BorderLayout implements NamedView {
 			LOGGER.info("Loaded UI and started fetch of Events");
 		} else {
 
-			loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
-
-			if (loggedinPerson != null) {
+			if (securityVerifier.isLoggedin()) {
 				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
 				openPersonViewForEvent(eventBusiness.getCurrent());
 				calendar.setToday(eventBusiness.getCurrent().getStart());
@@ -115,7 +113,8 @@ public class MainView extends BorderLayout implements NamedView {
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new HeadView(navigator, () -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider);
+		head = new HeadView(navigator, () -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider,
+				securityVerifier);
 		head.updateMonthText(calendar.getStartDate());
 		calendar.add(dateTime -> head.updateMonthText(dateTime));
 
@@ -154,9 +153,8 @@ public class MainView extends BorderLayout implements NamedView {
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
 
-		loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
 		ClubEvent ev = (ClubEvent) event.getCalendarItem();
-		if (loggedinPerson != null) {
+		if (securityVerifier.isLoggedin()) {
 			openPersonViewForEvent(ev);
 		} else {
 			eventBusiness.setSelected(ev);

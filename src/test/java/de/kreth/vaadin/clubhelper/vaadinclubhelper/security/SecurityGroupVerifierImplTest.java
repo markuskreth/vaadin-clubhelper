@@ -3,6 +3,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.security;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,6 +12,10 @@ import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.vaadin.server.VaadinSession;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -18,14 +23,18 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestPersonGenerator;
 
 class SecurityGroupVerifierImplTest {
 
-	private SecurityGroupVerifierImpl securityGroupVerifier;
+	private SecurityVerifier securityGroupVerifier;
 	private Map<SecurityGroups, GroupDef> groupDefinitions;
 	private Person person;
 	private Set<GroupDef> personGroups;
+	@Mock
+	private VaadinSession session;
 
 	@BeforeEach
 	void setUp() throws Exception {
-		securityGroupVerifier = new SecurityGroupVerifierImpl();
+		MockitoAnnotations.initMocks(this);
+		VaadinSession.setCurrent(session);
+		securityGroupVerifier = new SecurityVerifierImpl();
 		groupDefinitions = new HashMap<>();
 
 		for (SecurityGroups g : SecurityGroups.values()) {
@@ -37,6 +46,11 @@ class SecurityGroupVerifierImplTest {
 		personGroups = new HashSet<>();
 		person.setGroups(personGroups);
 		securityGroupVerifier.setLoggedinPerson(person);
+	}
+
+	@Test
+	void verifySessionHasPersonSet() {
+		verify(session).setAttribute(Person.SESSION_LOGIN, person);
 	}
 
 	@Test

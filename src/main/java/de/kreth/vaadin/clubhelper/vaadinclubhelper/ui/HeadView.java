@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -22,7 +21,6 @@ import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
@@ -35,9 +33,10 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -61,14 +60,16 @@ public class HeadView extends HorizontalLayout {
 
 	private Label personLabel;
 
-	private Person loggedinPerson;
-
 	private final Navigator navigator;
 
+	private final SecurityVerifier securityVerifier;
+
 	public HeadView(Navigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
-			ClubEventProvider dataProvider) {
+			ClubEventProvider dataProvider, SecurityVerifier securityVerifier) {
 
 		this.navigator = navigator;
+		this.securityVerifier = securityVerifier;
+
 		monthName = new Label();
 		monthName.setId("calendar.month");
 		monthName.setStyleName("title_caption");
@@ -101,7 +102,7 @@ public class HeadView extends HorizontalLayout {
 
 	public void updateLoggedinPerson() {
 
-		loggedinPerson = (Person) getSession().getAttribute(Person.SESSION_LOGIN);
+		Person loggedinPerson = securityVerifier.getLoggedinPerson();
 		if (loggedinPerson != null) {
 			personLabel.setCaption(loggedinPerson.getSurname() + ", " + loggedinPerson.getPrename());
 		} else {
@@ -118,33 +119,21 @@ public class HeadView extends HorizontalLayout {
 	private void openPopupMenu(ClickEvent ev) {
 		Button button = ev.getButton();
 
-		VaadinSession session = getSession();
-		Person loggedinPerson = (Person) session.getAttribute(Person.SESSION_LOGIN);
 		ContextMenu contextMenu = new ContextMenu(button, true);
 		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
 		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
-		if (loggedinPerson != null) {
-			Set<GroupDef> groups = loggedinPerson.getGroups();
-			if (contains(groups, "ADMIN") || contains(groups, "Übungsleiter")) {
+		if (securityVerifier.getLoggedinPerson() != null) {
+			if (securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
 				contextMenu.addItem("Personen verwalten", ev1 -> navigator.navigateTo(PersonEditView.VIEW_NAME));
 			}
 			contextMenu.addItem("Abmelden", ev1 -> {
-				session.setAttribute(Person.SESSION_LOGIN, null);
+				securityVerifier.setLoggedinPerson(null);
 				navigator.navigateTo(MainView.VIEW_NAME);
 			});
 		} else {
 			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(LoginUI.VIEW_NAME));
 		}
 		contextMenu.open(50, 50);
-	}
-
-	public boolean contains(Set<GroupDef> groups, String name) {
-		for (GroupDef g : groups) {
-			if (g.getName().toLowerCase().contentEquals(name.toLowerCase())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void calendarExport(MenuItem ev1) {
