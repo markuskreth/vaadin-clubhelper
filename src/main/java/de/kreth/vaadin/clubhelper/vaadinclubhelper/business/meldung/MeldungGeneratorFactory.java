@@ -6,7 +6,7 @@ public class MeldungGeneratorFactory {
 
 	public static MeldungGenerator forType(CompetitionType.Type type) {
 		if (type == null) {
-			return new MeldungEinzelWettkampfGenerator();
+			return new MeldungDmtWettkampfGenerator(); // no Pflichten printed
 		}
 		switch (type) {
 		case DOPPELMINI:
