@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vaadin.addon.borderlayout.BorderLayout;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
 import com.vaadin.event.selection.SelectionEvent;
@@ -30,7 +29,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarCompone
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
-public class MainView extends BorderLayout implements NamedView {
+public class MainView extends VerticalLayout implements NamedView {
 
 	public static final String VIEW_NAME = "";
 
@@ -50,6 +49,10 @@ public class MainView extends BorderLayout implements NamedView {
 
 	private Navigator navigator;
 
+	private VerticalLayout eastLayout;
+
+	private HorizontalLayout mainLayout;
+
 	public MainView(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		this.personDao = personDao;
@@ -64,7 +67,6 @@ public class MainView extends BorderLayout implements NamedView {
 			initUI(event);
 			LOGGER.info("Loaded UI and started fetch of Events");
 		} else {
-
 			if (securityVerifier.isLoggedin()) {
 				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
 				openPersonViewForEvent(eventBusiness.getCurrent());
@@ -72,12 +74,14 @@ public class MainView extends BorderLayout implements NamedView {
 				head.updateLoggedinPerson();
 			} else {
 				LOGGER.info("{} already initialized - but not loggedin.", getClass().getName());
+				detailClosed();
 				head.updateLoggedinPerson();
 			}
 		}
 	}
 
 	public void initUI(ViewChangeEvent event) {
+
 		navigator = event.getNavigator();
 
 		eventView = new SingleEventView(false);
@@ -104,7 +108,7 @@ public class MainView extends BorderLayout implements NamedView {
 		eventButtonLayout.addComponents(close, eventDetails);
 		eventButtonLayout.setVisible(false);
 
-		VerticalLayout eastLayout = new VerticalLayout();
+		eastLayout = new VerticalLayout();
 		eastLayout.addComponents(eventView, personGrid, eventButtonLayout);
 
 		ClubEventProvider dataProvider = new ClubEventProvider();
@@ -115,13 +119,19 @@ public class MainView extends BorderLayout implements NamedView {
 
 		head = new HeadView(navigator, () -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider,
 				securityVerifier);
+		head.setWidth("100%");
 		head.updateMonthText(calendar.getStartDate());
+
 		calendar.add(dateTime -> head.updateMonthText(dateTime));
 
+		mainLayout = new HorizontalLayout(calendar);
+		mainLayout.setSizeFull();
+		mainLayout.setExpandRatio(calendar, 2f);
+
+		addComponent(head);
+		addComponent(mainLayout);
+		setExpandRatio(mainLayout, 1f);
 		setSizeFull();
-		addComponent(head, BorderLayout.PAGE_START);
-		addComponent(calendar, BorderLayout.CENTER);
-		addComponent(eastLayout, BorderLayout.LINE_END);
 
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
@@ -149,6 +159,7 @@ public class MainView extends BorderLayout implements NamedView {
 		personGrid.setVisible(false);
 		eventView.setVisible(false);
 		eventButtonLayout.setVisible(false);
+		mainLayout.removeComponent(eastLayout);
 	}
 
 	private void onItemClick(CalendarComponentEvents.ItemClickEvent event) {
@@ -166,7 +177,6 @@ public class MainView extends BorderLayout implements NamedView {
 		LOGGER.debug("Opening detail view for {}", ev);
 
 		eventBusiness.setSelected(null);
-
 		eventView.setEvent(ev);
 
 		personGrid.setEnabled(false);
@@ -176,6 +186,9 @@ public class MainView extends BorderLayout implements NamedView {
 		personGrid.setVisible(true);
 		eventView.setVisible(true);
 		eventButtonLayout.setVisible(true);
+
+		mainLayout.addComponent(eastLayout);
+		mainLayout.setExpandRatio(eastLayout, 1f);
 
 		eventBusiness.setSelected(ev);
 	}

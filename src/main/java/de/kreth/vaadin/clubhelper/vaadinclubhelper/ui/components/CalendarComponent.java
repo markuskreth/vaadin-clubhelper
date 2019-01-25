@@ -42,7 +42,6 @@ public class CalendarComponent extends CustomComponent {
 		calendar.setSizeFull();
 		calendar.addListener(ev -> calendarEvent(ev));
 
-		setSizeFull();
 		setCompositionRoot(calendar);
 	}
 

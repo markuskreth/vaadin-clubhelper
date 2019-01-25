@@ -22,6 +22,7 @@ import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Layout;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.GridMultiSelect;
 
@@ -44,10 +45,8 @@ public class PersonGrid extends VerticalLayout {
 	private final Grid<Person> grid;
 	private final CheckBox checkIncluded;
 	private final ComboBox<GroupDef> comboGroups;
+	private final TextField textFilter;
 
-	private Boolean selectedOnlyFilter;
-
-	private Set<GroupDef> groupMemberFilter;
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
@@ -64,6 +63,7 @@ public class PersonGrid extends VerticalLayout {
 
 		checkIncluded = new CheckBox("Nur gemeldete");
 		comboGroups = new ComboBox<>("Gruppenfilter");
+		textFilter = new TextField("Namenfilter");
 		filters = setupFilterComponents();
 
 		allGroups = groupDao.listAll();
@@ -128,10 +128,23 @@ public class PersonGrid extends VerticalLayout {
 		comboGroups.setItemCaptionGenerator(GroupDef::getName);
 		comboGroups.addSelectionListener(ev -> onGroupSelected(ev));
 
+		textFilter.setId("person.filter.namefilter");
+		textFilter.addValueChangeListener(ev -> textFilterChanged(ev));
 		HorizontalLayout filters = new HorizontalLayout();
 		filters.setMargin(false);
-		filters.addComponents(checkIncluded, comboGroups);
+		filters.addComponents(checkIncluded, comboGroups, textFilter);
 		return filters;
+	}
+
+	private void textFilterChanged(ValueChangeEvent<String> ev) {
+		String value = ev.getValue();
+		if (value != null && value.length() >= 2) {
+			filter.setNameFilter(value);
+			dataProvider.refreshAll();
+		} else {
+			filter.setNameFilter(null);
+			dataProvider.refreshAll();
+		}
 	}
 
 	public void hideFilter() {
@@ -139,23 +152,19 @@ public class PersonGrid extends VerticalLayout {
 	}
 
 	private void onSelectedOnly(ValueChangeEvent<Boolean> ev) {
-		this.selectedOnlyFilter = ev.getValue();
-		updateFilter();
+		updateSelectedOnlyFilter(ev.getValue());
 	}
 
 	public void setSelectedOnly() {
-		this.selectedOnlyFilter = true;
-		updateFilter();
+		updateSelectedOnlyFilter(true);
 	}
 
-	private void updateFilter() {
-		if (selectedOnlyFilter != null && selectedOnlyFilter.equals(Boolean.TRUE)) {
+	private void updateSelectedOnlyFilter(Boolean selectedOnly) {
+		if (selectedOnly != null && selectedOnly.equals(Boolean.TRUE)) {
 			filter.setSelectedPersons(grid.getSelectedItems());
 		} else {
 			filter.setSelectedPersons(null);
 		}
-
-		filter.setSelectedGroups(groupMemberFilter);
 		dataProvider.refreshAll();
 	}
 
@@ -198,11 +207,12 @@ public class PersonGrid extends VerticalLayout {
 
 	private void onGroupSelected(SingleSelectionEvent<GroupDef> ev) {
 
-		groupMemberFilter = ev.getAllSelectedItems();
+		Set<GroupDef> groupMemberFilter = ev.getAllSelectedItems();
 		if (groupMemberFilter.isEmpty()) {
 			groupMemberFilter = null;
 		}
-		updateFilter();
+		filter.setSelectedGroups(groupMemberFilter);
+		dataProvider.refreshAll();
 	}
 
 	public void onPersonEdit() {

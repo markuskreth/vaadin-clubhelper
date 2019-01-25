@@ -93,8 +93,6 @@ public class HeadView extends HorizontalLayout {
 		setComponentAlignment(personLabel, Alignment.MIDDLE_RIGHT);
 		setExpandRatio(monthName, 1.0f);
 
-		setSizeFull();
-
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.dataProvider = dataProvider;

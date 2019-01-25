@@ -25,6 +25,7 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	private final List<Person> publishedList;
 	private final PersonDao personDao;
 	private final DefaultDataUpdateHandler updateHandler;
+	private String nameFilter;
 
 	public PersonFilter(PersonDao personDao) {
 		this.personDao = personDao;
@@ -34,7 +35,7 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 
 	@Override
 	public boolean test(Person t) {
-		if (selectedGroups == null && selectedPersons == null) {
+		if (selectedGroups == null && selectedPersons == null && nameFilter == null) {
 			return true;
 		}
 
@@ -44,7 +45,19 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 		if (personInGroup(t) == false) {
 			return false;
 		}
+		if (personNameMatch(t) == false) {
+			return false;
+		}
 		return true;
+	}
+
+	private boolean personNameMatch(Person t) {
+		if (nameFilter == null || nameFilter.isBlank()) {
+			return true;
+		}
+		boolean contains = t.getPrename().toLowerCase().contains(nameFilter)
+				|| t.getSurname().toLowerCase().contains(nameFilter);
+		return contains;
 	}
 
 	private boolean personInGroup(Person t) {
@@ -83,6 +96,14 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 		selectedPersons = new HashSet<>();
 		for (Person p : selected) {
 			selectedPersons.add(p.getId());
+		}
+	}
+
+	public void setNameFilter(String value) {
+		if (value != null) {
+			this.nameFilter = value.toLowerCase();
+		} else {
+			this.nameFilter = value;
 		}
 	}
 
