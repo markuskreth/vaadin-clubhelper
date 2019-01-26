@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -8,10 +9,13 @@ import org.vaadin.teemu.switchui.Switch;
 import com.vaadin.data.Binder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.data.provider.DataProvider;
+import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
@@ -38,8 +42,10 @@ public class PersonEditDetails extends HorizontalLayout {
 	private final Binder<Person> binder;
 	private Consumer<Person> personChangeHandler;
 	private Button okButton;
-	private VerticalLayout contactLayout;
+
 	private VerticalLayout relationshipLayout;
+	private List<Contact> contactSource;
+	private ListDataProvider<Contact> contactDataProvider;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
 		this(groups, dao, true);
@@ -126,8 +132,16 @@ public class PersonEditDetails extends HorizontalLayout {
 	}
 
 	private Component createContactLayout() {
-		contactLayout = new VerticalLayout();
-
+		Grid<Contact> contactLayout = new Grid<>();
+		contactSource = new ArrayList<>();
+		contactLayout.addComponentColumn(contact -> {
+			ContactTypeComponent combo = new ContactTypeComponent();
+			combo.setValue(contact.getType());
+			return combo;
+		}).setCaption("Kontaktart");
+		contactLayout.addColumn(Contact::getValue).setCaption("Wert");
+		contactDataProvider = DataProvider.ofCollection(contactSource);
+		contactLayout.setDataProvider(contactDataProvider);
 		return contactLayout;
 	}
 
@@ -164,21 +178,16 @@ public class PersonEditDetails extends HorizontalLayout {
 			updateContactBinding();
 		} else {
 			okButton.setEnabled(false);
-			contactLayout.removeAllComponents();
+			contactSource.clear();
+			contactDataProvider.refreshAll();
 			relationshipLayout.removeAllComponents();
 		}
 	}
 
 	private void updateContactBinding() {
-		contactLayout.removeAllComponents();
-		Person current = binder.getBean();
-		List<Contact> contacts = current.getContacts();
-		for (Contact c : contacts) {
-			TextField textField = new TextField(c.getType());
-			textField.setValue(c.getValue());
-			textField.setEnabled(false);
-			contactLayout.addComponent(textField);
-		}
+		contactSource.clear();
+		contactSource.addAll(binder.getBean().getContacts());
+		contactDataProvider.refreshAll();
 	}
 
 	private void updateRelationshipBinding() {
