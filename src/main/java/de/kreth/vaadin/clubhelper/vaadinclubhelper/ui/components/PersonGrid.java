@@ -50,7 +50,7 @@ public class PersonGrid extends VerticalLayout {
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
-	private Column<Person, Startpass> startpassColumn;
+	private Column<Person, String> startpassColumn;
 	private Layout filters;
 	private SelectionMode currentSelectionMode;
 	private Column<Person, String> genderColumn;
@@ -94,7 +94,14 @@ public class PersonGrid extends VerticalLayout {
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
 		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
 
-		startpassColumn = grid.addColumn(Person::getStartpass).setCaption("Startpass Nr.");
+		startpassColumn = grid.addColumn(p -> {
+			Startpass startpass = p.getStartpass();
+			if (startpass != null) {
+				return startpass.getStartpassNr();
+			} else {
+				return null;
+			}
+		}).setCaption("Startpass Nr.");
 
 		genderColumn = grid.addColumn(p -> {
 

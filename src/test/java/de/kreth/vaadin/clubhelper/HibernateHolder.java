@@ -12,7 +12,7 @@ public enum HibernateHolder {
 
 	private HibernateHolder() {
 		configuration = new Configuration();
-		HibernateConfiguration config = new MysqlLocalConfiguration();
+		HibernateConfiguration config = new H2MemoryConfiguration();
 		config.configure(configuration);
 	}
 
