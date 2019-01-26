@@ -31,4 +31,8 @@ public class TestConfiguration {
 		return sessionFactory.openSession();
 	}
 
+	@Bean
+	public SessionFactory sessionFactory() {
+		return sessionFactory;
+	}
 }

@@ -55,6 +55,12 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 			}
 		}
 
+		executeQueries(event, added, removed);
+		current.addAll(added);
+		current.removeAll(removed);
+	}
+
+	public void executeQueries(ClubEvent event, List<Person> added, List<Person> removed) {
 		if (!added.isEmpty()) {
 			Query insertQuery = entityManager.createNativeQuery(
 					"INSERT INTO clubevent_has_person (clubevent_id, person_id) VALUES (:eventId,:personId)");
@@ -73,8 +79,6 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 				deleteQuery.executeUpdate();
 			}
 		}
-		current.addAll(added);
-		current.removeAll(removed);
 	}
 
 	@Override

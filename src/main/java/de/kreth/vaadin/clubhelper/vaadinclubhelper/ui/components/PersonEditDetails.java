@@ -10,10 +10,11 @@ import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
@@ -21,6 +22,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 
 public class PersonEditDetails extends HorizontalLayout {
@@ -30,15 +32,21 @@ public class PersonEditDetails extends HorizontalLayout {
 	private final TextField textSureName;
 	private final DateField birthday;
 
+	private final PersonDao dao;
+
 	private final Binder<Person> binder;
 	private Consumer<Person> personChangeHandler;
 	private Button okButton;
+	private VerticalLayout contactLayout;
+	private VerticalLayout relationshipLayout;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
 		this(groups, dao, true);
 	}
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao, boolean showCloseButton) {
+
+		this.dao = dao;
 
 		setCaption("Personendetails");
 
@@ -64,30 +72,12 @@ public class PersonEditDetails extends HorizontalLayout {
 			return startpass.getStartpassNr();
 		}, (p, value) -> p.setStartpass(value));
 
-		Panel groupPanel = new Panel("Gruppen");
-		VerticalLayout glay = new VerticalLayout();
-		groupPanel.setContent(glay);
-
-		for (GroupDef g : groups) {
-			Switch sw = new Switch(g.getName());
-			sw.setData(g);
-			glay.addComponent(sw);
-
-			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
-				if (fieldvalue) {
-					bean.getGroups().add(g);
-				} else {
-					bean.getGroups().remove(g);
-				}
-			});
-		}
-
 		binder.withValidator(p -> (p.getGroups() != null && p.getGroups().isEmpty() == false),
 				"Mind. eine Gruppe muss gewählt sein!");
 
 		Button close = new Button("Schließen");
 		if (showCloseButton) {
-			close.addClickListener(ev -> closeWithoutSave(dao));
+			close.addClickListener(ev -> closeWithoutSave());
 		} else {
 			close.setVisible(false);
 		}
@@ -117,8 +107,47 @@ public class PersonEditDetails extends HorizontalLayout {
 		okButton.setEnabled(false);
 		VerticalLayout layout = new VerticalLayout(textPrename, textSureName, birthday, genderBox, textStartPass, close,
 				okButton);
-		addComponents(layout, groupPanel);
 
+		Component groupLayout = createGroupPanel(groups);
+		Component contactLayout = createContactLayout();
+		Component relationshipLayout = createRelationshipLayout();
+		TabSheet sheet = new TabSheet();
+		sheet.addTab(groupLayout, "Gruppen");
+		sheet.addTab(contactLayout, "Kontakte");
+		sheet.addTab(relationshipLayout, "Angehörige");
+		addComponents(layout, sheet);
+
+	}
+
+	private Component createRelationshipLayout() {
+		relationshipLayout = new VerticalLayout();
+		return relationshipLayout;
+	}
+
+	private Component createContactLayout() {
+		contactLayout = new VerticalLayout();
+
+		return contactLayout;
+	}
+
+	public Component createGroupPanel(List<GroupDef> groups) {
+
+		VerticalLayout layout = new VerticalLayout();
+
+		for (GroupDef g : groups) {
+			Switch sw = new Switch(g.getName());
+			sw.setData(g);
+			layout.addComponent(sw);
+
+			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
+				if (fieldvalue) {
+					bean.getGroups().add(g);
+				} else {
+					bean.getGroups().remove(g);
+				}
+			});
+		}
+		return layout;
 	}
 
 	public void setPersonChangeHandler(Consumer<Person> personChangeHandler) {
@@ -130,12 +159,27 @@ public class PersonEditDetails extends HorizontalLayout {
 
 		if (person != null) {
 			okButton.setEnabled(true);
+			updateRelationshipBinding();
 		} else {
 			okButton.setEnabled(false);
+			contactLayout.removeAllComponents();
+			relationshipLayout.removeAllComponents();
 		}
 	}
 
-	private void closeWithoutSave(PersonDao dao) {
+	private void updateRelationshipBinding() {
+		relationshipLayout.removeAllComponents();
+		Person current = binder.getBean();
+		List<Relation> related = dao.findRelationsFor(current);
+		for (Relation relation : related) {
+			TextField textField = new TextField(relation.getRelation().getLocalized());
+			textField.setValue(relation.getPerson().getPrename() + " " + relation.getPerson().getSurname());
+			textField.setEnabled(false);
+			relationshipLayout.addComponent(textField);
+		}
+	}
+
+	private void closeWithoutSave() {
 		if (binder.hasChanges()) {
 
 			ConfirmDialog dlg = ConfirmDialog.builder().setCaption("Ungespeicherte Änderungen")

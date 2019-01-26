@@ -1,8 +1,11 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import java.util.List;
+
 import javax.persistence.NoResultException;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
 
 public interface PersonDao extends IDao<Person> {
 
@@ -15,4 +18,6 @@ public interface PersonDao extends IDao<Person> {
 	 * @throws NoResultException if no result is found.
 	 */
 	Person findLoginUser(String username, String password) throws NoResultException;
+
+	List<Relation> findRelationsFor(Person p);
 }
