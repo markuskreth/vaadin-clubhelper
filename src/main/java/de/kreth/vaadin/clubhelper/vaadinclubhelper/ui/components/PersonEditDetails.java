@@ -19,6 +19,7 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -160,10 +161,23 @@ public class PersonEditDetails extends HorizontalLayout {
 		if (person != null) {
 			okButton.setEnabled(true);
 			updateRelationshipBinding();
+			updateContactBinding();
 		} else {
 			okButton.setEnabled(false);
 			contactLayout.removeAllComponents();
 			relationshipLayout.removeAllComponents();
+		}
+	}
+
+	private void updateContactBinding() {
+		contactLayout.removeAllComponents();
+		Person current = binder.getBean();
+		List<Contact> contacts = current.getContacts();
+		for (Contact c : contacts) {
+			TextField textField = new TextField(c.getType());
+			textField.setValue(c.getValue());
+			textField.setEnabled(false);
+			contactLayout.addComponent(textField);
 		}
 	}
 
