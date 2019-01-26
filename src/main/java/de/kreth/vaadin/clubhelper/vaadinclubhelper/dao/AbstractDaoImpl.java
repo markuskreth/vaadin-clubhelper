@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -29,9 +30,13 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	@Transactional
 	public void save(T obj) {
 
+		Date now = new Date();
+		obj.setChanged(now);
 		if (entityManager.contains(obj) || obj.hasValidId()) {
+
 			entityManager.merge(obj);
 		} else {
+			obj.setCreated(now);
 			entityManager.persist(obj);
 		}
 	}

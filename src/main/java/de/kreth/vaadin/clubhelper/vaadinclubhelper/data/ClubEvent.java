@@ -234,4 +234,14 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		return id != null && !id.isBlank();
 	}
 
+	@Override
+	public void setChanged(Date changed) {
+		// no ChangeDate stored
+	}
+
+	@Override
+	public void setCreated(Date created) {
+		// noCreateDateStored
+	}
+
 }
