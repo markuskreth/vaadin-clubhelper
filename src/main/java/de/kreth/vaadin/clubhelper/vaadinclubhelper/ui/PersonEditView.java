@@ -34,6 +34,7 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 		personGrid.setSizeFull();
 		personGrid.onPersonEdit();
 		personGrid.onPersonSelect(ev -> selectedPerson(ev));
+		personGrid.enableDeleteColumn(true);
 
 		personDetails = new PersonEditDetails(groupDao.listAll(), personDao, false);
 		personDetails.setSizeFull();

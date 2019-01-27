@@ -38,8 +38,8 @@ public class LoginUI extends VerticalLayout implements NamedView {
 			} catch (final Exception ex) {
 				ex.printStackTrace();
 				logger.error("Error on login for User={}", e.getLoginParameter("username"), ex);
-				String message = "Incorrect user or password:" + ex.getMessage() + e.getLoginParameter("username") + ":"
-						+ e.getLoginParameter("password");
+				String message = "Incorrect user or password for " + e.getLoginParameter("username") + "\n"
+						+ ex.getMessage();
 				Notification.show(message, Notification.Type.ERROR_MESSAGE);
 			}
 		});

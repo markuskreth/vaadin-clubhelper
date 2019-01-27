@@ -74,6 +74,16 @@ public class ConfirmDialog extends Window {
 			return this;
 		}
 
+		public Builder yesNo() {
+			buttons = EnumSet.of(Buttons.YES, Buttons.NO);
+			return this;
+		}
+
+		public Builder yesCancel() {
+			buttons = EnumSet.of(Buttons.YES, Buttons.CANCEL);
+			return this;
+		}
+
 		public ConfirmDialog build() {
 			return new ConfirmDialog(this);
 		}

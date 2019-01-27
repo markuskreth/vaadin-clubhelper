@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -45,10 +46,13 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 
 	@Transactional
 	public void persistOrUpdate(EntityAccessor c) {
-		if (c.hasValidId() == false) {
-			entityManager.persist(c);
-		} else {
+		Date now = new Date();
+		c.setChanged(now);
+		if (entityManager.contains(c) || c.hasValidId()) {
 			entityManager.merge(c);
+		} else {
+			c.setCreated(now);
+			entityManager.persist(c);
 		}
 	}
 
@@ -78,12 +82,34 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	}
 
 	private Relation toRelative(Object[] r, int ignoring) {
-
+		Person p = null;
+		String relation = null;
 		if (r[1].equals(ignoring)) {
-			return new Relation(entityManager.find(Person.class, r[2]), r[3].toString());
+			p = entityManager.find(Person.class, r[2]);
+			relation = r[3].toString();
 		} else if (r[2].equals(ignoring)) {
-			return new Relation(entityManager.find(Person.class, r[1]), r[4].toString());
+			p = entityManager.find(Person.class, r[1]);
+			relation = r[4].toString();
+		}
+		if (p != null && p.getDeleted() == null) {
+			return new Relation(p, relation);
 		}
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public void delete(Contact c) {
+		c.setDeleted(new Date());
+		entityManager.merge(c);
+		Person person = c.getPerson();
+		person.getContacts().remove(c);
+	}
+
+	@Override
+	@Transactional
+	public void delete(Person p) {
+		p.setDeleted(new Date());
+		entityManager.merge(p);
 	}
 }

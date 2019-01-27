@@ -1,22 +1,17 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
-import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TabSheet;
@@ -24,11 +19,9 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 
 public class PersonEditDetails extends HorizontalLayout {
@@ -44,9 +37,8 @@ public class PersonEditDetails extends HorizontalLayout {
 	private Consumer<Person> personChangeHandler;
 	private Button okButton;
 
-	private VerticalLayout relationshipLayout;
-	private List<Contact> contactSource;
-	private ListDataProvider<Contact> contactDataProvider;
+	private ContactGrid contactLayout;
+	private RelationComponent relationshipLayout;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
 		this(groups, dao, true);
@@ -117,8 +109,24 @@ public class PersonEditDetails extends HorizontalLayout {
 				okButton);
 
 		Component groupLayout = createGroupPanel(groups);
-		Component contactLayout = createContactLayout();
-		Component relationshipLayout = createRelationshipLayout();
+		contactLayout = new ContactGrid();
+		contactLayout.setDeleteConsumer(c -> {
+
+			ConfirmDialog dlg = ConfirmDialog
+					.builder().setCaption("Kontakt löschen").setMessage(c.getPerson().getPrename() + " "
+							+ c.getPerson().getSurname() + " \"" + c + "\" wirklich löschen?")
+					.yesCancel().setResultHandler(button -> {
+						if (button == ConfirmDialog.Buttons.YES) {
+							if (binder.validate().isOk()) {
+								dao.delete(c);
+							}
+						}
+					}).build();
+
+			getUI().addWindow(dlg);
+		});
+
+		relationshipLayout = new RelationComponent(dao);
 		TabSheet sheet = new TabSheet();
 		sheet.addTab(groupLayout, "Gruppen");
 		sheet.addTab(contactLayout, "Kontakte");
@@ -127,32 +135,6 @@ public class PersonEditDetails extends HorizontalLayout {
 		setExpandRatio(layout, 1f);
 		setExpandRatio(sheet, 2f);
 
-	}
-
-	private Component createRelationshipLayout() {
-		relationshipLayout = new VerticalLayout();
-		return relationshipLayout;
-	}
-
-	private Component createContactLayout() {
-		Grid<Contact> contactLayout = new Grid<>();
-		contactSource = new ArrayList<>();
-
-		contactDataProvider = DataProvider.ofCollection(contactSource);
-		contactLayout.setDataProvider(contactDataProvider);
-
-		contactLayout.getEditor().setEnabled(true);
-		Binder<Contact> contactBinder = contactLayout.getEditor().getBinder();
-
-		ContactTypeComponent comp = new ContactTypeComponent();
-		Binding<Contact, String> typeBinding = contactBinder.bind(comp, Contact::getType, Contact::setType);
-		Binding<Contact, String> valueBinding = contactBinder.bind(new TextField(), Contact::getValue,
-				Contact::setValue);
-
-		contactLayout.addColumn(Contact::getType).setCaption("Kontaktart").setEditorBinding(typeBinding);
-		contactLayout.addColumn(Contact::getValue).setCaption("Wert").setEditorBinding(valueBinding);
-
-		return contactLayout;
 	}
 
 	public Component createGroupPanel(List<GroupDef> groups) {
@@ -180,56 +162,39 @@ public class PersonEditDetails extends HorizontalLayout {
 	}
 
 	public void setBean(Person person) {
+		closeWithoutSave();
 		binder.setBean(person);
+		contactLayout.setPerson(person);
+		relationshipLayout.setPerson(person);
 
 		if (person != null) {
 			okButton.setEnabled(true);
-			updateRelationshipBinding();
-			updateContactBinding();
 		} else {
 			okButton.setEnabled(false);
-			contactSource.clear();
-			contactDataProvider.refreshAll();
-			relationshipLayout.removeAllComponents();
 		}
 	}
 
-	private void updateContactBinding() {
-		contactSource.clear();
-		contactSource.addAll(binder.getBean().getContacts());
-		contactDataProvider.refreshAll();
-	}
+	void closeWithoutSave() {
+		if (hasChanges()) {
 
-	private void updateRelationshipBinding() {
-		relationshipLayout.removeAllComponents();
-		Person current = binder.getBean();
-		List<Relation> related = dao.findRelationsFor(current);
-		for (Relation relation : related) {
-			TextField textField = new TextField(relation.getRelation().getLocalized());
-			textField.setValue(relation.getPerson().getPrename() + " " + relation.getPerson().getSurname());
-			textField.setEnabled(false);
-			relationshipLayout.addComponent(textField);
-		}
-	}
-
-	private void closeWithoutSave() {
-		if (binder.hasChanges()) {
-
+			final Person current = binder.getBean();
 			ConfirmDialog dlg = ConfirmDialog.builder().setCaption("Ungespeicherte Änderungen")
-					.setMessage("Die Daten wurden geändert. Sollen die Änderungen gespeichert werden?")
+					.setMessage(current.getPrename() + " " + current.getSurname()
+							+ " wurde geändert. Sollen die Änderungen gespeichert werden?")
 					.saveDiscardCancel().setResultHandler(button -> {
 						if (button == ConfirmDialog.Buttons.SAVE) {
 							if (binder.validate().isOk()) {
-								dao.save(binder.getBean());
+								dao.save(current);
 							}
-						} else if (button == ConfirmDialog.Buttons.DISCARD) {
-							binder.removeBean();
 						}
 					}).build();
 
 			getUI().addWindow(dlg);
-		} else {
 		}
+	}
+
+	public boolean hasChanges() {
+		return binder.hasChanges() || contactLayout.hasChanges() || relationshipLayout.hasChanges();
 	}
 
 }

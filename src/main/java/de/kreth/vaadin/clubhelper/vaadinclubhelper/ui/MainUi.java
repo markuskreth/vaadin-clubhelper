@@ -8,6 +8,7 @@ import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.spring.annotation.SpringUI;
@@ -56,8 +57,7 @@ public class MainUi extends UI {
 		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness, securityGroupVerifier));
 		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao, securityGroupVerifier));
 		navigator.addView(PersonEditView.VIEW_NAME, new PersonEditView(groupDao, personDao));
-		navigator.addView(EventDetails.VIEW_NAME,
-				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, securityGroupVerifier));
+		navigator.addView(EventDetails.VIEW_NAME, new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao));
 		navigator.navigateTo(MainView.VIEW_NAME);
 	}
 

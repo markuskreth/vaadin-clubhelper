@@ -15,12 +15,17 @@ import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
 import com.vaadin.event.selection.SelectionListener;
 import com.vaadin.event.selection.SingleSelectionEvent;
+import com.vaadin.icons.VaadinIcons;
+import com.vaadin.shared.ui.ContentMode;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
@@ -47,13 +52,17 @@ public class PersonGrid extends VerticalLayout {
 	private final ComboBox<GroupDef> comboGroups;
 	private final TextField textFilter;
 
+	private final PersonDao personDao;
+
 	private List<GroupDef> allGroups;
 	private PersonFilter filter;
 	private ClubEvent currentEvent;
 	private Column<Person, String> startpassColumn;
 	private Layout filters;
 	private SelectionMode currentSelectionMode;
-	private Column<Person, String> genderColumn;
+	private Column<Person, ?> genderColumn;
+
+	private Column<Person, ? extends Component> deleteButtonColumn;
 
 	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
 
@@ -61,9 +70,12 @@ public class PersonGrid extends VerticalLayout {
 		setCaption("Teilnehmer");
 		addStyleName("bold-caption");
 
+		this.personDao = personDao;
+
 		checkIncluded = new CheckBox("Nur gemeldete");
 		comboGroups = new ComboBox<>("Gruppenfilter");
 		textFilter = new TextField("Namenfilter");
+		textFilter.setIcon(VaadinIcons.SEARCH);
 		filters = setupFilterComponents();
 
 		allGroups = groupDao.listAll();
@@ -74,13 +86,13 @@ public class PersonGrid extends VerticalLayout {
 		dataProvider = DataProvider.ofCollection(filter.asCollection());
 		grid = new Grid<>();
 
-		setupPersonGrid(personDao);
+		setupPersonGrid();
 
 		setMargin(false);
 		addComponents(filters, grid);
 	}
 
-	public void setupPersonGrid(PersonDao personDao) {
+	void setupPersonGrid() {
 		filter.add(() -> {
 			setEvent(currentEvent);
 		});
@@ -92,7 +104,8 @@ public class PersonGrid extends VerticalLayout {
 
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
-		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag");
+		grid.addColumn(Person::getBirth, b -> b != null ? birthFormat.format(b) : "").setCaption("Geburtstag")
+				.setHidable(true);
 
 		startpassColumn = grid.addColumn(p -> {
 			Startpass startpass = p.getStartpass();
@@ -102,18 +115,85 @@ public class PersonGrid extends VerticalLayout {
 				return null;
 			}
 		}).setCaption("Startpass Nr.");
+		startpassColumn.setHidable(true);
 
-		genderColumn = grid.addColumn(p -> {
+		genderColumn = grid.addComponentColumn(p -> {
 
 			Gender gender = p.getGender();
+			VaadinIcons icon;
+
 			if (gender == null) {
-				return "";
+				icon = VaadinIcons.QUESTION;
+			} else {
+				switch (gender) {
+				case FEMALE:
+					icon = VaadinIcons.FEMALE;
+					break;
+				case MALE:
+					icon = VaadinIcons.MALE;
+					break;
+				default:
+					icon = VaadinIcons.QUESTION;
+					break;
+				}
 			}
-			return gender.localized();
-		}).setCaption("Geschlecht");
+
+			return new Label(icon.getHtml(), ContentMode.HTML);
+
+		});
+		genderColumn.setHidable(true);
 
 		startpassColumn.setHidden(false);
 		genderColumn.setHidden(true);
+
+		deleteButtonColumn = grid.addComponentColumn(c -> {
+			Button deleteButton = new Button(VaadinIcons.TRASH);
+			deleteButton.addClickListener(ev -> delete(c));
+			deleteButton.setWidthUndefined();
+			return deleteButton;
+		}).setCaption("Löschen");
+		deleteButtonColumn.setHidden(true);
+
+	}
+
+	public VaadinIcons genderToImage(Gender gender) {
+		VaadinIcons icon;
+
+		if (gender == null) {
+			icon = VaadinIcons.QUESTION;
+		} else {
+			switch (gender) {
+			case FEMALE:
+				icon = VaadinIcons.FEMALE;
+				break;
+			case MALE:
+				icon = VaadinIcons.MALE;
+				break;
+			default:
+				icon = VaadinIcons.QUESTION;
+				break;
+			}
+		}
+
+		return icon;
+	}
+
+	public void enableDeleteColumn(boolean enable) {
+		deleteButtonColumn.setHidden(!enable);
+	}
+
+	private void delete(Person c) {
+
+		ConfirmDialog dlg = ConfirmDialog.builder().setCaption("Person löschen")
+				.setMessage(c.getPrename() + " " + c.getSurname() + " wirklich löschen?").yesCancel()
+				.setResultHandler(button -> {
+					if (button == ConfirmDialog.Buttons.YES) {
+						personDao.delete(c);
+						dataProvider.refreshAll();
+					}
+				}).build();
+
+		getUI().addWindow(dlg);
 	}
 
 	public void setSelectionMode(SelectionMode selectionMode) {
