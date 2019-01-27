@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 
 public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<T> {
+
+	private static final long serialVersionUID = 7886744143287550291L;
 
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -28,9 +31,12 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	@Override
 	@Transactional
 	public void save(T obj) {
+		Date now = new Date();
+		obj.setChanged(now);
 		if (entityManager.contains(obj) || obj.hasValidId()) {
 			entityManager.merge(obj);
 		} else {
+			obj.setCreated(now);
 			entityManager.persist(obj);
 		}
 	}

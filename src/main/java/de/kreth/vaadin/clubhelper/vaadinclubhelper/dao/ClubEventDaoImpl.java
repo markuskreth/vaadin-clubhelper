@@ -19,6 +19,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 @Transactional
 public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements ClubEventDao {
 
+	private static final long serialVersionUID = 7648111697282525347L;
+
 	public ClubEventDaoImpl() {
 		super(ClubEvent.class);
 	}

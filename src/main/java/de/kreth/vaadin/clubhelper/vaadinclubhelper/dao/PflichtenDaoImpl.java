@@ -9,6 +9,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Pflicht;
 @Transactional
 public class PflichtenDaoImpl extends AbstractDaoImpl<Pflicht> implements PflichtenDao {
 
+	private static final long serialVersionUID = 5660723465403552334L;
+
 	public PflichtenDaoImpl() {
 		super(Pflicht.class);
 	}

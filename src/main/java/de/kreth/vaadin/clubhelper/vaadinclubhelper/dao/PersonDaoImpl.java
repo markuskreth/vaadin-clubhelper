@@ -18,6 +18,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 @Repository
 public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao {
 
+	private static final long serialVersionUID = -5809935282146356282L;
+
 	public PersonDaoImpl() {
 		super(Person.class);
 	}
