@@ -31,20 +31,22 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	public void checkSubEntities(Person obj) {
 		Startpass startPass = obj.getStartpass();
 		if (startPass != null && startPass.hasValidId() == false) {
-			persistIfNew(startPass);
+			persistOrUpdate(startPass);
 		}
 		List<Contact> contacts = obj.getContacts();
 		if (contacts != null) {
 			for (Contact c : contacts) {
-				persistIfNew(c);
+				persistOrUpdate(c);
 			}
 		}
 	}
 
 	@Transactional
-	public void persistIfNew(EntityAccessor c) {
+	public void persistOrUpdate(EntityAccessor c) {
 		if (c.hasValidId() == false) {
 			entityManager.persist(c);
+		} else {
+			entityManager.merge(c);
 		}
 	}
 
