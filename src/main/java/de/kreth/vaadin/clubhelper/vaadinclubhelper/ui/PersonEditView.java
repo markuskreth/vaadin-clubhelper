@@ -41,6 +41,8 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 
 		HorizontalLayout layout = new HorizontalLayout();
 		layout.addComponents(personGrid, personDetails);
+		layout.setExpandRatio(personGrid, 1f);
+		layout.setExpandRatio(personDetails, 2f);
 		layout.setSizeFull();
 		addComponent(layout);
 		Button addPerson = new Button("Hinzufügen");

@@ -1,5 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Alignment;
@@ -13,8 +16,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 
 public class LoginUI extends VerticalLayout implements NamedView {
 
-	private static final long serialVersionUID = 4339018452507960084L;
 	public static final String VIEW_NAME = "LoginUI";
+	private static final long serialVersionUID = 4339018452507960084L;
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private Navigator navigator;
 	private String parameters;
@@ -32,6 +36,8 @@ public class LoginUI extends VerticalLayout implements NamedView {
 				securityGroupVerifier.setLoggedinPerson(loggedin);
 				navigator.navigateTo(MainView.VIEW_NAME + '/' + parameters);
 			} catch (final Exception ex) {
+				ex.printStackTrace();
+				logger.error("Error on login for User={}", e.getLoginParameter("username"), ex);
 				String message = "Incorrect user or password:" + ex.getMessage() + e.getLoginParameter("username") + ":"
 						+ e.getLoginParameter("password");
 				Notification.show(message, Notification.Type.ERROR_MESSAGE);

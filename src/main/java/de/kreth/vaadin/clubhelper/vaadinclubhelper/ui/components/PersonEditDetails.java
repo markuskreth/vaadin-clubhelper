@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.Binder.Binding;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.provider.DataProvider;
@@ -123,6 +124,8 @@ public class PersonEditDetails extends HorizontalLayout {
 		sheet.addTab(contactLayout, "Kontakte");
 		sheet.addTab(relationshipLayout, "Angehörige");
 		addComponents(layout, sheet);
+		setExpandRatio(layout, 1f);
+		setExpandRatio(sheet, 2f);
 
 	}
 
@@ -134,14 +137,21 @@ public class PersonEditDetails extends HorizontalLayout {
 	private Component createContactLayout() {
 		Grid<Contact> contactLayout = new Grid<>();
 		contactSource = new ArrayList<>();
-		contactLayout.addComponentColumn(contact -> {
-			ContactTypeComponent combo = new ContactTypeComponent();
-			combo.setValue(contact.getType());
-			return combo;
-		}).setCaption("Kontaktart");
-		contactLayout.addColumn(Contact::getValue).setCaption("Wert");
+
 		contactDataProvider = DataProvider.ofCollection(contactSource);
 		contactLayout.setDataProvider(contactDataProvider);
+
+		contactLayout.getEditor().setEnabled(true);
+		Binder<Contact> contactBinder = contactLayout.getEditor().getBinder();
+
+		ContactTypeComponent comp = new ContactTypeComponent();
+		Binding<Contact, String> typeBinding = contactBinder.bind(comp, Contact::getType, Contact::setType);
+		Binding<Contact, String> valueBinding = contactBinder.bind(new TextField(), Contact::getValue,
+				Contact::setValue);
+
+		contactLayout.addColumn(Contact::getType).setCaption("Kontaktart").setEditorBinding(typeBinding);
+		contactLayout.addColumn(Contact::getValue).setCaption("Wert").setEditorBinding(valueBinding);
+
 		return contactLayout;
 	}
 

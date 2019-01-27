@@ -69,8 +69,11 @@ public class MainView extends VerticalLayout implements NamedView {
 		} else {
 			if (securityVerifier.isLoggedin()) {
 				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
-				openPersonViewForEvent(eventBusiness.getCurrent());
-				calendar.setToday(eventBusiness.getCurrent().getStart());
+				ClubEvent current = eventBusiness.getCurrent();
+				openPersonViewForEvent(current);
+				if (current != null) {
+					calendar.setToday(current.getStart());
+				}
 				head.updateLoggedinPerson();
 			} else {
 				LOGGER.info("{} already initialized - but not loggedin.", getClass().getName());
