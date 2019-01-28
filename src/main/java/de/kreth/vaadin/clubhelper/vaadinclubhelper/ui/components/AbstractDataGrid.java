@@ -56,8 +56,10 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 		Binder<T> binder = editor.getBinder();
 		editor.addSaveListener(ev -> {
 			hasChanges = true;
-			for (Consumer<T> consumer : successConsumers) {
-				consumer.accept(ev.getBean());
+			if (editedListener.editObject != null) {
+				for (Consumer<T> consumer : successConsumers) {
+					consumer.accept(ev.getBean());
+				}
 			}
 			dataProvider.refreshAll();
 		});
