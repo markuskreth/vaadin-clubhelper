@@ -15,10 +15,10 @@ import javax.persistence.Table;
  * The persistent class for the groupDef database table.
  * 
  */
-@Entity(name = "groupDef")
-@Table(name = "groupDef")
+@Entity
+@Table(name = "groupdef")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM groupDef g")
+@NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM GroupDef g")
 public class GroupDef extends BaseEntity implements Serializable {
 
 	public final static String QUERY_FINDALL = "GroupDef.findAll";
