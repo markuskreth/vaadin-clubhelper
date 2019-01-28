@@ -86,10 +86,13 @@ public class PersonEditDetails extends HorizontalLayout {
 		okButton.addClickListener(ev -> {
 			BinderValidationStatus<Person> validate = binder.validate();
 			if (validate.isOk()) {
-				dao.save(binder.getBean());
+				Person edited = binder.getBean();
+				dao.save(edited);
 				if (personChangeHandler != null) {
 					personChangeHandler.accept(binder.getBean());
 				}
+				contactLayout.setPerson(edited);
+				relationshipLayout.setPerson(edited);
 			} else {
 				List<ValidationResult> errors = validate.getBeanValidationErrors();
 				StringBuilder msg = new StringBuilder();
