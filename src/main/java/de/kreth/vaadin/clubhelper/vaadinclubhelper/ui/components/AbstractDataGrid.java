@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueContext;
 import com.vaadin.data.ValueProvider;
 import com.vaadin.data.provider.DataProvider;
 import com.vaadin.data.provider.ListDataProvider;
@@ -49,6 +51,7 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 
 		Editor<T> editor = grid.getEditor();
 		editor.setEnabled(true);
+		editor.addOpenListener(event -> grid.getEditor().getBinder().setBean(event.getBean()));
 		grid.addSelectionListener(ev -> editedListener.editObject = null);
 		Binder<T> binder = editor.getBinder();
 		editor.addSaveListener(ev -> {
@@ -61,6 +64,8 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 		editor.addCancelListener(editedListener);
 
 		createColumnAndBinding(binder);
+
+		binder.withValidator((obj, context) -> validate(obj, context));
 
 		deleteButtonColumn = grid.addComponentColumn(c -> {
 			Button deleteButton = new Button(VaadinIcons.TRASH);
@@ -83,6 +88,8 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 
 		addComponents(buttonLayout, grid);
 	}
+
+	protected abstract ValidationResult validate(T obj, ValueContext context);
 
 	public void addSuccessConsumer(Consumer<T> consumer) {
 		this.successConsumers.add(consumer);

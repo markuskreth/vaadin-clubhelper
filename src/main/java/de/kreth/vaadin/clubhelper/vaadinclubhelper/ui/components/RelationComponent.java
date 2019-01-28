@@ -3,6 +3,8 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import java.util.Collection;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueContext;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -33,6 +35,11 @@ public class RelationComponent extends AbstractDataGrid<Relation> {
 	@Override
 	protected Relation createNewItem() {
 		return null;
+	}
+
+	@Override
+	protected ValidationResult validate(Relation obj, ValueContext context) {
+		return ValidationResult.ok();
 	}
 
 }
