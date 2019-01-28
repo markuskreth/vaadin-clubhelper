@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -133,6 +134,9 @@ public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 			p.setPrename("prename_" + i);
 			p.setSurname("surname_" + i);
 			p.setBirth(LocalDate.now());
+			p.setAdresses(new ArrayList<>());
+			p.setPersongroups(new ArrayList<>());
+			p.setGroups(new HashSet<>());
 			inserted.add(p);
 		}
 		return inserted;
