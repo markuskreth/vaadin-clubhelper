@@ -147,6 +147,7 @@ public class Person extends BaseEntity implements Serializable {
 		if (this.groups == null) {
 			this.groups = new HashSet<>();
 		}
+		group.addPersongroup(this);
 		this.groups.add(group);
 	}
 
@@ -163,6 +164,11 @@ public class Person extends BaseEntity implements Serializable {
 			this.events = new HashSet<>();
 		}
 		this.events.add(ev);
+	}
+
+	public void add(Contact contact) {
+		contact.setPerson(this);
+		contacts.add(contact);
 	}
 
 	public void remove(ClubEvent clubEvent) {

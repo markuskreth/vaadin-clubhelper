@@ -32,4 +32,9 @@ public class ContactGrid extends AbstractDataGrid<Contact> {
 		return person.getContacts().stream().filter(e -> e.getDeleted() == null).collect(Collectors.toList());
 	}
 
+	@Override
+	protected Contact createNewItem() {
+		return new Contact();
+	}
+
 }

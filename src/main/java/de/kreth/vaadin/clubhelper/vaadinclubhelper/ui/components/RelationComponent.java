@@ -15,7 +15,7 @@ public class RelationComponent extends AbstractDataGrid<Relation> {
 
 	public RelationComponent(PersonDao dao) {
 		this.dao = dao;
-		getEditor().setEnabled(false);
+		setEditorEnabled(false);
 	}
 
 	@Override
@@ -28,6 +28,11 @@ public class RelationComponent extends AbstractDataGrid<Relation> {
 	@Override
 	protected Collection<? extends Relation> readValues(Person person) {
 		return dao.findRelationsFor(person);
+	}
+
+	@Override
+	protected Relation createNewItem() {
+		return null;
 	}
 
 }

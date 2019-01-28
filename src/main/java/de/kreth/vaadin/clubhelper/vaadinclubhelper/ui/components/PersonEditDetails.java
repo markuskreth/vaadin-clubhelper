@@ -125,7 +125,7 @@ public class PersonEditDetails extends HorizontalLayout {
 
 			getUI().addWindow(dlg);
 		});
-
+		contactLayout.addSuccessConsumer(newContact -> binder.getBean().add(newContact));
 		relationshipLayout = new RelationComponent(dao);
 		TabSheet sheet = new TabSheet();
 		sheet.addTab(groupLayout, "Gruppen");
