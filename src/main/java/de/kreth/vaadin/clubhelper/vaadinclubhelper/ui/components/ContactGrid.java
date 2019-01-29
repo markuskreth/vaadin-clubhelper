@@ -25,7 +25,7 @@ public class ContactGrid extends AbstractDataGrid<Contact> {
 	private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
 	@Override
-	public void createColumnAndBinding(Binder<Contact> binder) {
+	protected void createColumnAndBinding(Binder<Contact> binder) {
 		Binding<Contact, String> typeBinding = binder.bind(new ContactTypeComponent(), Contact::getType,
 				Contact::setType);
 		Binding<Contact, String> valueBinding = binder.bind(new TextField(), Contact::getValue, Contact::setValue);

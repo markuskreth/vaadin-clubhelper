@@ -39,6 +39,7 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	private ContactGrid contactLayout;
 	private RelationComponent relationshipLayout;
+	private AdressComponent adressLayout;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
 		this(groups, dao, true);
@@ -93,6 +94,7 @@ public class PersonEditDetails extends HorizontalLayout {
 				}
 				contactLayout.setPerson(edited);
 				relationshipLayout.setPerson(edited);
+				adressLayout.setPerson(edited);
 			} else {
 				List<ValidationResult> errors = validate.getBeanValidationErrors();
 				StringBuilder msg = new StringBuilder();
@@ -120,20 +122,37 @@ public class PersonEditDetails extends HorizontalLayout {
 							+ c.getPerson().getSurname() + " \"" + c + "\" wirklich löschen?")
 					.yesCancel().setResultHandler(button -> {
 						if (button == ConfirmDialog.Buttons.YES) {
-							if (binder.validate().isOk()) {
-								dao.delete(c);
-							}
+							dao.delete(c);
 						}
 					}).build();
 
 			getUI().addWindow(dlg);
 		});
 		contactLayout.addSuccessConsumer(newContact -> binder.getBean().add(newContact));
+
 		relationshipLayout = new RelationComponent(dao);
+
+		adressLayout = new AdressComponent();
+		adressLayout.setDeleteConsumer(a -> {
+
+			ConfirmDialog dlg = ConfirmDialog
+					.builder().setCaption("Adresse löschen").setMessage(a.getPerson().getPrename() + " "
+							+ a.getPerson().getSurname() + " \"" + a + "\" wirklich löschen?")
+					.yesCancel().setResultHandler(button -> {
+						if (button == ConfirmDialog.Buttons.YES) {
+							dao.delete(a);
+						}
+					}).build();
+
+			getUI().addWindow(dlg);
+		});
+		adressLayout.addSuccessConsumer(newAdress -> binder.getBean().addAdress(newAdress));
+
 		TabSheet sheet = new TabSheet();
 		sheet.addTab(groupLayout, "Gruppen");
 		sheet.addTab(contactLayout, "Kontakte");
 		sheet.addTab(relationshipLayout, "Angehörige");
+		sheet.addTab(adressLayout, "Adresse");
 		addComponents(layout, sheet);
 		setExpandRatio(layout, 1f);
 		setExpandRatio(sheet, 2f);
@@ -169,6 +188,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		binder.setBean(person);
 		contactLayout.setPerson(person);
 		relationshipLayout.setPerson(person);
+		adressLayout.setPerson(person);
 
 		if (person != null) {
 			okButton.setEnabled(true);
@@ -197,7 +217,8 @@ public class PersonEditDetails extends HorizontalLayout {
 	}
 
 	public boolean hasChanges() {
-		return binder.hasChanges() || contactLayout.hasChanges() || relationshipLayout.hasChanges();
+		return binder.hasChanges() || contactLayout.hasChanges() || relationshipLayout.hasChanges()
+				|| adressLayout.hasChanges();
 	}
 
 }

@@ -24,7 +24,6 @@ public class RelationComponent extends AbstractDataGrid<Relation> {
 	protected void createColumnAndBinding(Binder<Relation> binder) {
 		addColumn(r -> r.getRelation().getLocalized()).setCaption("Beiehung");
 		addColumn(r -> r.getPerson().getPrename() + " " + r.getPerson().getSurname());
-
 	}
 
 	@Override

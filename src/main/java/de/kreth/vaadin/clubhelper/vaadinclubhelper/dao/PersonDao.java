@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
@@ -25,4 +26,6 @@ public interface PersonDao extends IDao<Person> {
 	void delete(Contact c);
 
 	void delete(Person p);
+
+	void delete(Adress a);
 }

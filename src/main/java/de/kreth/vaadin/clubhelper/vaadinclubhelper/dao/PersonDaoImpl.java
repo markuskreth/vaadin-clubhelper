@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -40,6 +41,12 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		if (contacts != null) {
 			for (Contact c : contacts) {
 				persistOrUpdate(c);
+			}
+		}
+		List<Adress> adresses = obj.getAdresses();
+		if (adresses != null) {
+			for (Adress a : adresses) {
+				persistOrUpdate(a);
 			}
 		}
 	}
@@ -111,5 +118,14 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	public void delete(Person p) {
 		p.setDeleted(new Date());
 		entityManager.merge(p);
+	}
+
+	@Override
+	public void delete(Adress a) {
+
+		a.setDeleted(new Date());
+		entityManager.merge(a);
+		Person person = a.getPerson();
+		person.getAdresses().remove(a);
 	}
 }
