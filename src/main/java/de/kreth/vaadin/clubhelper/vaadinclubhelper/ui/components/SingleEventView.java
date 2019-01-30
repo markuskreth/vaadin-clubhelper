@@ -6,10 +6,12 @@ import java.time.temporal.ChronoUnit;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.GridLayout;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -32,6 +34,8 @@ public class SingleEventView extends CustomComponent {
 
 	private Binder<ClubEvent> binder;
 	private DefaultDataUpdateHandler updateHandler = new DefaultDataUpdateHandler();
+
+	private Button deleteEvent;
 
 	public SingleEventView(boolean showCompetitionType) {
 		setCaption("Gewählte Veranstaltung");
@@ -79,13 +83,23 @@ public class SingleEventView extends CustomComponent {
 		} else {
 			layout = new GridLayout(2, 2);
 		}
+
+		deleteEvent = new Button("Löschen");
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.addComponents(textTitle, startDate, textLocation, endDate);
 		if (showCompetitionType) {
 			layout.addComponent(competitionType);
+			deleteEvent = new Button("Löschen");
+			deleteEvent.addClickListener(ev -> deleteEvent());
+			layout.addComponent(deleteEvent);
 		}
 		setCompositionRoot(layout);
+	}
+
+	private void deleteEvent() {
+		Notification.show("Termin löschen?", "Soll " + binder.getBean() + " wirklich gelöscht werden?",
+				Notification.Type.HUMANIZED_MESSAGE);
 	}
 
 	void endDateVisibleCheck(ValueChangeEvent<LocalDate> event) {
@@ -127,11 +141,12 @@ public class SingleEventView extends CustomComponent {
 		binder.setBean(ev);
 
 		if (ev != null) {
-
+			deleteEvent.setEnabled(true);
 		} else {
 			setTitle("");
 			setLocation("");
 			endDate.setVisible(false);
+			deleteEvent.setEnabled(false);
 		}
 	}
 
