@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -17,9 +17,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventAltersgruppen;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.NamedView;
 
 public class EventDetails extends GridLayout implements NamedView {
 

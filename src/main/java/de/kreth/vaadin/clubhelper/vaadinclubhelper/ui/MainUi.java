@@ -19,6 +19,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 
 @Theme("vaadin-clubhelpertheme")
 @SpringUI
