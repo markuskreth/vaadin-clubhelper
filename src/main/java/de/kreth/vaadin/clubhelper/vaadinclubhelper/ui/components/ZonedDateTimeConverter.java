@@ -15,6 +15,9 @@ public class ZonedDateTimeConverter implements Converter<LocalDate, ZonedDateTim
 
 	@Override
 	public Result<ZonedDateTime> convertToModel(LocalDate value, ValueContext context) {
+		if (value == null) {
+			return Result.ok(null);
+		}
 		return Result.ok(ZonedDateTime.of(value, LocalTime.MIDNIGHT, ZoneId.systemDefault()));
 	}
 

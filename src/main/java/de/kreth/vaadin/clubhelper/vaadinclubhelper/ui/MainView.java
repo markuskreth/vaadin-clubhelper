@@ -74,8 +74,6 @@ public class MainView extends VerticalLayout implements NamedView {
 				openPersonViewForEvent(current);
 				if (current != null) {
 					calendar.setToday(current.getStart());
-				} else {
-					reloadEvents();
 				}
 				head.updateLoggedinPerson();
 			} else {
@@ -83,6 +81,7 @@ public class MainView extends VerticalLayout implements NamedView {
 				detailClosed();
 				head.updateLoggedinPerson();
 			}
+			reloadEvents();
 		}
 	}
 

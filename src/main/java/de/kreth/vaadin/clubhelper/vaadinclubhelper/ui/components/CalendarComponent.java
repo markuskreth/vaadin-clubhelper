@@ -81,6 +81,7 @@ public class CalendarComponent extends CustomComponent {
 
 		@Override
 		public void setItems(Collection<ClubEvent> items) {
+			super.itemList.clear();
 			super.setItems(items);
 			fireItemSetChanged();
 		}
