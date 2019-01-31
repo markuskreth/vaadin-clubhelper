@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -14,6 +15,8 @@ import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 
+import de.kreth.googleconnectors.calendar.CalendarAdapter;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
@@ -35,7 +38,12 @@ public class SingleEventView extends CustomComponent {
 	private Binder<ClubEvent> binder;
 	private DefaultDataUpdateHandler updateHandler = new DefaultDataUpdateHandler();
 
-	private Button deleteEvent;
+	private Button deleteButton;
+
+	private CalendarAdapter calendarAdapter;
+
+	private EventBusiness eventBusiness;
+	private Runnable deletedHandler;
 
 	public SingleEventView(boolean showCompetitionType) {
 		setCaption("Gewählte Veranstaltung");
@@ -84,22 +92,46 @@ public class SingleEventView extends CustomComponent {
 			layout = new GridLayout(2, 2);
 		}
 
-		deleteEvent = new Button("Löschen");
+		deleteButton = new Button("Löschen");
 		layout.setMargin(true);
 		layout.setSpacing(true);
 		layout.addComponents(textTitle, startDate, textLocation, endDate);
 		if (showCompetitionType) {
 			layout.addComponent(competitionType);
-			deleteEvent = new Button("Löschen");
-			deleteEvent.addClickListener(ev -> deleteEvent());
-			layout.addComponent(deleteEvent);
+			deleteButton = new Button("Löschen");
+			deleteButton.addClickListener(ev -> deleteEvent());
+			layout.addComponent(deleteButton);
 		}
 		setCompositionRoot(layout);
 	}
 
 	private void deleteEvent() {
-		Notification.show("Termin löschen?", "Soll " + binder.getBean() + " wirklich gelöscht werden?",
-				Notification.Type.HUMANIZED_MESSAGE);
+		ClubEvent bean = binder.getBean();
+
+		ConfirmDialog dlg = ConfirmDialog.builder().setCaption("Löschen bestätigen!").setMessage("Wollen Sie Termin \""
+				+ bean.getCaption() + "\" vom " + bean.getStart() + "\" bis " + bean.getEnd()
+				+ " wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden und betrifft auch den Online Google Calendar.")
+				.setResultHandler(btn -> {
+					if (btn == ConfirmDialog.Buttons.YES) {
+						try {
+							String host = getUI().getPage().getLocation().getHost();
+							if (calendarAdapter.deleteEvent(host, bean.getOrganizerDisplayName(), bean.getId())) {
+								eventBusiness.delete(bean);
+								if (deletedHandler != null) {
+									deletedHandler.run();
+								}
+							} else {
+								Notification.show("Fehler beim Löschen von " + bean, "Bitte erneut versuchen.",
+										Notification.Type.ERROR_MESSAGE);
+							}
+						} catch (IOException e) {
+							Notification.show("Fehler beim Löschen von " + bean, e.toString(),
+									Notification.Type.ERROR_MESSAGE);
+						}
+					}
+				}).yesCancel().build();
+		getUI().addWindow(dlg);
+
 	}
 
 	void endDateVisibleCheck(ValueChangeEvent<LocalDate> event) {
@@ -122,6 +154,10 @@ public class SingleEventView extends CustomComponent {
 		return updateHandler.remove(o);
 	}
 
+	public void setDeletedHandler(Runnable deletedHandler) {
+		this.deletedHandler = deletedHandler;
+	}
+
 	void setTitle(String value) {
 		if (value == null) {
 			value = "";
@@ -141,13 +177,21 @@ public class SingleEventView extends CustomComponent {
 		binder.setBean(ev);
 
 		if (ev != null) {
-			deleteEvent.setEnabled(true);
+			deleteButton.setEnabled(true);
 		} else {
 			setTitle("");
 			setLocation("");
 			endDate.setVisible(false);
-			deleteEvent.setEnabled(false);
+			deleteButton.setEnabled(false);
 		}
+	}
+
+	public void setCalendarAdapter(CalendarAdapter calendarAdapter) {
+		this.calendarAdapter = calendarAdapter;
+	}
+
+	public void setEventBusiness(EventBusiness eventBusiness) {
+		this.eventBusiness = eventBusiness;
 	}
 
 }

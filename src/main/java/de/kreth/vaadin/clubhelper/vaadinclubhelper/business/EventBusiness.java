@@ -90,4 +90,9 @@ public class EventBusiness {
 	public void storeEventType() {
 		clubEventDao.updateEventType(current);
 	}
+
+	public void delete(ClubEvent bean) {
+		clubEventDao.delete(bean);
+		current = null;
+	}
 }

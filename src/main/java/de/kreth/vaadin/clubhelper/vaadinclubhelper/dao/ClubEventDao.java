@@ -17,4 +17,6 @@ public interface ClubEventDao extends IDao<ClubEvent> {
 	void addPersons(ClubEvent event, Collection<Person> persons);
 
 	void updateEventType(ClubEvent obj);
+
+	void delete(ClubEvent obj);
 }

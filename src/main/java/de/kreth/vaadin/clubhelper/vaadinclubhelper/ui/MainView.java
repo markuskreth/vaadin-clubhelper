@@ -25,8 +25,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
@@ -74,6 +74,8 @@ public class MainView extends VerticalLayout implements NamedView {
 				openPersonViewForEvent(current);
 				if (current != null) {
 					calendar.setToday(current.getStart());
+				} else {
+					reloadEvents();
 				}
 				head.updateLoggedinPerson();
 			} else {
@@ -137,6 +139,10 @@ public class MainView extends VerticalLayout implements NamedView {
 		setExpandRatio(mainLayout, 1f);
 		setSizeFull();
 
+		reloadEvents();
+	}
+
+	public void reloadEvents() {
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.execute(() -> {
 

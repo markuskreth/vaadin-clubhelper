@@ -29,9 +29,6 @@
 		<java.version>11</java.version>
 		<vaadin.version>8.6.2</vaadin.version>
 		<selenium.version>3.141.59</selenium.version>
-		<google-api-version>1.23.0</google-api-version>
-		<google-api-sheets-version>v4-rev488-1.23.0</google-api-sheets-version>
-		<google-api-calendar-version>v3-rev271-1.23.0</google-api-calendar-version>
 		<start-class>de.kreth.vaadin.clubhelper.vaadinclubhelper.VaadinClubhelperApplication</start-class>
 
 		<sonar.login>7af449877bbf41d707e8ae7d322b1d6e9b15a89d</sonar.login>
@@ -228,6 +225,11 @@
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports-functions</artifactId>
 			<version>6.7.0</version>
+		</dependency>
+		<dependency>
+			<groupId>de.kreth.googleconnect</groupId>
+			<artifactId>GoogleConnectors</artifactId>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

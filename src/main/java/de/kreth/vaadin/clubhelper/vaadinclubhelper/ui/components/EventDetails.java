@@ -11,6 +11,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
@@ -33,14 +34,16 @@ public class EventDetails extends GridLayout implements NamedView {
 	private SingleEventView eventView;
 	private PersonGrid personGrid;
 	private EventAltersgruppen eventAltersgruppen;
+	private CalendarAdapter calendarAdapter;
 
-	public EventDetails(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
-			PflichtenDao pflichtenDao) {
+	public EventDetails(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness, PflichtenDao pflichtenDao,
+			CalendarAdapter calendarAdapter) {
 		super(3, 5);
 		this.eventBusiness = eventBusiness;
 		this.personDao = personDao;
 		this.groupDao = groupDao;
 		this.pflichtenDao = pflichtenDao;
+		this.calendarAdapter = calendarAdapter;
 	}
 
 	@Override
@@ -52,6 +55,10 @@ public class EventDetails extends GridLayout implements NamedView {
 			Navigator navigator = event.getNavigator();
 
 			eventView = new SingleEventView(true);
+			eventView.setCalendarAdapter(calendarAdapter);
+			eventView.setEventBusiness(eventBusiness);
+			eventView.setDeletedHandler(() -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));
+
 			eventView.addDataUpdatedListener(() -> eventBusiness.storeEventType());
 
 			eventAltersgruppen = new EventAltersgruppen(pflichtenDao, eventBusiness);

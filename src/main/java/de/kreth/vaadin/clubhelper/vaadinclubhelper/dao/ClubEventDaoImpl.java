@@ -16,7 +16,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Repository
-@Transactional
 public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements ClubEventDao {
 
 	private static final long serialVersionUID = 7648111697282525347L;
@@ -26,6 +25,7 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
+	@Transactional
 	public void save(ClubEvent obj) {
 		CompetitionType competitionType = obj.getCompetitionType();
 		if (competitionType != null) {
@@ -62,6 +62,7 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 		current.removeAll(removed);
 	}
 
+	@Transactional
 	public void executeQueries(ClubEvent event, List<Person> added, List<Person> removed) {
 		if (!added.isEmpty()) {
 			Query insertQuery = entityManager.createNativeQuery(
@@ -84,6 +85,7 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
+	@Transactional
 	public void updateEventType(ClubEvent obj) {
 		CompetitionType type = obj.getCompetitionType();
 		if (type != null) {
@@ -101,6 +103,12 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 			query.setParameter("eventtype", type.getType().name());
 			query.executeUpdate();
 		}
+	}
+
+	@Override
+	@Transactional
+	public void delete(ClubEvent entity) {
+		entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
 	}
 
 }
