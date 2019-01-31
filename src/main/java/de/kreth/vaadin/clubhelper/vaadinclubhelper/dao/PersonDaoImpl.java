@@ -27,9 +27,10 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	}
 
 	@Override
+	@Transactional
 	public void save(Person obj) {
-		checkSubEntities(obj);
 		super.save(obj);
+		checkSubEntities(obj);
 	}
 
 	public void checkSubEntities(Person obj) {

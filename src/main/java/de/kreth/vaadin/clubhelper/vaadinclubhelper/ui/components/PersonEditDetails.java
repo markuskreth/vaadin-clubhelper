@@ -191,6 +191,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		adressLayout.setPerson(person);
 
 		if (person != null) {
+			binder.validate();
 			okButton.setEnabled(true);
 		} else {
 			okButton.setEnabled(false);

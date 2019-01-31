@@ -1,6 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.i18n.phonenumbers.NumberParseException;
@@ -57,7 +59,14 @@ public class ContactGrid extends AbstractDataGrid<Contact> {
 
 	@Override
 	protected Collection<? extends Contact> readValues(Person person) {
-		return person.getContacts().stream().filter(e -> e.getDeleted() == null).collect(Collectors.toList());
+		if (person == null) {
+			return Collections.emptyList();
+		}
+		List<Contact> contacts = person.getContacts();
+		if (contacts == null) {
+			return Collections.emptyList();
+		}
+		return contacts.stream().filter(e -> e.getDeleted() == null).collect(Collectors.toList());
 	}
 
 	@Override

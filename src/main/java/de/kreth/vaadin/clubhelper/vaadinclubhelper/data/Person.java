@@ -2,6 +2,7 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -168,6 +169,9 @@ public class Person extends BaseEntity implements Serializable {
 
 	public void add(Contact contact) {
 		contact.setPerson(this);
+		if (contacts == null) {
+			contacts = new ArrayList<>();
+		}
 		contacts.add(contact);
 	}
 
