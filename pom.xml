@@ -6,7 +6,7 @@
 
 	<groupId>de.kreth.vaadin.clubhelper</groupId>
 	<artifactId>vaadin-clubhelper</artifactId>
-	<version>1.0.10-SNAPSHOT</version>
+	<version>1.0.11-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>vaadin-clubhelper</name>
