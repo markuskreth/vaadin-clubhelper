@@ -49,7 +49,7 @@ public class ClubhelperNavigation {
 		navi = new ClubNavigator().init(mainUI);
 
 		// Create and register the views
-		MainView mainView = new MainView(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		MainView mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personDao, securityGroupVerifier));
