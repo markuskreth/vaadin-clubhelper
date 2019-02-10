@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.util.List;
 import java.util.Set;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
 import com.vaadin.event.selection.SelectionEvent;
-import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid.SelectionMode;
@@ -26,13 +26,11 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 
-public class MainView extends VerticalLayout implements NamedView {
-
-	public static final String VIEW_NAME = "";
+public class MainView extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 4831071242146146399L;
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -48,7 +46,7 @@ public class MainView extends VerticalLayout implements NamedView {
 	private SingleEventView eventView;
 	private HorizontalLayout eventButtonLayout;
 
-	private Navigator navigator;
+	private ClubNavigator navigator;
 
 	private VerticalLayout eastLayout;
 
@@ -87,7 +85,7 @@ public class MainView extends VerticalLayout implements NamedView {
 
 	public void initUI(ViewChangeEvent event) {
 
-		navigator = event.getNavigator();
+		navigator = (ClubNavigator) event.getNavigator();
 
 		eventView = new SingleEventView(false);
 		eventView.setVisible(false);
@@ -104,7 +102,7 @@ public class MainView extends VerticalLayout implements NamedView {
 		close.setId("person.close");
 
 		Button eventDetails = new Button("Veranstaltung Details", ev -> {
-			navigator.navigateTo(EventDetails.VIEW_NAME);
+			navigator.navigateTo(ClubhelperViews.EventDetails.name());
 		});
 		eventDetails.setId("person.eventDetails");
 
@@ -178,7 +176,7 @@ public class MainView extends VerticalLayout implements NamedView {
 			openPersonViewForEvent(ev);
 		} else {
 			eventBusiness.setSelected(ev);
-			navigator.navigateTo(LoginUI.VIEW_NAME + '/' + ev.getId());
+			navigator.navigateTo(ClubhelperViews.LoginUI.name() + '/' + ev.getId());
 		}
 	}
 
@@ -200,11 +198,6 @@ public class MainView extends VerticalLayout implements NamedView {
 		mainLayout.setExpandRatio(eastLayout, 1f);
 
 		eventBusiness.setSelected(ev);
-	}
-
-	@Override
-	public String getViewName() {
-		return VIEW_NAME;
 	}
 
 }

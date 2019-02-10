@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,9 +18,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
-public class PersonEditView extends VerticalLayout implements NamedView {
+public class PersonEditView extends VerticalLayout implements View {
 
-	public static final String VIEW_NAME = "PersonEditView";
 	private static final long serialVersionUID = 1770993670570422036L;
 
 	private PersonGrid personGrid;
@@ -51,7 +51,7 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 
 		addComponent(addPerson);
 		Button backButton = new Button("Zurück");
-		backButton.addClickListener(ev -> navigator.navigateTo(MainView.VIEW_NAME));
+		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
 		addComponent(backButton);
 	}
 
@@ -72,13 +72,7 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		NamedView.super.enter(event);
 		this.navigator = event.getNavigator();
-	}
-
-	@Override
-	public String getViewName() {
-		return VIEW_NAME;
 	}
 
 }

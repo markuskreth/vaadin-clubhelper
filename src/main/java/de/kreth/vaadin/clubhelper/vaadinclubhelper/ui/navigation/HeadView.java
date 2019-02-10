@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
@@ -38,6 +37,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -60,11 +60,11 @@ public class HeadView extends HorizontalLayout {
 
 	private Label personLabel;
 
-	private final Navigator navigator;
+	private final ClubNavigator navigator;
 
 	private final SecurityVerifier securityVerifier;
 
-	public HeadView(Navigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
+	public HeadView(ClubNavigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider, SecurityVerifier securityVerifier) {
 
 		this.navigator = navigator;
@@ -122,14 +122,15 @@ public class HeadView extends HorizontalLayout {
 		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
 		if (securityVerifier.getLoggedinPerson() != null) {
 			if (securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
-				contextMenu.addItem("Personen verwalten", ev1 -> navigator.navigateTo(PersonEditView.VIEW_NAME));
+				contextMenu.addItem("Personen verwalten",
+						ev1 -> navigator.navigateTo(ClubhelperViews.PersonEditView.name()));
 			}
 			contextMenu.addItem("Abmelden", ev1 -> {
 				securityVerifier.setLoggedinPerson(null);
-				navigator.navigateTo(MainView.VIEW_NAME);
+				navigator.navigateTo(ClubhelperViews.MainView.name());
 			});
 		} else {
-			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(LoginUI.VIEW_NAME));
+			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
 		}
 		contextMenu.open(50, 50);
 	}
