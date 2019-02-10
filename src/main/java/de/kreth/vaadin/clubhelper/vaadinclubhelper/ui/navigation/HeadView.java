@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +25,8 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
@@ -46,13 +46,8 @@ public class HeadView extends HorizontalLayout {
 
 	private static final long serialVersionUID = -7915475211371903028L;
 
-	private transient final Logger log = LoggerFactory.getLogger(getClass());
-	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
-
-	private Label monthName;
-
-	private final Supplier<ZonedDateTime> startTime;
-	private final Supplier<ZonedDateTime> endTime;
+	protected transient final Logger log = LoggerFactory.getLogger(getClass());
+	protected transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private ClubEventProvider dataProvider;
 
@@ -60,20 +55,21 @@ public class HeadView extends HorizontalLayout {
 
 	private Button personLabel;
 
+	private final Function<Component, ZonedDateTime> startTime;
+	private final Function<Component, ZonedDateTime> endTime;
+
 	private final ClubNavigator navigator;
 
 	private final SecurityVerifier securityVerifier;
 
-	public HeadView(ClubNavigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
-			ClubEventProvider dataProvider, SecurityVerifier securityVerifier) {
+	public HeadView(ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
+			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
+			SecurityVerifier securityVerifier) {
 
 		this.navigator = navigator;
 		this.securityVerifier = securityVerifier;
-
-		monthName = new Label();
-		monthName.setId("calendar.month");
-		monthName.setStyleName("title_caption");
-		monthName.setWidth(null);
+		this.startTime = startTime;
+		this.endTime = endTime;
 
 		Button popupButton = new Button(VaadinIcons.MENU);
 		popupButton.setId("head.menu");
@@ -82,21 +78,14 @@ public class HeadView extends HorizontalLayout {
 
 		personLabel = new Button(VaadinIcons.USER);
 		personLabel.setId("head.user");
-//		personLabel.setStyleName("title_caption");
-//		personLabel.addStyleName("bold-caption");
 		personLabel.addClickListener(this::openPopupMenu);
 
 		this.addComponent(popupButton);
-		this.addComponent(monthName);
 		this.addComponent(personLabel);
 
 		setComponentAlignment(popupButton, Alignment.MIDDLE_LEFT);
-		setComponentAlignment(monthName, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(personLabel, Alignment.MIDDLE_RIGHT);
-		setExpandRatio(monthName, 1.0f);
 
-		this.startTime = startTime;
-		this.endTime = endTime;
 		this.dataProvider = dataProvider;
 	}
 
@@ -110,12 +99,6 @@ public class HeadView extends HorizontalLayout {
 		}
 	}
 
-	public void updateMonthText(ZonedDateTime startDate) {
-		String monthValue = dfMonth.format(startDate);
-		log.debug("Changed Month title to {}", monthValue);
-		monthName.setValue(monthValue);
-	}
-
 	private void openPopupMenu(ClickEvent ev) {
 		Button button = ev.getButton();
 
@@ -123,8 +106,9 @@ public class HeadView extends HorizontalLayout {
 
 		switch (button.getId()) {
 		case "head.menu":
-			monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
-			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
+			MenuItem menuItem = contextMenu.addItem("Export Monat", ev1 -> calendarExport(button, ev1));
+			monthItemId = menuItem.getId();
+			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(button, ev1));
 			if (securityVerifier.isLoggedin()
 					&& securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
 				contextMenu.addItem("Personen verwalten",
@@ -152,18 +136,18 @@ public class HeadView extends HorizontalLayout {
 
 	}
 
-	private void calendarExport(MenuItem ev1) {
+	private void calendarExport(Button source, MenuItem ev1) {
 
 		boolean monthOnly = ev1.getId() == monthItemId;
 		List<ClubEvent> items;
 		ZonedDateTime start;
 		ZonedDateTime end;
 		if (monthOnly) {
-			start = startTime.get();
-			end = endTime.get();
+			start = startTime.apply(source);
+			end = endTime.apply(source);
 			items = dataProvider.getItems(start, end);
 		} else {
-			start = startTime.get().withDayOfYear(1);
+			start = startTime.apply(source).withDayOfYear(1);
 			end = start.withMonth(12).withDayOfMonth(31);
 			items = dataProvider.getItems(start, end);
 		}
@@ -219,7 +203,7 @@ public class HeadView extends HorizontalLayout {
 			window.setModal(true);
 			window.setWidth("50%");
 			window.setHeight("90%");
-			monthName.getUI().addWindow(window);
+			personLabel.getUI().addWindow(window);
 			log.trace("Added pdf window for {}", calendarMonth);
 		} catch (JRException e) {
 			log.error("Error Creating Jasper Report for {}", calendarMonth, e);

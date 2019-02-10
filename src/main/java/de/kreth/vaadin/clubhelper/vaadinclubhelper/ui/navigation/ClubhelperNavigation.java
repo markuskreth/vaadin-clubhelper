@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -49,7 +50,15 @@ public class ClubhelperNavigation {
 		navi = new ClubNavigator().init(mainUI);
 
 		// Create and register the views
-		MainView mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
+
+		Page page = mainUI.getPage();
+
+		MainView mainView;
+		if (page.getBrowserWindowWidth() < 1000) {
+			mainView = new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		} else {
+			mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		}
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personDao, securityGroupVerifier));
@@ -57,7 +66,7 @@ public class ClubhelperNavigation {
 		navi.addView(ClubhelperViews.EventDetails.name(),
 				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
 
-		mainUI.getPage().addBrowserWindowResizeListener(ev -> {
+		page.addBrowserWindowResizeListener(ev -> {
 			int width = ev.getWidth();
 			int height = ev.getHeight();
 			if (LOGGER.isDebugEnabled()) {

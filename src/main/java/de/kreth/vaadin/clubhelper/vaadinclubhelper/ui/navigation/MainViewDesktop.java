@@ -32,7 +32,7 @@ public class MainViewDesktop extends MainView {
 	private HorizontalLayout eventButtonLayout;
 
 	private CalendarComponent calendar;
-	private HeadView head;
+	private DesktopHeadView head;
 
 	public MainViewDesktop(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
@@ -49,8 +49,8 @@ public class MainViewDesktop extends MainView {
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new HeadView(navigator, () -> calendar.getStartDate(), () -> calendar.getEndDate(), dataProvider,
-				securityVerifier);
+		head = new DesktopHeadView(navigator, component -> calendar.getStartDate(), component -> calendar.getEndDate(),
+				dataProvider, securityVerifier);
 		head.setWidth("100%");
 		head.updateMonthText(calendar.getStartDate());
 
@@ -66,7 +66,7 @@ public class MainViewDesktop extends MainView {
 		close.setId("person.close");
 
 		Button eventDetails = new Button("Veranstaltung Details", ev -> {
-			navigator.navigateTo(ClubhelperViews.EventDetails.name());
+			navigator.navigateTo(ClubhelperViews.EventDetails);
 		});
 		eventDetails.setId("person.eventDetails");
 
