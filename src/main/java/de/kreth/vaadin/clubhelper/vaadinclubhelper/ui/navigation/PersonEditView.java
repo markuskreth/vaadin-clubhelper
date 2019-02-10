@@ -27,7 +27,7 @@ public class PersonEditView extends VerticalLayout implements View {
 
 	private Navigator navigator;
 
-	public PersonEditView(GroupDao groupDao, PersonDao personDao) {
+	public PersonEditView(GroupDao groupDao, PersonDao personDao, boolean horizontalLayout) {
 		setMargin(true);
 
 		personGrid = new PersonGrid(groupDao, personDao);
@@ -40,12 +40,11 @@ public class PersonEditView extends VerticalLayout implements View {
 		personDetails.setSizeFull();
 		personDetails.setPersonChangeHandler(personGrid::refreshItem);
 
-		HorizontalLayout layout = new HorizontalLayout();
-		layout.addComponents(personGrid, personDetails);
-		layout.setExpandRatio(personGrid, 1f);
-		layout.setExpandRatio(personDetails, 2f);
-		layout.setSizeFull();
-		addComponent(layout);
+		if (horizontalLayout) {
+			addComponent(createHorizontalLayout());
+		} else {
+			addComponent(createVerticalLayout());
+		}
 		Button addPerson = new Button("Hinzufügen");
 		addPerson.addClickListener(ev -> addPerson());
 
@@ -53,6 +52,22 @@ public class PersonEditView extends VerticalLayout implements View {
 		Button backButton = new Button("Zurück");
 		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
 		addComponent(backButton);
+	}
+
+	public HorizontalLayout createHorizontalLayout() {
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.addComponents(personGrid, personDetails);
+		layout.setExpandRatio(personGrid, 1f);
+		layout.setExpandRatio(personDetails, 2f);
+		layout.setSizeFull();
+		return layout;
+	}
+
+	public VerticalLayout createVerticalLayout() {
+		VerticalLayout layout = new VerticalLayout();
+		layout.addComponents(personGrid, personDetails);
+		layout.setSizeFull();
+		return layout;
 	}
 
 	private void addPerson() {

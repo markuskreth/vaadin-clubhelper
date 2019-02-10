@@ -53,16 +53,13 @@ public class ClubhelperNavigation {
 
 		Page page = mainUI.getPage();
 
-		MainView mainView;
-		if (page.getBrowserWindowWidth() < 1000) {
-			mainView = new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
-		} else {
-			mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
-		}
+		ViewFactory factory = new ViewFactory(page);
+		MainView mainView = factory.createMain();
+
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personDao, securityGroupVerifier));
-		navi.addView(ClubhelperViews.PersonEditView.name(), new PersonEditView(groupDao, personDao));
+		navi.addView(ClubhelperViews.PersonEditView.name(), factory.createPersonEdit());
 		navi.addView(ClubhelperViews.EventDetails.name(),
 				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
 
@@ -75,6 +72,28 @@ public class ClubhelperNavigation {
 						Notification.Type.TRAY_NOTIFICATION);
 			}
 		});
+	}
+
+	class ViewFactory {
+
+		private Page page;
+
+		public ViewFactory(Page page) {
+			this.page = page;
+		}
+
+		public MainView createMain() {
+
+			if (page.getBrowserWindowWidth() < 1000) {
+				return new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
+			} else {
+				return new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
+			}
+		}
+
+		public PersonEditView createPersonEdit() {
+			return new PersonEditView(groupDao, personDao, (page.getBrowserWindowWidth() >= 1000));
+		}
 	}
 
 	public void navigateTo(String navigationState) {
