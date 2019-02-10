@@ -53,7 +53,7 @@ public abstract class MainView extends VerticalLayout implements View {
 			if (securityVerifier.isLoggedin()) {
 				LOGGER.info("{} already initialized - opening Person View.", getClass().getName());
 				ClubEvent current = eventBusiness.getCurrent();
-				openPersonViewForEvent(current);
+				openDetailForEvent(current);
 			} else {
 				LOGGER.info("{} already initialized - but not loggedin.", getClass().getName());
 				detailClosed();
@@ -88,7 +88,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		eventView.setVisible(false);
 	}
 
-	public void openPersonViewForEvent(ClubEvent ev) {
+	public void openDetailForEvent(ClubEvent ev) {
 		LOGGER.debug("Opening detail view for {}", ev);
 
 		eventBusiness.setSelected(null);

@@ -82,6 +82,10 @@ public class ClubhelperNavigation {
 			return this;
 		}
 
+		public void navigateTo(ClubhelperViews view) {
+			navigateTo(view.name());
+		}
+
 		@Override
 		public void navigateTo(String navigationState) {
 			ClubhelperViews byState = ClubhelperViews.byState(navigationState);

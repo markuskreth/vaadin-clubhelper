@@ -58,7 +58,7 @@ public class HeadView extends HorizontalLayout {
 
 	private int monthItemId;
 
-	private Label personLabel;
+	private Button personLabel;
 
 	private final ClubNavigator navigator;
 
@@ -76,13 +76,15 @@ public class HeadView extends HorizontalLayout {
 		monthName.setWidth(null);
 
 		Button popupButton = new Button(VaadinIcons.MENU);
-		popupButton.setId("calendar.menu");
+		popupButton.setId("head.menu");
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
 		popupButton.setWidth(null);
 
-		personLabel = new Label();
-		personLabel.setStyleName("title_caption");
-		personLabel.addStyleName("bold-caption");
+		personLabel = new Button(VaadinIcons.USER);
+		personLabel.setId("head.user");
+//		personLabel.setStyleName("title_caption");
+//		personLabel.addStyleName("bold-caption");
+		personLabel.addClickListener(this::openPopupMenu);
 
 		this.addComponent(popupButton);
 		this.addComponent(monthName);
@@ -118,21 +120,36 @@ public class HeadView extends HorizontalLayout {
 		Button button = ev.getButton();
 
 		ContextMenu contextMenu = new ContextMenu(button, true);
-		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
-		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
-		if (securityVerifier.getLoggedinPerson() != null) {
-			if (securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
+
+		switch (button.getId()) {
+		case "head.menu":
+			monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
+			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
+			if (securityVerifier.isLoggedin()
+					&& securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
 				contextMenu.addItem("Personen verwalten",
 						ev1 -> navigator.navigateTo(ClubhelperViews.PersonEditView.name()));
 			}
-			contextMenu.addItem("Abmelden", ev1 -> {
-				securityVerifier.setLoggedinPerson(null);
-				navigator.navigateTo(ClubhelperViews.MainView.name());
-			});
-		} else {
-			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
+			contextMenu.open(50, 50);
+			break;
+		case "head.user":
+			if (securityVerifier.getLoggedinPerson() != null) {
+
+				contextMenu.addItem("Abmelden", ev1 -> {
+					securityVerifier.setLoggedinPerson(null);
+					navigator.navigateTo(ClubhelperViews.MainView.name());
+				});
+			} else {
+				contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
+			}
+			int width = getUI().getPage().getBrowserWindowWidth();
+
+			contextMenu.open(width - 150, 50);
+			break;
+		default:
+			break;
 		}
-		contextMenu.open(50, 50);
+
 	}
 
 	private void calendarExport(MenuItem ev1) {

@@ -115,7 +115,7 @@ public class MainViewDesktop extends MainView {
 
 		ClubEvent ev = (ClubEvent) event.getCalendarItem();
 		if (securityVerifier.isLoggedin()) {
-			openPersonViewForEvent(ev);
+			openDetailForEvent(ev);
 		} else {
 			eventBusiness.setSelected(ev);
 			navigator.navigateTo(ClubhelperViews.LoginUI.name() + '/' + ev.getId());
@@ -123,8 +123,8 @@ public class MainViewDesktop extends MainView {
 	}
 
 	@Override
-	public void openPersonViewForEvent(ClubEvent ev) {
-		super.openPersonViewForEvent(ev);
+	public void openDetailForEvent(ClubEvent ev) {
+		super.openDetailForEvent(ev);
 
 		mainLayout.addComponent(eastLayout);
 		mainLayout.setExpandRatio(eastLayout, 1f);
