@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -12,22 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
@@ -38,6 +37,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -46,55 +46,46 @@ public class HeadView extends HorizontalLayout {
 
 	private static final long serialVersionUID = -7915475211371903028L;
 
-	private transient final Logger log = LoggerFactory.getLogger(getClass());
-	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
-
-	private Label monthName;
-
-	private final Supplier<ZonedDateTime> startTime;
-	private final Supplier<ZonedDateTime> endTime;
+	protected transient final Logger log = LoggerFactory.getLogger(getClass());
+	protected transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private ClubEventProvider dataProvider;
 
 	private int monthItemId;
 
-	private Label personLabel;
+	private Button personLabel;
 
-	private final Navigator navigator;
+	private final Function<Component, ZonedDateTime> startTime;
+	private final Function<Component, ZonedDateTime> endTime;
+
+	private final ClubNavigator navigator;
 
 	private final SecurityVerifier securityVerifier;
 
-	public HeadView(Navigator navigator, Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
-			ClubEventProvider dataProvider, SecurityVerifier securityVerifier) {
+	public HeadView(ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
+			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
+			SecurityVerifier securityVerifier) {
 
 		this.navigator = navigator;
 		this.securityVerifier = securityVerifier;
-
-		monthName = new Label();
-		monthName.setId("calendar.month");
-		monthName.setStyleName("title_caption");
-		monthName.setWidth(null);
+		this.startTime = startTime;
+		this.endTime = endTime;
 
 		Button popupButton = new Button(VaadinIcons.MENU);
-		popupButton.setId("calendar.menu");
+		popupButton.setId("head.menu");
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
 		popupButton.setWidth(null);
 
-		personLabel = new Label();
-		personLabel.setStyleName("title_caption");
-		personLabel.addStyleName("bold-caption");
+		personLabel = new Button(VaadinIcons.USER);
+		personLabel.setId("head.user");
+		personLabel.addClickListener(this::openPopupMenu);
 
 		this.addComponent(popupButton);
-		this.addComponent(monthName);
 		this.addComponent(personLabel);
 
 		setComponentAlignment(popupButton, Alignment.MIDDLE_LEFT);
-		setComponentAlignment(monthName, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(personLabel, Alignment.MIDDLE_RIGHT);
-		setExpandRatio(monthName, 1.0f);
 
-		this.startTime = startTime;
-		this.endTime = endTime;
 		this.dataProvider = dataProvider;
 	}
 
@@ -108,44 +99,55 @@ public class HeadView extends HorizontalLayout {
 		}
 	}
 
-	public void updateMonthText(ZonedDateTime startDate) {
-		String monthValue = dfMonth.format(startDate);
-		log.debug("Changed Month title to {}", monthValue);
-		monthName.setValue(monthValue);
-	}
-
 	private void openPopupMenu(ClickEvent ev) {
 		Button button = ev.getButton();
 
 		ContextMenu contextMenu = new ContextMenu(button, true);
-		monthItemId = contextMenu.addItem("Export Monat", ev1 -> calendarExport(ev1)).getId();
-		contextMenu.addItem("Export Jahr", ev1 -> calendarExport(ev1));
-		if (securityVerifier.getLoggedinPerson() != null) {
-			if (securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
-				contextMenu.addItem("Personen verwalten", ev1 -> navigator.navigateTo(PersonEditView.VIEW_NAME));
+
+		switch (button.getId()) {
+		case "head.menu":
+			MenuItem menuItem = contextMenu.addItem("Export Monat", ev1 -> calendarExport(button, ev1));
+			monthItemId = menuItem.getId();
+			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(button, ev1));
+			if (securityVerifier.isLoggedin()
+					&& securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
+				contextMenu.addItem("Personen verwalten",
+						ev1 -> navigator.navigateTo(ClubhelperViews.PersonEditView.name()));
 			}
-			contextMenu.addItem("Abmelden", ev1 -> {
-				securityVerifier.setLoggedinPerson(null);
-				navigator.navigateTo(MainView.VIEW_NAME);
-			});
-		} else {
-			contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(LoginUI.VIEW_NAME));
+			contextMenu.open(50, 50);
+			break;
+		case "head.user":
+			if (securityVerifier.getLoggedinPerson() != null) {
+
+				contextMenu.addItem("Abmelden", ev1 -> {
+					securityVerifier.setLoggedinPerson(null);
+					navigator.navigateTo(ClubhelperViews.MainView.name());
+				});
+			} else {
+				contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
+			}
+			int width = getUI().getPage().getBrowserWindowWidth();
+
+			contextMenu.open(width - 150, 50);
+			break;
+		default:
+			break;
 		}
-		contextMenu.open(50, 50);
+
 	}
 
-	private void calendarExport(MenuItem ev1) {
+	private void calendarExport(Button source, MenuItem ev1) {
 
 		boolean monthOnly = ev1.getId() == monthItemId;
 		List<ClubEvent> items;
 		ZonedDateTime start;
 		ZonedDateTime end;
 		if (monthOnly) {
-			start = startTime.get();
-			end = endTime.get();
+			start = startTime.apply(source);
+			end = endTime.apply(source);
 			items = dataProvider.getItems(start, end);
 		} else {
-			start = startTime.get().withDayOfYear(1);
+			start = startTime.apply(source).withDayOfYear(1);
 			end = start.withMonth(12).withDayOfMonth(31);
 			items = dataProvider.getItems(start, end);
 		}
@@ -201,7 +203,7 @@ public class HeadView extends HorizontalLayout {
 			window.setModal(true);
 			window.setWidth("50%");
 			window.setHeight("90%");
-			monthName.getUI().addWindow(window);
+			personLabel.getUI().addWindow(window);
 			log.trace("Added pdf window for {}", calendarMonth);
 		} catch (JRException e) {
 			log.error("Error Creating Jasper Report for {}", calendarMonth, e);

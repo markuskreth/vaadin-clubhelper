@@ -37,6 +37,7 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	}
 
 	@Override
+	@Transactional
 	public void addPersons(ClubEvent event, Collection<Person> updated) {
 		List<Person> added = new ArrayList<>(updated);
 		List<Person> removed = new ArrayList<>();

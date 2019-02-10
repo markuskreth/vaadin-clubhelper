@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
-import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.WebBrowser;
 import com.vaadin.shared.communication.PushMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.UI;
@@ -19,7 +20,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews;
 
 @Theme("vaadin-clubhelpertheme")
 @SpringUI
@@ -48,22 +50,24 @@ public class MainUi extends UI {
 	@Autowired
 	CalendarAdapter calendarAdapter;
 
+	@Autowired
+	ClubhelperNavigation clubhelperNavigation;
+
 	@Override
 	protected void init(VaadinRequest request) {
 
-		LOGGER.debug("Starting Vaadin UI with {}", getClass().getName());
+		Page page = getPage();
+		int browserWidth = page.getBrowserWindowWidth();
+		WebBrowser webBrowser = page.getWebBrowser();
 
-		getPage().setTitle("Vereinshelfer");
+		LOGGER.debug("Starting Vaadin UI with {}, windowWidth={}, touchDevice={}, Android={}, IPad={}, IPhone={}",
+				getClass().getName(), browserWidth, webBrowser.isTouchDevice(), webBrowser.isAndroid(),
+				webBrowser.isIPad(), webBrowser.isIPhone());
 
-		Navigator navigator = new Navigator(this, this);
+		page.setTitle("Vereinshelfer");
 
-		// Create and register the views
-		navigator.addView(MainView.VIEW_NAME, new MainView(personDao, groupDao, eventBusiness, securityGroupVerifier));
-		navigator.addView(LoginUI.VIEW_NAME, new LoginUI(personDao, securityGroupVerifier));
-		navigator.addView(PersonEditView.VIEW_NAME, new PersonEditView(groupDao, personDao));
-		navigator.addView(EventDetails.VIEW_NAME,
-				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
-		navigator.navigateTo(MainView.VIEW_NAME);
+		clubhelperNavigation.configure(this);
+		clubhelperNavigation.navigateTo(ClubhelperViews.MainView.name());
 	}
 
 }

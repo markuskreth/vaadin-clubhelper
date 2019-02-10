@@ -1,6 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
-import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
@@ -18,11 +18,10 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.NamedView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 
-public class EventDetails extends GridLayout implements NamedView {
+public class EventDetails extends GridLayout implements View {
 
-	public static final String VIEW_NAME = "EventDetails";
 	private static final long serialVersionUID = 8290150079638390995L;
 
 	private final EventBusiness eventBusiness;
@@ -52,12 +51,12 @@ public class EventDetails extends GridLayout implements NamedView {
 		currentEvent = eventBusiness.getCurrent();
 		if (eventView == null) {
 
-			Navigator navigator = event.getNavigator();
+			ClubNavigator navigator = (ClubNavigator) event.getNavigator();
 
 			eventView = new SingleEventView(true);
 			eventView.setCalendarAdapter(calendarAdapter);
 			eventView.setEventBusiness(eventBusiness);
-			eventView.setDeletedHandler(() -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));
+			eventView.setDeletedHandler(() -> navigator.back());
 
 			eventView.addDataUpdatedListener(() -> eventBusiness.storeEventType());
 
@@ -69,7 +68,7 @@ public class EventDetails extends GridLayout implements NamedView {
 			personGrid.setSelectionMode(SelectionMode.NONE);
 
 			Button back = new Button("Zurück");
-			back.addClickListener(ev -> navigator.navigateTo(((NamedView) event.getOldView()).getViewName()));
+			back.addClickListener(ev -> navigator.back());
 			Button createMeldung = new Button("Meldung");
 			createMeldung.addClickListener(ev -> show(eventBusiness.createMeldung()));
 
@@ -98,11 +97,6 @@ public class EventDetails extends GridLayout implements NamedView {
 		dlg.center();
 		getUI().addWindow(dlg);
 
-	}
-
-	@Override
-	public String getViewName() {
-		return VIEW_NAME;
 	}
 
 }

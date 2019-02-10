@@ -1,4 +1,4 @@
-package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui;
+package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
@@ -17,9 +18,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 
-public class PersonEditView extends VerticalLayout implements NamedView {
+public class PersonEditView extends VerticalLayout implements View {
 
-	public static final String VIEW_NAME = "PersonEditView";
 	private static final long serialVersionUID = 1770993670570422036L;
 
 	private PersonGrid personGrid;
@@ -27,7 +27,7 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 
 	private Navigator navigator;
 
-	public PersonEditView(GroupDao groupDao, PersonDao personDao) {
+	public PersonEditView(GroupDao groupDao, PersonDao personDao, boolean horizontalLayout) {
 		setMargin(true);
 
 		personGrid = new PersonGrid(groupDao, personDao);
@@ -40,19 +40,34 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 		personDetails.setSizeFull();
 		personDetails.setPersonChangeHandler(personGrid::refreshItem);
 
-		HorizontalLayout layout = new HorizontalLayout();
-		layout.addComponents(personGrid, personDetails);
-		layout.setExpandRatio(personGrid, 1f);
-		layout.setExpandRatio(personDetails, 2f);
-		layout.setSizeFull();
-		addComponent(layout);
+		if (horizontalLayout) {
+			addComponent(createHorizontalLayout());
+		} else {
+			addComponent(createVerticalLayout());
+		}
 		Button addPerson = new Button("Hinzufügen");
 		addPerson.addClickListener(ev -> addPerson());
 
 		addComponent(addPerson);
 		Button backButton = new Button("Zurück");
-		backButton.addClickListener(ev -> navigator.navigateTo(MainView.VIEW_NAME));
+		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
 		addComponent(backButton);
+	}
+
+	public HorizontalLayout createHorizontalLayout() {
+		HorizontalLayout layout = new HorizontalLayout();
+		layout.addComponents(personGrid, personDetails);
+		layout.setExpandRatio(personGrid, 1f);
+		layout.setExpandRatio(personDetails, 2f);
+		layout.setSizeFull();
+		return layout;
+	}
+
+	public VerticalLayout createVerticalLayout() {
+		VerticalLayout layout = new VerticalLayout();
+		layout.addComponents(personGrid, personDetails);
+		layout.setSizeFull();
+		return layout;
 	}
 
 	private void addPerson() {
@@ -72,13 +87,7 @@ public class PersonEditView extends VerticalLayout implements NamedView {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		NamedView.super.enter(event);
 		this.navigator = event.getNavigator();
-	}
-
-	@Override
-	public String getViewName() {
-		return VIEW_NAME;
 	}
 
 }
