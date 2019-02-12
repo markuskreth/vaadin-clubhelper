@@ -27,6 +27,7 @@ import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Window;
@@ -49,11 +50,12 @@ public class HeadView extends HorizontalLayout {
 	protected transient final Logger log = LoggerFactory.getLogger(getClass());
 	protected transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
-	private ClubEventProvider dataProvider;
+	private final ClubEventProvider dataProvider;
 
 	private int monthItemId;
 
-	private Button personLabel;
+	private final Button personLabel;
+	protected final Label monthName;
 
 	private final Function<Component, ZonedDateTime> startTime;
 	private final Function<Component, ZonedDateTime> endTime;
@@ -76,15 +78,23 @@ public class HeadView extends HorizontalLayout {
 		popupButton.addClickListener(ev -> openPopupMenu(ev));
 		popupButton.setWidth(null);
 
+		monthName = new Label();
+		monthName.setId("calendar.month");
+		monthName.setStyleName("title_caption");
+		monthName.setWidth("");
+
 		personLabel = new Button(VaadinIcons.USER);
 		personLabel.setId("head.user");
 		personLabel.addClickListener(this::openPopupMenu);
 
-		this.addComponent(popupButton);
-		this.addComponent(personLabel);
+		addComponent(popupButton);
+		addComponent(monthName);
+		addComponent(personLabel);
 
 		setComponentAlignment(popupButton, Alignment.MIDDLE_LEFT);
+		setComponentAlignment(monthName, Alignment.MIDDLE_CENTER);
 		setComponentAlignment(personLabel, Alignment.MIDDLE_RIGHT);
+		setExpandRatio(monthName, 1.0f);
 
 		this.dataProvider = dataProvider;
 	}

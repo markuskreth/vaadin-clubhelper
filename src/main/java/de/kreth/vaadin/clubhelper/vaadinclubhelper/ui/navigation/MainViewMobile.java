@@ -2,7 +2,11 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Optional;
+
+import org.basilbourque.timecolumnrenderers.ZonedDateTimeRenderer;
 
 import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.DataProvider;
@@ -52,6 +56,8 @@ public class MainViewMobile extends MainView {
 
 		head = new HeadView(navigator, component -> showDateTimeDialog(component, "Startdatum"),
 				component -> showDateTimeDialog(component, "Endedatum"), new ClubEventProvider(), securityVerifier);
+		head.setWidth("100%");
+		head.updateLoggedinPerson();
 
 		eventGrid = new Grid<>();
 		eventGrid.setCaption("Veranstaltungen");
@@ -66,7 +72,10 @@ public class MainViewMobile extends MainView {
 			return l;
 		}).setSortable(true).setHidable(false);
 		eventGrid.addColumn(ClubEvent::getCaption).setCaption("Name").setSortable(true);
-		eventGrid.addColumn(ClubEvent::getStart).setCaption("Start").setSortable(true).setHidable(true);
+
+		eventGrid.addColumn(ClubEvent::getStart).setCaption("Start")
+				.setRenderer(new ZonedDateTimeRenderer(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
+				.setSortable(true).setHidable(true);
 		ConfigurableFilterDataProvider<ClubEvent, Void, SerializablePredicate<ClubEvent>> eventDataProvider = DataProvider
 				.ofCollection(eventBusiness.loadEvents()).withConfigurableFilter();
 		eventDataProvider.setFilter(this::filter);
