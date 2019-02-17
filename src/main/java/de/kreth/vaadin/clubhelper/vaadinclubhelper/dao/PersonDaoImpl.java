@@ -29,13 +29,13 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	@Override
 	@Transactional
 	public void save(Person obj) {
-		super.save(obj);
 		checkSubEntities(obj);
+		super.save(obj);
 	}
 
 	public void checkSubEntities(Person obj) {
 		Startpass startPass = obj.getStartpass();
-		if (startPass != null && startPass.hasValidId() == false) {
+		if (startPass != null) {
 			persistOrUpdate(startPass);
 		}
 		List<Contact> contacts = obj.getContacts();
@@ -122,6 +122,7 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 	}
 
 	@Override
+	@Transactional
 	public void delete(Adress a) {
 
 		a.setDeleted(new Date());
