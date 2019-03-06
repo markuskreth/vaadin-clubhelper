@@ -343,16 +343,4 @@
 		</repository>
 	</repositories>
 
-	<distributionManagement>
-		<repository>
-			<id>kreth-repo</id>
-			<name>kreth-development.de-releases</name>
-			<url>http://kreth-development.de:8081/artifactory/libs-release-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>kreth-snapshots</id>
-			<name>kreth-development.de-snapshots</name>
-			<url>http://kreth-development.de:8081/artifactory/libs-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
