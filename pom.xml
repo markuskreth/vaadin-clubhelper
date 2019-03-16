@@ -343,4 +343,9 @@
 		</repository>
 	</repositories>
 
+	<scm>
+		<url>https://github.com/markuskreth/vaadin-clubhelper.git</url>
+		<connection>scm:git:git@github.com:markuskreth/vaadin-clubhelper.git</connection>
+		<developerConnection>scm:git:git@github.com:markuskreth/vaadin-clubhelper.git</developerConnection>
+	</scm>
 </project>
