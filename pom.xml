@@ -4,7 +4,7 @@
 
 	<groupId>de.kreth.vaadin.clubhelper</groupId>
 	<artifactId>vaadin-clubhelper</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>vaadin-clubhelper</name>
@@ -345,6 +345,5 @@
 		<url>https://github.com/markuskreth/vaadin-clubhelper.git</url>
 		<connection>scm:git:git@github.com:markuskreth/vaadin-clubhelper.git</connection>
 		<developerConnection>scm:git:git@github.com:markuskreth/vaadin-clubhelper.git</developerConnection>
-	  <tag>vaadin-clubhelper-1.1.0</tag>
   </scm>
 </project>

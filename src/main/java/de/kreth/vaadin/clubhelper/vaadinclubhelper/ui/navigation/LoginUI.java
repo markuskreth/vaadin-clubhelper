@@ -18,9 +18,11 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 public class LoginUI extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 4339018452507960084L;
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private Navigator navigator;
+
 	private String parameters;
 
 	public LoginUI(PersonDao personDao, SecurityVerifier securityGroupVerifier) {
@@ -35,8 +37,8 @@ public class LoginUI extends VerticalLayout implements View {
 				Person loggedin = personDao.findLoginUser(username, password);
 				securityGroupVerifier.setLoggedinPerson(loggedin);
 				navigator.navigateTo(ClubhelperViews.MainView.name() + '/' + parameters);
-			} catch (final Exception ex) {
-				ex.printStackTrace();
+			}
+			catch (final Exception ex) {
 				logger.error("Error on login for User={}", e.getLoginParameter("username"), ex);
 				String message = "Incorrect user or password for " + e.getLoginParameter("username") + "\n"
 						+ ex.getMessage();

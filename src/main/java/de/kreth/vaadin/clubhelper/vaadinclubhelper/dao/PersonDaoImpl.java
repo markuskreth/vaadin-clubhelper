@@ -33,6 +33,7 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		super.save(obj);
 	}
 
+	@Transactional
 	public void checkSubEntities(Person obj) {
 		Startpass startPass = obj.getStartpass();
 		if (startPass != null) {
@@ -58,7 +59,8 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		c.setChanged(now);
 		if (entityManager.contains(c) || c.hasValidId()) {
 			entityManager.merge(c);
-		} else {
+		}
+		else {
 			c.setCreated(now);
 			entityManager.persist(c);
 		}
@@ -95,7 +97,8 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		if (r[1].equals(ignoring)) {
 			p = entityManager.find(Person.class, r[2]);
 			relation = r[3].toString();
-		} else if (r[2].equals(ignoring)) {
+		}
+		else if (r[2].equals(ignoring)) {
 			p = entityManager.find(Person.class, r[1]);
 			relation = r[4].toString();
 		}

@@ -48,6 +48,7 @@ public class HeadView extends HorizontalLayout {
 	private static final long serialVersionUID = -7915475211371903028L;
 
 	protected transient final Logger log = LoggerFactory.getLogger(getClass());
+
 	protected transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private final ClubEventProvider dataProvider;
@@ -55,9 +56,11 @@ public class HeadView extends HorizontalLayout {
 	private int monthItemId;
 
 	private final Button personLabel;
+
 	protected final Label monthName;
 
 	private final Function<Component, ZonedDateTime> startTime;
+
 	private final Function<Component, ZonedDateTime> endTime;
 
 	private final ClubNavigator navigator;
@@ -104,7 +107,8 @@ public class HeadView extends HorizontalLayout {
 		Person loggedinPerson = securityVerifier.getLoggedinPerson();
 		if (loggedinPerson != null) {
 			personLabel.setCaption(loggedinPerson.getSurname() + ", " + loggedinPerson.getPrename());
-		} else {
+		}
+		else {
 			personLabel.setCaption("");
 		}
 	}
@@ -133,7 +137,8 @@ public class HeadView extends HorizontalLayout {
 					securityVerifier.setLoggedinPerson(null);
 					navigator.navigateTo(ClubhelperViews.MainView.name());
 				});
-			} else {
+			}
+			else {
 				contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
 			}
 			int width = getUI().getPage().getBrowserWindowWidth();
@@ -156,7 +161,8 @@ public class HeadView extends HorizontalLayout {
 			start = startTime.apply(source);
 			end = endTime.apply(source);
 			items = dataProvider.getItems(start, end);
-		} else {
+		}
+		else {
 			start = startTime.apply(source).withDayOfYear(1);
 			end = start.withMonth(12).withDayOfMonth(31);
 			items = dataProvider.getItems(start, end);
@@ -180,7 +186,8 @@ public class HeadView extends HorizontalLayout {
 				if (values.containsKey(day)) {
 					content = values.get(day);
 					content.append("\n");
-				} else {
+				}
+				else {
 					content = new StringBuilder();
 					values.put(day, content);
 				}
@@ -194,7 +201,8 @@ public class HeadView extends HorizontalLayout {
 		String calendarMonth;
 		if (monthOnly) {
 			calendarMonth = dfMonth.format(start);
-		} else {
+		}
+		else {
 			calendarMonth = "Jahr " + start.getYear();
 		}
 
@@ -202,7 +210,8 @@ public class HeadView extends HorizontalLayout {
 			JasperPrint print;
 			if (monthOnly) {
 				print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
-			} else {
+			}
+			else {
 				print = CalendarCreator.createYearCalendar(start.getYear(), values, holidays);
 			}
 			log.trace("Created Jasper print for {}", calendarMonth);
@@ -215,12 +224,10 @@ public class HeadView extends HorizontalLayout {
 			window.setHeight("90%");
 			personLabel.getUI().addWindow(window);
 			log.trace("Added pdf window for {}", calendarMonth);
-		} catch (JRException e) {
+		}
+		catch (JRException | IOException | RuntimeException e) {
 			log.error("Error Creating Jasper Report for {}", calendarMonth, e);
 			Notification.show("Fehler bei PDF: " + e);
-		} catch (IOException e1) {
-			log.error("Error Creating Jasper Report for {}", calendarMonth, e1);
-			Notification.show("Fehler bei PDF: " + e1);
 		}
 	}
 
@@ -239,13 +246,16 @@ public class HeadView extends HorizontalLayout {
 		exec.execute(() -> {
 			try {
 				JasperExportManager.exportReportToPdfStream(print, out);
-			} catch (JRException e) {
+			}
+			catch (JRException e) {
 				log.error("Error on Export to Pdf.", e);
 				throw new RuntimeException(e);
-			} finally {
+			}
+			finally {
 				try {
 					out.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					log.warn("Error closing Jasper output stream.", e);
 				}
 			}

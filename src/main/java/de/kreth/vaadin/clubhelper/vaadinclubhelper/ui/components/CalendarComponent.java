@@ -24,11 +24,14 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 public class CalendarComponent extends CustomComponent {
 
 	private static final long serialVersionUID = -9152173211931554059L;
-	private transient final Logger log = LoggerFactory.getLogger(getClass());
+
+	private final transient Logger log = LoggerFactory.getLogger(getClass());
+
+	private final transient List<Consumer<ZonedDateTime>> dateUpdateEvents;
 
 	private final ClubEventProvider dataProvider;
-	private Calendar<ClubEvent> calendar;
-	private List<Consumer<ZonedDateTime>> dateUpdateEvents;
+
+	private final Calendar<ClubEvent> calendar;
 
 	public CalendarComponent(ClubEventProvider dataProvider) {
 
@@ -40,7 +43,7 @@ public class CalendarComponent extends CustomComponent {
 
 		calendar.setCaption("Events");
 		calendar.setSizeFull();
-		calendar.addListener(ev -> calendarEvent(ev));
+		calendar.addListener(this::calendarEvent);
 
 		setCompositionRoot(calendar);
 	}
@@ -75,6 +78,11 @@ public class CalendarComponent extends CustomComponent {
 		calendar.markAsDirty();
 	}
 
+	/**
+	 * {@link ClubEvent} provider for vaadin calendar addon.
+	 * @author markus
+	 *
+	 */
 	public static class ClubEventProvider extends BasicItemProvider<ClubEvent> {
 
 		private static final long serialVersionUID = -5415397258827236704L;

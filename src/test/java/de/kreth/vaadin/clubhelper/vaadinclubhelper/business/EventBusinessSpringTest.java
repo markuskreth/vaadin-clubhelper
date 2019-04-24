@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ClubhelperException;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.TestDatabaseHelper;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
@@ -31,6 +32,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 class EventBusinessSpringTest {
 
 	private List<Person> persons;
+
 	private ClubEvent event;
 
 	@Autowired
@@ -94,11 +96,27 @@ class EventBusinessSpringTest {
 	@Disabled
 	void testAddPersonsToEvent() {
 		assertEquals(0, all.getResultList().size());
-		testDatabaseHelper.transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 1))));
-		testDatabaseHelper.transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 2))));
+		try {
+			transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 1))));
+			transactional(() -> eventBusiness.changePersons(new HashSet<>(persons.subList(0, 2))));
+		}
+		catch (Exception e) {
+
+		}
 
 		List<ClubeventHasPerson> result = all.getResultList();
 		assertEquals(2, result.size());
+	}
+
+	private void transactional(ThrowingRunnable<ClubhelperException> object) {
+		testDatabaseHelper.transactional(() -> {
+			try {
+				object.run();
+			}
+			catch (ClubhelperException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 }

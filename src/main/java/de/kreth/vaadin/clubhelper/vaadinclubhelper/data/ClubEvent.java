@@ -21,20 +21,30 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
 
 // Entity must not be used, this class is persisted by ClubEvent.hbm.xml
 @Entity
+/**
+ * Calendar Event item corresponding to google calendar events.
+ * @author markus
+ *
+ */
 public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	private static final long serialVersionUID = -3600971939167437577L;
 
 	@Id
 	private String id;
+
 	private String location;
+
 	private String iCalUID;
 
 	private String organizerDisplayName;
+
 	@ManyToMany
 	private Set<Person> persons;
+
 	@OneToMany
 	private Set<Altersgruppe> altersgruppen;
+
 	@OneToOne
 	@JoinColumn(name = "id", nullable = true)
 	private CompetitionType competitionType;
@@ -99,7 +109,8 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 	public Type getType() {
 		if (competitionType != null) {
 			return competitionType.getType();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -196,25 +207,29 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		if (iCalUID == null) {
 			if (other.iCalUID != null)
 				return false;
-		} else if (!iCalUID.equals(other.iCalUID)) {
+		}
+		else if (!iCalUID.equals(other.iCalUID)) {
 			return false;
 		}
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id)) {
+		}
+		else if (!id.equals(other.id)) {
 			return false;
 		}
 		if (location == null) {
 			if (other.location != null)
 				return false;
-		} else if (!location.equals(other.location)) {
+		}
+		else if (!location.equals(other.location)) {
 			return false;
 		}
 		if (organizerDisplayName == null) {
 			if (other.organizerDisplayName != null)
 				return false;
-		} else if (!organizerDisplayName.equals(other.organizerDisplayName)) {
+		}
+		else if (!organizerDisplayName.equals(other.organizerDisplayName)) {
 			return false;
 		}
 		return true;
@@ -224,7 +239,8 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		if (parse != null) {
 			Instant instant = parse.toInstant();
 			return ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
