@@ -35,6 +35,7 @@ public class Person extends BaseEntity implements Serializable {
 	public static final String SESSION_LOGIN = "SESSION_LOGIN_USER";
 
 	public static final String QUERY_FINDALL = "Person.findAll";
+
 	public static final String QUERY_FINDLOGIN = "Person.findLogin";
 
 	private static final long serialVersionUID = -8361264400619997123L;
@@ -42,9 +43,11 @@ public class Person extends BaseEntity implements Serializable {
 	private LocalDate birth;
 
 	private String prename;
+
 	private String surname;
 
 	private String username;
+
 	private String password;
 
 	private Integer gender;
@@ -131,7 +134,8 @@ public class Person extends BaseEntity implements Serializable {
 	public void setGender(Gender gender) {
 		if (gender == null) {
 			this.gender = null;
-		} else {
+		}
+		else {
 			this.gender = gender.getId();
 		}
 	}
@@ -252,7 +256,8 @@ public class Person extends BaseEntity implements Serializable {
 	public void setPersongroups(Collection<GroupDef> persongroups) {
 		if (persongroups instanceof Set) {
 			this.groups = (Set<GroupDef>) persongroups;
-		} else {
+		}
+		else {
 			this.groups = new HashSet<>(persongroups);
 		}
 	}
@@ -265,7 +270,7 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public void removePersongroup(GroupDef persongroup) {
-		if (this.groups == null) {
+		if (this.groups != null) {
 			this.groups.remove(persongroup);
 		}
 	}
@@ -362,42 +367,48 @@ public class Person extends BaseEntity implements Serializable {
 			if (other.birth != null) {
 				return false;
 			}
-		} else if (!birth.equals(other.birth)) {
+		}
+		else if (!birth.equals(other.birth)) {
 			return false;
 		}
 		if (groups == null) {
 			if (other.groups != null) {
 				return false;
 			}
-		} else if (!groups.equals(other.groups)) {
+		}
+		else if (!groups.equals(other.groups)) {
 			return false;
 		}
 		if (password == null) {
 			if (other.password != null) {
 				return false;
 			}
-		} else if (!password.equals(other.password)) {
+		}
+		else if (!password.equals(other.password)) {
 			return false;
 		}
 		if (prename == null) {
 			if (other.prename != null) {
 				return false;
 			}
-		} else if (!prename.equals(other.prename)) {
+		}
+		else if (!prename.equals(other.prename)) {
 			return false;
 		}
 		if (surname == null) {
 			if (other.surname != null) {
 				return false;
 			}
-		} else if (!surname.equals(other.surname)) {
+		}
+		else if (!surname.equals(other.surname)) {
 			return false;
 		}
 		if (username == null) {
 			if (other.username != null) {
 				return false;
 			}
-		} else if (!username.equals(other.username)) {
+		}
+		else if (!username.equals(other.username)) {
 			return false;
 		}
 		return true;

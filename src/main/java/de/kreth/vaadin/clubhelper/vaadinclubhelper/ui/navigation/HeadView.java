@@ -233,7 +233,7 @@ public class HeadView extends HorizontalLayout {
 
 	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException {
 
-		PipedInputStream in = new PipedInputStream();
+		final PipedInputStream in = new PipedInputStream();
 		final PipedOutputStream out = new PipedOutputStream(in);
 
 		final StreamResource resource = new StreamResource(() -> in, title);
@@ -243,23 +243,28 @@ public class HeadView extends HorizontalLayout {
 		c.setSizeFull();
 
 		ExecutorService exec = Executors.newSingleThreadExecutor();
-		exec.execute(() -> {
-			try {
-				JasperExportManager.exportReportToPdfStream(print, out);
-			}
-			catch (JRException e) {
-				log.error("Error on Export to Pdf.", e);
-				throw new RuntimeException(e);
-			}
-			finally {
+		try {
+			exec.execute(() -> {
 				try {
-					out.close();
+					JasperExportManager.exportReportToPdfStream(print, out);
 				}
-				catch (IOException e) {
-					log.warn("Error closing Jasper output stream.", e);
+				catch (JRException e) {
+					throw new RuntimeException("Error on Export to Pdf.", e);
 				}
+				finally {
+				}
+			});
+		}
+		finally {
+			try {
+				out.close();
+				in.close();
 			}
-		});
+			catch (IOException e) {
+				log.warn("Error closing Jasper output stream.", e);
+			}
+
+		}
 		exec.shutdown();
 		return c;
 	}
