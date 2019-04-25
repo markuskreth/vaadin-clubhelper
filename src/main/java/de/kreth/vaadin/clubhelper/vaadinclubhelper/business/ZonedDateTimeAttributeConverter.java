@@ -10,7 +10,7 @@ import javax.persistence.Converter;
 @Converter(autoApply = true)
 public class ZonedDateTimeAttributeConverter
 		implements
-			AttributeConverter<ZonedDateTime, Date> {
+		AttributeConverter<ZonedDateTime, Date> {
 
 	@Override
 	public Date convertToDatabaseColumn(ZonedDateTime attribute) {
@@ -20,7 +20,7 @@ public class ZonedDateTimeAttributeConverter
 	@Override
 	public ZonedDateTime convertToEntityAttribute(Date dbData) {
 		return ZonedDateTime.ofInstant(dbData.toInstant(),
-				ZoneId.from(dbData.toInstant()));
+				ZoneId.systemDefault());
 	}
 
 }

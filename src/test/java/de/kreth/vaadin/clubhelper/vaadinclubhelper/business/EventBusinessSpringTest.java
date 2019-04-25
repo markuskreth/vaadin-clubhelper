@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfiguration.class)
+@Tag("spring")
 class EventBusinessSpringTest {
 
 	private List<Person> persons;

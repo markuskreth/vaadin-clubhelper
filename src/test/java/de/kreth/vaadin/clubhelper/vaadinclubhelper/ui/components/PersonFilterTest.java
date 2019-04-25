@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -29,10 +30,13 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
 @SpringBootTest
 @ContextConfiguration(classes = TestConfiguration.class)
+@Tag("spring")
 class PersonFilterTest {
 
 	private PersonFilter filter;
+
 	private List<Person> persons;
+
 	private final List<GroupDef> groups = setupData();
 
 	@Autowired
