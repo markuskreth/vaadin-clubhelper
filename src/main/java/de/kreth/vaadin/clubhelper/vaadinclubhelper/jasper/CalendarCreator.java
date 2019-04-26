@@ -25,7 +25,7 @@ import net.sf.jasperreports.engine.JasperReport;
 
 public abstract class CalendarCreator {
 
-	private static final String HOLIDAY_CALENDAR = "Schulferien";
+	static final String HOLIDAY_CALENDAR = "Schulferien";
 
 	public static JasperPrint createCalendar(Date date) throws JRException {
 		return new MonthlyCalendarCreator<CharSequence>(date).setValues(Collections.emptyMap())
@@ -98,7 +98,8 @@ public abstract class CalendarCreator {
 						start = start.plusDays(1);
 					}
 				}
-			} else {
+			}
+			else {
 				if (start.getYear() == year) {
 					concatDayValue(values, ev, start);
 				}
@@ -112,7 +113,8 @@ public abstract class CalendarCreator {
 		StringBuilder txt;
 		if (values.get(start) != null) {
 			txt = (StringBuilder) values.get(start);
-		} else {
+		}
+		else {
 			txt = new StringBuilder();
 			values.put(start, txt);
 		}
