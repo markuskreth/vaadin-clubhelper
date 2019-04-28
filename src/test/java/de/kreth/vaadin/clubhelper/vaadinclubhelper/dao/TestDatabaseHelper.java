@@ -1,24 +1,15 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.dao;
 
 import java.util.List;
-import java.util.function.Consumer;
 
-import org.hibernate.Session;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 public interface TestDatabaseHelper {
-
-	/**
-	 * executes the given runnable within a jpa Transaction.
-	 * 
-	 * @param r
-	 */
-	void transactional(Runnable r);
-
-	void transactional(Consumer<Session> r);
 
 	List<Person> insertPersons(int count);
 
@@ -32,5 +23,18 @@ public interface TestDatabaseHelper {
 
 	Person testInsertPerson();
 
-	void cleanDatabase();
+	public static void afterCommit(final Runnable r) {
+
+		TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+			@Override
+			public void afterCommit() {
+				r.run();
+			}
+		});
+	}
+
+	public static void waitForCommit() {
+		afterCommit(() -> {
+		});
+	}
 }

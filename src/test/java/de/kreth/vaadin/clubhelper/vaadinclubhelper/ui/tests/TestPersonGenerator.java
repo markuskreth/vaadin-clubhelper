@@ -10,7 +10,7 @@ public class TestPersonGenerator {
 
 	public static List<Person> generatePersonen(int count) {
 		List<Person> personen = new ArrayList<>();
-		for (int i = 0; i < count; i++) {
+		for (int i = 1; i <= count; i++) {
 			Person p = new Person();
 			p.setId(i);
 			p.setPrename("prename_" + i);

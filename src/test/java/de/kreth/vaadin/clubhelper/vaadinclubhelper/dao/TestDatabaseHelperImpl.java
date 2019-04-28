@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,28 +34,6 @@ public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 	@Autowired
 	protected EntityManager entityManager;
 
-	@Override
-	public void cleanDatabase() {
-
-		Session session = (Session) entityManager;
-		session.doWork(conn -> {
-
-			List<String> tableNames = loadTables(conn);
-			try (Statement stm = conn.createStatement()) {
-
-				stm.addBatch("SET FOREIGN_KEY_CHECKS=0");
-				for (String table : tableNames) {
-					stm.addBatch("TRUNCATE TABLE " + table);
-				}
-				stm.addBatch("SET FOREIGN_KEY_CHECKS=1");
-				stm.executeBatch();
-			}
-			if (conn.getAutoCommit() == false) {
-				conn.commit();
-			}
-		});
-	}
-
 	public List<String> loadTables(Connection conn) throws SQLException {
 		List<String> tableNames = new ArrayList<>();
 
@@ -71,30 +47,24 @@ public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 		return tableNames;
 	}
 
-	/**
-	 * executes the given runnable within a jpa Transaction.
-	 * 
-	 * @param r
-	 */
-	@Override
-	public void transactional(Runnable r) {
-		transactional(session -> r.run());
-	}
-
-	@Override
-	public void transactional(Consumer<Session> r) {
-
-		Session session = (Session) entityManager;
-		EntityTransaction tx = session.getTransaction();
-		tx.begin();
-		try {
-			r.accept(session);
-			tx.commit();
-		} catch (Exception e) {
-			tx.rollback();
-			throw e;
-		}
-	}
+//	private void transactional(Runnable r) {
+//		transactional(session -> r.run());
+//	}
+//
+//	private void transactional(Consumer<Session> r) {
+//
+//		Session session = (Session) entityManager;
+//		EntityTransaction tx = session.getTransaction();
+//		tx.begin();
+//		try {
+//			r.accept(session);
+//			tx.commit();
+//		}
+//		catch (Exception e) {
+//			tx.rollback();
+//			throw e;
+//		}
+//	}
 
 	@Override
 	public Person testInsertPerson() {
@@ -103,7 +73,7 @@ public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 		p.setSurname("surname");
 		p.setBirth(LocalDate.now());
 
-		transactional(() -> entityManager.persist(p));
+		entityManager.persist(p);
 		return p;
 	}
 
@@ -112,11 +82,9 @@ public class TestDatabaseHelperImpl implements TestDatabaseHelper {
 
 		final List<Person> inserted = createPersons(count);
 
-		transactional(() -> {
-			for (Person p : inserted) {
-				entityManager.persist(p);
-			}
-		});
+		for (Person p : inserted) {
+			entityManager.persist(p);
+		}
 		for (Person p : inserted) {
 			assertTrue(p.getId() > 0, "not saved: " + p);
 		}

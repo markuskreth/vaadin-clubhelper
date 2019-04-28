@@ -20,7 +20,8 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	protected EntityManager entityManager;
+	protected transient EntityManager entityManager;
+
 	private final Class<T> entityClass;
 
 	public AbstractDaoImpl(Class<T> entityClass) {
@@ -35,7 +36,8 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 		obj.setChanged(now);
 		if (entityManager.contains(obj) || obj.hasValidId()) {
 			entityManager.merge(obj);
-		} else {
+		}
+		else {
 			obj.setCreated(now);
 			entityManager.persist(obj);
 		}
