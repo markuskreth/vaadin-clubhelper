@@ -21,7 +21,7 @@ import com.vaadin.ui.CustomComponent;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 
-public class CalendarComponent extends CustomComponent {
+public class CalendarComponent extends CustomComponent implements CalendarView {
 
 	private static final long serialVersionUID = -9152173211931554059L;
 
@@ -48,10 +48,12 @@ public class CalendarComponent extends CustomComponent {
 		setCompositionRoot(calendar);
 	}
 
+	@Override
 	public boolean add(Consumer<ZonedDateTime> e) {
 		return dateUpdateEvents.add(e);
 	}
 
+	@Override
 	public boolean remove(Consumer<ZonedDateTime> o) {
 		return dateUpdateEvents.remove(o);
 	}
@@ -65,14 +67,17 @@ public class CalendarComponent extends CustomComponent {
 		}
 	}
 
+	@Override
 	public void setToday(ZonedDateTime date) {
 		calendar.withDayInMonth(date);
 	}
 
+	@Override
 	public Registration setHandler(ItemClickHandler listener) {
 		return calendar.setHandler(listener);
 	}
 
+	@Override
 	public void setItems(Collection<ClubEvent> items) {
 		dataProvider.setItems(items);
 		calendar.markAsDirty();
@@ -96,10 +101,12 @@ public class CalendarComponent extends CustomComponent {
 
 	}
 
+	@Override
 	public ZonedDateTime getStartDate() {
 		return calendar.getStartDate();
 	}
 
+	@Override
 	public ZonedDateTime getEndDate() {
 		return calendar.getEndDate();
 	}
