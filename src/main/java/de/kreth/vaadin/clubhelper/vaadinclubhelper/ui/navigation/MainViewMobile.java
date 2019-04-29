@@ -119,31 +119,11 @@ public class MainViewMobile extends MainView {
 		source.getUI().addWindow(window);
 		LocalDate value = dateField.getValue();
 		return ZonedDateTime.from(value);
-//		if (caption.toLowerCase().contains("Start")) {
-//			return ZonedDateTime.now().withDayOfMonth(1);
-//		} else {
-//			return ZonedDateTime.now().plusMonths(1).withDayOfMonth(1).minusDays(1);
-//		}
+
 	}
 
 	private boolean filter(ClubEvent ev) {
 		return ev.getStart().isAfter(ZonedDateTime.now().minusDays(10));
-	}
-
-	@Override
-	public void enter(ViewChangeEvent event) {
-		super.enter(event);
-	}
-
-	@Override
-	public void openDetailForEvent(ClubEvent ev) {
-		super.openDetailForEvent(ev);
-
-	}
-
-	@Override
-	public void detailClosed() {
-		super.detailClosed();
 	}
 
 }
