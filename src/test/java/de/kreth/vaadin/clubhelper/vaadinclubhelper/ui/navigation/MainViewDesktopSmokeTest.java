@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,12 +20,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.TextField;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -53,6 +58,28 @@ public class MainViewDesktopSmokeTest {
 		MockitoAnnotations.initMocks(this);
 		mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
 		mainView.initUI(event);
+	}
+
+	@Test
+	void detailShowingEventOnClick() {
+		assertNull(find(mainView, SingleEventView.class.getName()));
+		ClubEvent ev = new ClubEventBuilder()
+				.withAllDay(true)
+				.withCaption("caption")
+				.withDescription("description")
+				.withLocation("location")
+				.withStart(ZonedDateTime.now())
+				.withEnd(ZonedDateTime.now())
+				.build();
+		mainView.openDetailForEvent(ev);
+		SingleEventView view = (SingleEventView) find(mainView, SingleEventView.class.getName());
+		assertNotNull(view);
+		TextField title = (TextField) find(view, "event.title");
+		assertNotNull(title);
+		assertEquals("caption", title.getValue());
+		mainView.detailClosed();
+		assertNull(find(mainView, SingleEventView.class.getName()));
+		view.setEvent(null);
 	}
 
 	@Test

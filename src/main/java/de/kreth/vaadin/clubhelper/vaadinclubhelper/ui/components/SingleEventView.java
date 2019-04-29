@@ -28,14 +28,17 @@ public class SingleEventView extends CustomComponent {
 	private static final long serialVersionUID = 4701035948083549772L;
 
 	private final TextField textTitle;
+
 	private final TextField textLocation;
 
 	private DateField startDate;
 
 	private DateField endDate;
+
 	private ComboBox<CompetitionType.Type> competitionType;
 
 	private Binder<ClubEvent> binder;
+
 	private DefaultDataUpdateHandler updateHandler = new DefaultDataUpdateHandler();
 
 	private Button deleteButton;
@@ -43,6 +46,7 @@ public class SingleEventView extends CustomComponent {
 	private CalendarAdapter calendarAdapter;
 
 	private EventBusiness eventBusiness;
+
 	private Runnable deletedHandler;
 
 	public SingleEventView(boolean showCompetitionType) {
@@ -88,7 +92,8 @@ public class SingleEventView extends CustomComponent {
 			competitionType.setItems(Type.values());
 			binder.forField(competitionType).bind(ClubEvent::getType, ClubEvent::setType);
 			layout = new GridLayout(2, 3);
-		} else {
+		}
+		else {
 			layout = new GridLayout(2, 2);
 		}
 
@@ -120,11 +125,13 @@ public class SingleEventView extends CustomComponent {
 								if (deletedHandler != null) {
 									deletedHandler.run();
 								}
-							} else {
+							}
+							else {
 								Notification.show("Fehler beim Löschen von " + bean, "Bitte erneut versuchen.",
 										Notification.Type.ERROR_MESSAGE);
 							}
-						} catch (IOException e) {
+						}
+						catch (IOException e) {
 							Notification.show("Fehler beim Löschen von " + bean, e.toString(),
 									Notification.Type.ERROR_MESSAGE);
 						}
@@ -140,7 +147,8 @@ public class SingleEventView extends CustomComponent {
 		if (start.until(end, ChronoUnit.DAYS) > 0) {
 			endDate.setValue(end.toLocalDate());
 			endDate.setVisible(true);
-		} else {
+		}
+		else {
 			endDate.setValue(null);
 			endDate.setVisible(false);
 		}
@@ -158,13 +166,6 @@ public class SingleEventView extends CustomComponent {
 		this.deletedHandler = deletedHandler;
 	}
 
-	void setTitle(String value) {
-		if (value == null) {
-			value = "";
-		}
-		textTitle.setValue(value);
-	}
-
 	void setLocation(String value) {
 		if (value == null) {
 			value = "";
@@ -178,8 +179,9 @@ public class SingleEventView extends CustomComponent {
 
 		if (ev != null) {
 			deleteButton.setEnabled(true);
-		} else {
-			setTitle("");
+		}
+		else {
+			textTitle.setValue("");
 			setLocation("");
 			endDate.setVisible(false);
 			deleteButton.setEnabled(false);

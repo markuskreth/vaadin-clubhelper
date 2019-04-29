@@ -76,6 +76,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		navigator = (ClubNavigator) event.getNavigator();
 
 		eventView = new SingleEventView(false);
+		eventView.setId(eventView.getClass().getName());
 		eventView.setVisible(false);
 
 		personGrid = new PersonGrid(groupDao, personDao);
