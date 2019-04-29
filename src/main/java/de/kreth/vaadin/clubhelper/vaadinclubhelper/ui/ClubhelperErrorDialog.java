@@ -18,15 +18,17 @@ public class ClubhelperErrorDialog {
 		VerticalLayout layout = new VerticalLayout();
 		layout.addComponent(new Label(errormessage));
 		layout.addComponent(new Label(exception.getMessage()));
-		StringWriter out = new StringWriter();
-		PrintWriter writer = new PrintWriter(out);
-		exception.printStackTrace(writer);
-		layout.addComponent(toComponent(out));
+		layout.addComponent(toStacktraceComponent(exception));
 		layout.addComponent(new Button("Schließen", event -> errorDlg.close()));
 		errorDlg.setContent(layout);
 	}
 
-	public Label toComponent(StringWriter out) {
+	Label toStacktraceComponent(Exception exception) {
+
+		StringWriter out = new StringWriter();
+		PrintWriter writer = new PrintWriter(out);
+		exception.printStackTrace(writer);
+		writer.close();
 		Label label = new Label(out.toString());
 		label.setContentMode(ContentMode.PREFORMATTED);
 		return label;
