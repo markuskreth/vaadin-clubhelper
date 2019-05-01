@@ -1,5 +1,5 @@
 def branch = 'master'
-def scmUrl = 'ssh://git@github.com:markuskreth/vaadin-clubhelper.git'
+def scmUrl = 'git@github.com:markuskreth/vaadin-clubhelper.git'
 def server = Artifactory.server 'krethartifactory'
 def devServerPort = '8080'
    
