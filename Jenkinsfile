@@ -9,7 +9,19 @@ node {
     }
  
     stage('build') {
-      sh 'mvn clean install'
+      sh 'mvn clean package -DskipTests'
+    }
+ 
+    stage('test') {
+      sh 'mvn test'
+    }
+ 
+    stage('install') {
+      sh 'mvn install '
+    }
+ 
+    stage('sonar') {
+      sh 'mvn sonar:sonar '
     }
  
 }
