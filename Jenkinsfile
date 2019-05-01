@@ -9,23 +9,12 @@ node {
     }
  
     stage('build') {
-            steps {
-                sh 'mvn -Dmaven.test.failure.ignore=true install' 
-            }
-            post {
-                success {
-                    junit 'target/surefire-reports/**/*.xml' 
-                }
-            }
+    	sh 'mvn -Dmaven.test.failure.ignore=true install' 
     }
  
     stage('sonar') {
-      sh 'mvn sonar:sonar '
+		junit 'target/surefire-reports/**/*.xml' 
+		sh 'mvn sonar:sonar'
     }
     
-    stage('deploy') {
-		rtMaven.deployer server: server, releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local'
-    }
- 
- 
 }
