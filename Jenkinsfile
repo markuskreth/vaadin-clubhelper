@@ -1,7 +1,6 @@
 def branch = 'master'
 def scmUrl = 'git@github.com:markuskreth/vaadin-clubhelper.git'
 def server = Artifactory.server 'krethartifactory'
-def rtMaven = Artifactory.newMavenBuild()
    
 node {
     stage('checkout git') {
@@ -9,7 +8,20 @@ node {
     }
  
     stage('build') {
-    	sh 'mvn -Dmaven.test.failure.ignore=true install' 
+		def buildInfo = Artifactory.newBuildInfo()
+		buildInfo.env.capture = true
+		def rtMaven = Artifactory.newMavenBuild()
+		rtMaven.tool = MAVEN_TOOL // Tool name from Jenkins configuration
+		rtMaven.opts = "-Denv=dev"
+		rtMaven.deployer releaseRepo:'libs-release-local', snapshotRepo:'libs-snapshot-local', server: server
+		rtMaven.resolver releaseRepo:'libs-release', snapshotRepo:'libs-snapshot', server: server
+		
+		rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+		
+		// buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
+		// Publish build info.
+		server.publishBuildInfo buildInfo
+	sh 'mvn -Dmaven.test.failure.ignore=true install' 
     }
  
     stage('sonar') {
