@@ -1,5 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.time.ZonedDateTime;
@@ -29,6 +31,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifierImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarView;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 
@@ -40,7 +43,6 @@ public class MainViewMobileSmokeTest {
 	@Autowired
 	PersonDao personDao;
 
-	@Autowired
 	SecurityVerifier securityGroupVerifier;
 
 	@Autowired
@@ -57,11 +59,15 @@ public class MainViewMobileSmokeTest {
 	@BeforeEach
 	void initUi() {
 		MockitoAnnotations.initMocks(this);
+		assertNotNull(personDao);
 		Person person = new Person();
 		GroupDef g1 = new GroupDef();
 		person.setGroups(new HashSet<GroupDef>(Arrays.asList(g1)));
-		securityGroupVerifier.setLoggedinPerson(person);
+		securityGroupVerifier = new SecurityVerifierImpl();
+		assertFalse(securityGroupVerifier.isLoggedin());
 		mainView = new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
+
+		securityGroupVerifier.setLoggedinPerson(person);
 		mainView.initUI(event);
 	}
 

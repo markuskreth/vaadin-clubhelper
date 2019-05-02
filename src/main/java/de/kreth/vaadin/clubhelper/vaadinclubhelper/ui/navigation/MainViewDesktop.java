@@ -28,10 +28,13 @@ public class MainViewDesktop extends MainView {
 	private static final long serialVersionUID = -3293470536470926668L;
 
 	private VerticalLayout eastLayout;
+
 	private HorizontalLayout mainLayout;
+
 	private HorizontalLayout eventButtonLayout;
 
 	private CalendarComponent calendar;
+
 	private DesktopHeadView head;
 
 	public MainViewDesktop(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
@@ -94,10 +97,15 @@ public class MainViewDesktop extends MainView {
 			final List<ClubEvent> events = eventBusiness.loadEvents();
 			LOGGER.info("Loaded events: {}", events);
 			final UI ui = calendar.getUI();
-			ui.access(() -> {
+			if (ui != null) {
+				ui.access(() -> {
+					calendar.setItems(events);
+					ui.push();
+				});
+			}
+			else {
 				calendar.setItems(events);
-				ui.push();
-			});
+			}
 
 		});
 		exec.shutdown();
@@ -116,7 +124,8 @@ public class MainViewDesktop extends MainView {
 		ClubEvent ev = (ClubEvent) event.getCalendarItem();
 		if (securityVerifier.isLoggedin()) {
 			openDetailForEvent(ev);
-		} else {
+		}
+		else {
 			eventBusiness.setSelected(ev);
 			navigator.navigateTo(ClubhelperViews.LoginUI.name() + '/' + ev.getId());
 		}
