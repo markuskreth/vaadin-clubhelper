@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -34,10 +36,13 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifierImpl;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarView;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Import(TestConfiguration.class)
 @Tag("spring")
+@Disabled
 public class MainViewMobileSmokeTest {
 
 	@Autowired
@@ -67,6 +72,8 @@ public class MainViewMobileSmokeTest {
 		assertFalse(securityGroupVerifier.isLoggedin());
 		mainView = new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
 
+		assertNotNull(securityGroupVerifier);
+		assertNotNull(person);
 		securityGroupVerifier.setLoggedinPerson(person);
 		mainView.initUI(event);
 	}
