@@ -22,7 +22,6 @@ node {
 		// buildInfo.retention maxBuilds: 10, maxDays: 7, deleteBuildArtifacts: true
 		// Publish build info.
 		server.publishBuildInfo buildInfo
-	sh 'mvn -Dmaven.test.failure.ignore=true install' 
     }
  
     stage('sonar') {
