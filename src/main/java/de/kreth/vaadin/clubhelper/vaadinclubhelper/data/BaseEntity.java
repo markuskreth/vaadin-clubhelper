@@ -9,8 +9,10 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Data;
+
 @MappedSuperclass
-public abstract class BaseEntity implements EntityAccessor {
+public @Data abstract class BaseEntity implements EntityAccessor {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,14 +26,6 @@ public abstract class BaseEntity implements EntityAccessor {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deleted;
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public Date getChanged() {
 		if (changed == null) {
@@ -71,40 +65,6 @@ public abstract class BaseEntity implements EntityAccessor {
 	@Override
 	public boolean hasValidId() {
 		return id > 0;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((created == null) ? 0 : created.hashCode());
-		result = prime * result + id;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		BaseEntity other = (BaseEntity) obj;
-		if (created == null) {
-			if (other.created != null) {
-				return false;
-			}
-		} else if (!created.equals(other.created)) {
-			return false;
-		}
-		if (id != other.id) {
-			return false;
-		}
-		return true;
 	}
 
 }

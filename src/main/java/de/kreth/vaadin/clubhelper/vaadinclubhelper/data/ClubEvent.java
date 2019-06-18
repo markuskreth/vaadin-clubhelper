@@ -18,6 +18,8 @@ import javax.persistence.Transient;
 import org.vaadin.addon.calendar.item.BasicItem;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 // Entity must not be used, this class is persisted by ClubEvent.hbm.xml
 @Entity
@@ -26,7 +28,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
  * @author markus
  *
  */
-public class ClubEvent extends BasicItem implements EntityAccessor {
+@EqualsAndHashCode(callSuper = true)
+public @Data class ClubEvent extends BasicItem implements EntityAccessor {
 
 	private static final long serialVersionUID = -3600971939167437577L;
 
@@ -48,25 +51,6 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 	@OneToOne
 	@JoinColumn(name = "id", nullable = true)
 	private CompetitionType competitionType;
-
-	ClubEvent() {
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public void setiCalUID(String iCalUID) {
-		this.iCalUID = iCalUID;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setOrganizerDisplayName(String organizerDisplayName) {
-		this.organizerDisplayName = organizerDisplayName;
-	}
 
 	@Override
 	public String getCaption() {
@@ -94,18 +78,6 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		return super.isAllDay();
 	}
 
-	public String getLocation() {
-		return location;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public String getiCalUID() {
-		return iCalUID;
-	}
-
 	public Type getType() {
 		if (competitionType != null) {
 			return competitionType.getType();
@@ -113,10 +85,6 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		else {
 			return null;
 		}
-	}
-
-	public CompetitionType getCompetitionType() {
-		return competitionType;
 	}
 
 	public void setType(Type competitionType) {
@@ -127,25 +95,9 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		this.competitionType.setType(competitionType);
 	}
 
-	public void setCompetitionType(CompetitionType competitionType) {
-		this.competitionType = competitionType;
-	}
-
-	public String getOrganizerDisplayName() {
-		return organizerDisplayName;
-	}
-
 	@Override
 	public String getStyleName() {
 		return organizerDisplayName;
-	}
-
-	public Set<Person> getPersons() {
-		return persons;
-	}
-
-	public void setPersons(Set<Person> persons) {
-		this.persons = persons;
 	}
 
 	public void add(Person p) {
@@ -164,14 +116,6 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		person.remove(this);
 	}
 
-	public Set<Altersgruppe> getAltersgruppen() {
-		return altersgruppen;
-	}
-
-	public void setAltersgruppen(Set<Altersgruppe> altersgruppen) {
-		this.altersgruppen = altersgruppen;
-	}
-
 	@Transient
 	public String toDisplayString() {
 		return "ClubEvent [Caption=" + getCaption() + ", Start=" + getStart() + ", location=" + location + "]";
@@ -182,57 +126,6 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		return "ClubEvent [id=" + id + ", getCaption()=" + getCaption() + ", iCalUID=" + iCalUID + ", location="
 				+ location + ", organizerDisplayName=" + organizerDisplayName + ", getDescription()=" + getDescription()
 				+ ", getEnd()=" + getEnd() + ", getStart()=" + getStart() + ", isAllDay()=" + isAllDay() + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 17;
-		result = prime * result + ((iCalUID == null) ? 0 : iCalUID.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((location == null) ? 0 : location.hashCode());
-		result = prime * result + ((organizerDisplayName == null) ? 0 : organizerDisplayName.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ClubEvent other = (ClubEvent) obj;
-		if (iCalUID == null) {
-			if (other.iCalUID != null)
-				return false;
-		}
-		else if (!iCalUID.equals(other.iCalUID)) {
-			return false;
-		}
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		}
-		else if (!id.equals(other.id)) {
-			return false;
-		}
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		}
-		else if (!location.equals(other.location)) {
-			return false;
-		}
-		if (organizerDisplayName == null) {
-			if (other.organizerDisplayName != null)
-				return false;
-		}
-		else if (!organizerDisplayName.equals(other.organizerDisplayName)) {
-			return false;
-		}
-		return true;
 	}
 
 	public static ZonedDateTime toZoned(Date parse) {

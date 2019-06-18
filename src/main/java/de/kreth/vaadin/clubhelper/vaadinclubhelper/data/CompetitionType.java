@@ -10,14 +10,17 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+
 @Entity
 @Table(name = "clubevent_addon")
-public class CompetitionType implements Serializable {
+public @Data class CompetitionType implements Serializable {
 
 	private static final long serialVersionUID = -6198405472773618194L;
 
 	@Id
 	private String id;
+
 	@Column(name = "competition_type", nullable = false, length = 45)
 	private String type;
 
@@ -25,14 +28,6 @@ public class CompetitionType implements Serializable {
 	@JoinColumn(name = "id")
 	@MapsId
 	private ClubEvent clubEvent;
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public Type getType() {
 		return Type.valueOf(type);
@@ -47,7 +42,11 @@ public class CompetitionType implements Serializable {
 	}
 
 	public static enum Type {
-		EINZEL, SYNCHRON, DOPPELMINI, MANNSCHAFT, LIGA
+		EINZEL,
+		SYNCHRON,
+		DOPPELMINI,
+		MANNSCHAFT,
+		LIGA
 	}
 
 	@Override

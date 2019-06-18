@@ -131,7 +131,7 @@ public class HeadView extends HorizontalLayout {
 			contextMenu.open(50, 50);
 			break;
 		case "head.user":
-			if (securityVerifier.getLoggedinPerson() != null) {
+			if (securityVerifier.isLoggedin()) {
 
 				contextMenu.addItem("Abmelden", ev1 -> {
 					securityVerifier.setLoggedinPerson(null);

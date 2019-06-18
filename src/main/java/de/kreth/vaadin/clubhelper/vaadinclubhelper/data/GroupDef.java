@@ -11,6 +11,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * The persistent class for the groupDef database table.
  * 
@@ -19,7 +22,8 @@ import javax.persistence.Table;
 @Table(name = "groupdef")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM GroupDef g")
-public class GroupDef extends BaseEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public @Data class GroupDef extends BaseEntity implements Serializable {
 
 	public final static String QUERY_FINDALL = "GroupDef.findAll";
 
@@ -29,25 +33,6 @@ public class GroupDef extends BaseEntity implements Serializable {
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
 	private List<Person> persongroups;
-
-	public GroupDef() {
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<Person> getPersongroups() {
-		return this.persongroups;
-	}
-
-	public void setPersongroups(List<Person> persongroups) {
-		this.persongroups = persongroups;
-	}
 
 	public void addPersongroup(Person persongroup) {
 		persongroups.add(persongroup);
@@ -60,36 +45,6 @@ public class GroupDef extends BaseEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "GroupDef [id=" + getId() + ", name=" + name + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		GroupDef other = (GroupDef) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
 	}
 
 }

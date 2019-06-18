@@ -27,18 +27,25 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 public class PersonEditDetails extends HorizontalLayout {
 
 	private static final long serialVersionUID = 4692332924201974714L;
+
 	private final TextField textPrename;
+
 	private final TextField textSureName;
+
 	private final DateField birthday;
 
 	private final PersonDao dao;
 
 	private final Binder<Person> binder;
+
 	private Consumer<Person> personChangeHandler;
+
 	private Button okButton;
 
 	private ContactGrid contactLayout;
+
 	private RelationComponent relationshipLayout;
+
 	private AdressComponent adressLayout;
 
 	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
@@ -79,7 +86,8 @@ public class PersonEditDetails extends HorizontalLayout {
 		Button close = new Button("Schließen");
 		if (showCloseButton) {
 			close.addClickListener(ev -> closeWithoutSave());
-		} else {
+		}
+		else {
 			close.setVisible(false);
 		}
 
@@ -95,7 +103,8 @@ public class PersonEditDetails extends HorizontalLayout {
 				contactLayout.setPerson(edited);
 				relationshipLayout.setPerson(edited);
 				adressLayout.setPerson(edited);
-			} else {
+			}
+			else {
 				List<ValidationResult> errors = validate.getBeanValidationErrors();
 				StringBuilder msg = new StringBuilder();
 				for (ValidationResult res : errors) {
@@ -157,6 +166,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		setExpandRatio(layout, 1f);
 		setExpandRatio(sheet, 2f);
 
+		iterator().forEachRemaining(comp -> comp.setEnabled(false));
 	}
 
 	public Component createGroupPanel(List<GroupDef> groups) {
@@ -171,7 +181,8 @@ public class PersonEditDetails extends HorizontalLayout {
 			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
 				if (fieldvalue) {
 					bean.getGroups().add(g);
-				} else {
+				}
+				else {
 					bean.getGroups().remove(g);
 				}
 			});
@@ -191,9 +202,12 @@ public class PersonEditDetails extends HorizontalLayout {
 		adressLayout.setPerson(person);
 
 		if (person != null) {
+			iterator().forEachRemaining(comp -> comp.setEnabled(true));
 			binder.validate();
 			okButton.setEnabled(true);
-		} else {
+		}
+		else {
+			iterator().forEachRemaining(comp -> comp.setEnabled(false));
 			okButton.setEnabled(false);
 		}
 	}
@@ -218,8 +232,11 @@ public class PersonEditDetails extends HorizontalLayout {
 	}
 
 	public boolean hasChanges() {
-		return binder.hasChanges() || contactLayout.hasChanges() || relationshipLayout.hasChanges()
-				|| adressLayout.hasChanges();
+		return binder.getBean() != null
+				&& (binder.hasChanges()
+						|| contactLayout.hasChanges()
+						|| relationshipLayout.hasChanges()
+						|| adressLayout.hasChanges());
 	}
 
 }

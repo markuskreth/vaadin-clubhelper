@@ -20,6 +20,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * The persistent class for the person database table.
  * 
@@ -30,7 +33,8 @@ import javax.persistence.Table;
 @NamedQuery(name = Person.QUERY_FINDALL, query = "SELECT p FROM Person p WHERE p.deleted is  null")
 @NamedQuery(name = Person.QUERY_FINDLOGIN, query = "FROM Person WHERE username = :username AND password = :password AND deleted is"
 		+ " null")
-public class Person extends BaseEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Person extends BaseEntity implements Serializable {
 
 	public static final String SESSION_LOGIN = "SESSION_LOGIN_USER";
 
@@ -84,46 +88,6 @@ public class Person extends BaseEntity implements Serializable {
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "persons")
 	private Set<ClubEvent> events;
 
-	public LocalDate getBirth() {
-		return birth;
-	}
-
-	public void setBirth(LocalDate birth) {
-		this.birth = birth;
-	}
-
-	public String getPassword() {
-		return this.password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getPrename() {
-		return this.prename;
-	}
-
-	public void setPrename(String prename) {
-		this.prename = prename;
-	}
-
-	public String getSurname() {
-		return this.surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
-	}
-
-	public String getUsername() {
-		return this.username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
 	public Gender getGender() {
 		if (gender == null) {
 			return null;
@@ -140,28 +104,12 @@ public class Person extends BaseEntity implements Serializable {
 		}
 	}
 
-	public Set<GroupDef> getGroups() {
-		return groups;
-	}
-
-	public void setGroups(Set<GroupDef> groups) {
-		this.groups = groups;
-	}
-
 	public void add(GroupDef group) {
 		if (this.groups == null) {
 			this.groups = new HashSet<>();
 		}
 		group.addPersongroup(this);
 		this.groups.add(group);
-	}
-
-	public Set<ClubEvent> getEvents() {
-		return events;
-	}
-
-	public void setEvents(Set<ClubEvent> events) {
-		this.events = events;
 	}
 
 	public void add(ClubEvent ev) {
@@ -183,14 +131,6 @@ public class Person extends BaseEntity implements Serializable {
 		events.remove(clubEvent);
 	}
 
-	public List<Adress> getAdresses() {
-		return this.adresses;
-	}
-
-	public void setAdresses(List<Adress> adresses) {
-		this.adresses = adresses;
-	}
-
 	public Adress addAdress(Adress adress) {
 		getAdresses().add(adress);
 		adress.setPerson(this);
@@ -203,14 +143,6 @@ public class Person extends BaseEntity implements Serializable {
 		adress.setPerson(null);
 
 		return adress;
-	}
-
-	public List<Attendance> getAttendances() {
-		return this.attendances;
-	}
-
-	public void setAttendances(List<Attendance> attendances) {
-		this.attendances = attendances;
 	}
 
 	public Attendance addAttendance(Attendance attendance) {
@@ -227,14 +159,6 @@ public class Person extends BaseEntity implements Serializable {
 		return attendance;
 	}
 
-	public List<Contact> getContacts() {
-		return this.contacts;
-	}
-
-	public void setContacts(List<Contact> contacts) {
-		this.contacts = contacts;
-	}
-
 	public Contact addContact(Contact contact) {
 		getContacts().add(contact);
 		contact.setPerson(this);
@@ -247,10 +171,6 @@ public class Person extends BaseEntity implements Serializable {
 		contact.setPerson(null);
 
 		return contact;
-	}
-
-	public Set<GroupDef> getPersongroups() {
-		return this.groups;
 	}
 
 	public void setPersongroups(Collection<GroupDef> persongroups) {
@@ -275,14 +195,6 @@ public class Person extends BaseEntity implements Serializable {
 		}
 	}
 
-	public List<Relative> getRelatives1() {
-		return this.relatives1;
-	}
-
-	public void setRelatives1(List<Relative> relatives1) {
-		this.relatives1 = relatives1;
-	}
-
 	public Relative addRelatives1(Relative relatives1) {
 		getRelatives1().add(relatives1);
 		relatives1.setPerson1Bean(this);
@@ -295,14 +207,6 @@ public class Person extends BaseEntity implements Serializable {
 		relatives1.setPerson1Bean(null);
 
 		return relatives1;
-	}
-
-	public List<Relative> getRelatives2() {
-		return this.relatives2;
-	}
-
-	public void setRelatives2(List<Relative> relatives2) {
-		this.relatives2 = relatives2;
 	}
 
 	public Relative addRelatives2(Relative relatives2) {
@@ -319,10 +223,6 @@ public class Person extends BaseEntity implements Serializable {
 		return relatives2;
 	}
 
-	public Startpass getStartpass() {
-		return startpass;
-	}
-
 	public void setStartpass(Startpass startpass) {
 		this.startpass = startpass;
 	}
@@ -336,82 +236,6 @@ public class Person extends BaseEntity implements Serializable {
 			this.startpass.setPerson(this);
 		}
 		this.startpass.setStartpassNr(startpass);
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((birth == null) ? 0 : birth.hashCode());
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + ((password == null) ? 0 : password.hashCode());
-		result = prime * result + ((prename == null) ? 0 : prename.hashCode());
-		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Person other = (Person) obj;
-		if (birth == null) {
-			if (other.birth != null) {
-				return false;
-			}
-		}
-		else if (!birth.equals(other.birth)) {
-			return false;
-		}
-		if (groups == null) {
-			if (other.groups != null) {
-				return false;
-			}
-		}
-		else if (!groups.equals(other.groups)) {
-			return false;
-		}
-		if (password == null) {
-			if (other.password != null) {
-				return false;
-			}
-		}
-		else if (!password.equals(other.password)) {
-			return false;
-		}
-		if (prename == null) {
-			if (other.prename != null) {
-				return false;
-			}
-		}
-		else if (!prename.equals(other.prename)) {
-			return false;
-		}
-		if (surname == null) {
-			if (other.surname != null) {
-				return false;
-			}
-		}
-		else if (!surname.equals(other.surname)) {
-			return false;
-		}
-		if (username == null) {
-			if (other.username != null) {
-				return false;
-			}
-		}
-		else if (!username.equals(other.username)) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override

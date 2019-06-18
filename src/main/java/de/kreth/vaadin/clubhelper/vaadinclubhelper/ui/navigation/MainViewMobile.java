@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 import java.util.Optional;
 
 import org.basilbourque.timecolumnrenderers.ZonedDateTimeRenderer;
@@ -41,6 +42,8 @@ public class MainViewMobile extends MainView {
 
 	private HorizontalLayout eventButtonLayout;
 
+	ConfigurableFilterDataProvider<ClubEvent, Void, SerializablePredicate<ClubEvent>> eventDataProvider;
+
 	public MainViewMobile(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		super(personDao, groupDao, eventBusiness, securityGroupVerifier);
@@ -76,8 +79,11 @@ public class MainViewMobile extends MainView {
 		eventGrid.addColumn(ClubEvent::getStart).setCaption("Start")
 				.setRenderer(new ZonedDateTimeRenderer(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)))
 				.setSortable(true).setHidable(true);
-		ConfigurableFilterDataProvider<ClubEvent, Void, SerializablePredicate<ClubEvent>> eventDataProvider = DataProvider
-				.ofCollection(eventBusiness.loadEvents()).withConfigurableFilter();
+
+		List<ClubEvent> loadEvents = eventBusiness.loadEvents();
+//		loadEvents.clear();
+		eventDataProvider = DataProvider
+				.ofCollection(loadEvents).withConfigurableFilter();
 		eventDataProvider.setFilter(this::filter);
 		eventGrid.setDataProvider(eventDataProvider);
 

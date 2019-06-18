@@ -26,7 +26,7 @@ public class ClubEventBuilder {
 	}
 
 	public ClubEventBuilder withiCalUID(String iCalUID) {
-		current.setiCalUID(iCalUID);
+		current.setICalUID(iCalUID);
 		return this;
 
 	}

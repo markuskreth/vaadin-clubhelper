@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,6 +14,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 /**
  * The persistent class for the startpaesse database table.
  * 
@@ -21,7 +25,8 @@ import javax.persistence.Table;
 @Table(name = "startpaesse")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = "Startpass.findAll", query = "SELECT s FROM Startpass s")
-public class Startpass extends BaseEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+public @Data class Startpass extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1464510869007022357L;
 
@@ -34,44 +39,23 @@ public class Startpass extends BaseEntity implements Serializable {
 
 	// bi-directional many-to-one association to StartpassStartrechte
 	@OneToMany(mappedBy = "startpaesse")
-	private List<StartpassStartrechte> startpassStartrechtes;
-
-	public Startpass() {
-	}
-
-	public String getStartpassNr() {
-		return this.startpassNr;
-	}
-
-	public void setStartpassNr(String startpassNr) {
-		this.startpassNr = startpassNr;
-	}
-
-	public Person getPerson() {
-		return this.person;
-	}
-
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	public List<StartpassStartrechte> getStartpassStartrechtes() {
-		return this.startpassStartrechtes;
-	}
-
-	public void setStartpassStartrechtes(List<StartpassStartrechte> startpassStartrechtes) {
-		this.startpassStartrechtes = startpassStartrechtes;
-	}
+	private List<StartpassStartrechte> startpassStartrechte;
 
 	public StartpassStartrechte addStartpassStartrechte(StartpassStartrechte startpassStartrechte) {
-		getStartpassStartrechtes().add(startpassStartrechte);
+		if (this.startpassStartrechte == null) {
+			this.startpassStartrechte = new ArrayList<>();
+		}
+		this.startpassStartrechte.add(startpassStartrechte);
 		startpassStartrechte.setStartpaesse(this);
 
 		return startpassStartrechte;
 	}
 
 	public StartpassStartrechte removeStartpassStartrechte(StartpassStartrechte startpassStartrechte) {
-		getStartpassStartrechtes().remove(startpassStartrechte);
+		if (this.startpassStartrechte == null) {
+			this.startpassStartrechte = new ArrayList<>();
+		}
+		this.startpassStartrechte.remove(startpassStartrechte);
 		startpassStartrechte.setStartpaesse(null);
 
 		return startpassStartrechte;
