@@ -16,6 +16,9 @@ import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import com.vaadin.contextmenu.ContextMenu;
 import com.vaadin.icons.VaadinIcons;
@@ -30,22 +33,27 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
-public class HeadView extends HorizontalLayout {
+public class HeadView extends HorizontalLayout implements ApplicationContextAware {
 
 	private static final long serialVersionUID = -7915475211371903028L;
+
+	private static ApplicationContext context;
 
 	protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -123,6 +131,7 @@ public class HeadView extends HorizontalLayout {
 			MenuItem menuItem = contextMenu.addItem("Export Monat", ev1 -> calendarExport(button, ev1));
 			monthItemId = menuItem.getId();
 			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(button, ev1));
+			contextMenu.addItem("Export Termintaabelle", ev1 -> calendarCsv(button, ev1));
 			if (securityVerifier.isLoggedin()
 					&& securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
 				contextMenu.addItem("Personen verwalten",
@@ -149,6 +158,24 @@ public class HeadView extends HorizontalLayout {
 			break;
 		}
 
+	}
+
+	private void calendarCsv(Button button, MenuItem ev1) {
+
+		EventBusiness eventBusiness = context.getBean(EventBusiness.class);
+		EventGrid grid = new EventGrid(eventBusiness);
+
+		VerticalLayout layout = new VerticalLayout();
+		layout.addComponents(grid);
+
+		Window window = new Window();
+		window.setCaption("Veranstaltungen");
+		window.setContent(layout);
+		window.setModal(true);
+		window.setWidth("50%");
+		window.setHeight("90%");
+
+		button.getUI().addWindow(window);
 	}
 
 	private void calendarExport(Button source, MenuItem ev1) {
@@ -267,6 +294,11 @@ public class HeadView extends HorizontalLayout {
 		}
 		exec.shutdown();
 		return c;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.context = applicationContext;
 	}
 
 }
