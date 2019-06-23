@@ -3,6 +3,8 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 
+import org.springframework.context.ApplicationContext;
+
 import com.vaadin.ui.Component;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
@@ -13,10 +15,11 @@ public class DesktopHeadView extends HeadView {
 
 	private static final long serialVersionUID = 1596573215389558000L;
 
-	public DesktopHeadView(ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
+	public DesktopHeadView(ApplicationContext context, ClubNavigator navigator,
+			Function<Component, ZonedDateTime> startTime,
 			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
 			SecurityVerifier securityVerifier) {
-		super(navigator, startTime, endTime, dataProvider, securityVerifier);
+		super(context, navigator, startTime, endTime, dataProvider, securityVerifier);
 
 	}
 

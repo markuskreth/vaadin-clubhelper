@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.context.ApplicationContext;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -37,9 +38,13 @@ public class MainViewDesktop extends MainView {
 
 	private DesktopHeadView head;
 
-	public MainViewDesktop(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
+	private ApplicationContext context;
+
+	public MainViewDesktop(ApplicationContext context, PersonDao personDao, GroupDao groupDao,
+			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		super(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		this.context = context;
 	}
 
 	@Override
@@ -52,7 +57,8 @@ public class MainViewDesktop extends MainView {
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new DesktopHeadView(navigator, component -> calendar.getStartDate(), component -> calendar.getEndDate(),
+		head = new DesktopHeadView(context, navigator, component -> calendar.getStartDate(),
+				component -> calendar.getEndDate(),
 				dataProvider, securityVerifier);
 		head.setWidth("100%");
 		head.updateMonthText(calendar.getStartDate());

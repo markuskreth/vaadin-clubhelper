@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -37,6 +38,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView
 public class MainViewDesktopSmokeTest {
 
 	@Autowired
+	ApplicationContext context;
+
+	@Autowired
 	PersonDao personDao;
 
 	@Autowired
@@ -56,7 +60,7 @@ public class MainViewDesktopSmokeTest {
 	@BeforeEach
 	void initUi() {
 		MockitoAnnotations.initMocks(this);
-		mainView = new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		mainView = new MainViewDesktop(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
 		mainView.initUI(event);
 	}
 

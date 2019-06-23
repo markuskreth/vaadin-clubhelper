@@ -1,8 +1,12 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,15 +17,16 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import com.vaadin.contextmenu.ContextMenu;
+import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
@@ -36,6 +41,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CsvExporter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -49,11 +55,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperPrint;
 
-public class HeadView extends HorizontalLayout implements ApplicationContextAware {
-
-	private static final long serialVersionUID = -7915475211371903028L;
-
-	private static ApplicationContext context;
+public class HeadView extends HorizontalLayout {
 
 	protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -75,10 +77,13 @@ public class HeadView extends HorizontalLayout implements ApplicationContextAwar
 
 	private final SecurityVerifier securityVerifier;
 
-	public HeadView(ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
+	private ApplicationContext context;
+
+	public HeadView(ApplicationContext context, ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
 			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
 			SecurityVerifier securityVerifier) {
 
+		this.context = context;
 		this.navigator = navigator;
 		this.securityVerifier = securityVerifier;
 		this.startTime = startTime;
@@ -163,10 +168,18 @@ public class HeadView extends HorizontalLayout implements ApplicationContextAwar
 	private void calendarCsv(Button button, MenuItem ev1) {
 
 		EventBusiness eventBusiness = context.getBean(EventBusiness.class);
-		EventGrid grid = new EventGrid(eventBusiness);
+		EventGrid grid = new EventGrid(eventBusiness, true);
+
+		HorizontalLayout head = new HorizontalLayout();
+		Button downloadButton = new Button("Download", VaadinIcons.DOWNLOAD);
+
+		FileDownloader downloader = new FileDownloader(csvDownload(grid));
+		downloader.extend(downloadButton);
+
+		head.addComponents(new Label("Veranstaltungen"), downloadButton);
 
 		VerticalLayout layout = new VerticalLayout();
-		layout.addComponents(grid);
+		layout.addComponents(head, grid);
 
 		Window window = new Window();
 		window.setCaption("Veranstaltungen");
@@ -176,6 +189,29 @@ public class HeadView extends HorizontalLayout implements ApplicationContextAwar
 		window.setHeight("90%");
 
 		button.getUI().addWindow(window);
+	}
+
+	private StreamResource csvDownload(EventGrid grid) {
+		List<ClubEvent> items = grid.getDataProvider()
+				.fetch(new Query<>())
+				.collect(Collectors.toList());
+		CsvExporter exporter = new CsvExporter();
+		StringWriter writer = new StringWriter();
+
+		try {
+			exporter.export(items, writer);
+		}
+		catch (IOException e) {
+			Notification.show("Fehler beim Erzeugen der Veranstaltungen");
+			throw new RuntimeException(e);
+		}
+
+		InputStream in = new ByteArrayInputStream(writer.toString().getBytes(StandardCharsets.UTF_8));
+		final StreamResource resource = new StreamResource(() -> in, "Veranstaltungen.csv");
+		resource.setMIMEType("application/pdf");
+
+		return resource;
+
 	}
 
 	private void calendarExport(Button source, MenuItem ev1) {
@@ -294,11 +330,6 @@ public class HeadView extends HorizontalLayout implements ApplicationContextAwar
 		}
 		exec.shutdown();
 		return c;
-	}
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		HeadView.context = applicationContext;
 	}
 
 }

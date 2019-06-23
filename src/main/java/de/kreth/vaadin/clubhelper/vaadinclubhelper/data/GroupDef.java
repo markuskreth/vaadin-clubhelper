@@ -57,7 +57,6 @@ public class GroupDef extends BaseEntity implements Serializable {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((persongroups == null) ? 0 : persongroups.hashCode());
 		return result;
 	}
 
@@ -79,14 +78,6 @@ public class GroupDef extends BaseEntity implements Serializable {
 			}
 		}
 		else if (!name.equals(other.name)) {
-			return false;
-		}
-		if (persongroups == null) {
-			if (other.persongroups != null) {
-				return false;
-			}
-		}
-		else if (!persongroups.equals(other.persongroups)) {
 			return false;
 		}
 		return true;

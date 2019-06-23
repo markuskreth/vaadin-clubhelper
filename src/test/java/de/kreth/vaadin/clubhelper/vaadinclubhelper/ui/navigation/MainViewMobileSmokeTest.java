@@ -18,6 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -46,6 +47,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 public class MainViewMobileSmokeTest {
 
 	@Autowired
+	ApplicationContext context;
+
+	@Autowired
 	PersonDao personDao;
 
 	SecurityVerifier securityGroupVerifier;
@@ -70,7 +74,7 @@ public class MainViewMobileSmokeTest {
 		person.setGroups(new HashSet<GroupDef>(Arrays.asList(g1)));
 		securityGroupVerifier = new SecurityVerifierImpl();
 		assertFalse(securityGroupVerifier.isLoggedin());
-		mainView = new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		mainView = new MainViewMobile(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
 
 		assertNotNull(securityGroupVerifier);
 		assertNotNull(person);

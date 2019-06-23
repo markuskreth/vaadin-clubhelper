@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.basilbourque.timecolumnrenderers.ZonedDateTimeRenderer;
+import org.springframework.context.ApplicationContext;
 
 import com.vaadin.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.data.provider.DataProvider;
@@ -31,11 +32,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarCompone
 
 public class MainViewMobile extends MainView {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3293470536470926668L;
-
 	private Grid<ClubEvent> eventGrid;
 
 	private HeadView head;
@@ -44,9 +40,13 @@ public class MainViewMobile extends MainView {
 
 	ConfigurableFilterDataProvider<ClubEvent, Void, SerializablePredicate<ClubEvent>> eventDataProvider;
 
-	public MainViewMobile(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
+	private ApplicationContext context;
+
+	public MainViewMobile(ApplicationContext context, PersonDao personDao, GroupDao groupDao,
+			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		super(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		this.context = context;
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class MainViewMobile extends MainView {
 			return;
 		}
 
-		head = new HeadView(navigator, component -> showDateTimeDialog(component, "Startdatum"),
+		head = new HeadView(context, navigator, component -> showDateTimeDialog(component, "Startdatum"),
 				component -> showDateTimeDialog(component, "Endedatum"), new ClubEventProvider(), securityVerifier);
 		head.setWidth("100%");
 		head.updateLoggedinPerson();

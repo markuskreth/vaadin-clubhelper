@@ -4,7 +4,10 @@ import java.util.Stack;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.navigator.Navigator;
@@ -21,9 +24,11 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 
 @Component
-public class ClubhelperNavigation {
+public class ClubhelperNavigation implements ApplicationContextAware {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClubhelperNavigation.class);
+
+	private ApplicationContext context;
 
 	@Autowired
 	PersonDao personDao;
@@ -85,9 +90,10 @@ public class ClubhelperNavigation {
 		public MainView createMain() {
 
 			if (page.getBrowserWindowWidth() < 1000) {
-				return new MainViewMobile(personDao, groupDao, eventBusiness, securityGroupVerifier);
-			} else {
-				return new MainViewDesktop(personDao, groupDao, eventBusiness, securityGroupVerifier);
+				return new MainViewMobile(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
+			}
+			else {
+				return new MainViewDesktop(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
 			}
 		}
 
@@ -103,6 +109,7 @@ public class ClubhelperNavigation {
 	public class ClubNavigator extends Navigator {
 
 		private static final long serialVersionUID = -6503600786209888296L;
+
 		private final Stack<ClubhelperViews> navigationViewNames = new Stack<>();
 
 		ClubNavigator init(UI ui) {
@@ -131,7 +138,8 @@ public class ClubhelperNavigation {
 				navigationViewNames.clear();
 				navigationViewNames.add(ClubhelperViews.MainView);
 				super.navigateTo(ClubhelperViews.LoginUI.name());
-			} else {
+			}
+			else {
 				navigationViewNames.add(byState);
 				super.navigateTo(navigationState);
 			}
@@ -142,5 +150,10 @@ public class ClubhelperNavigation {
 			navigationViewNames.pop();
 			navigateTo(navigationViewNames.pop().name());
 		}
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+		this.context = applicationContext;
 	}
 }
