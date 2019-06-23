@@ -11,9 +11,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * The persistent class for the groupDef database table.
  * 
@@ -22,12 +19,9 @@ import lombok.EqualsAndHashCode;
 @Table(name = "groupdef")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = GroupDef.QUERY_FINDALL, query = "SELECT g FROM GroupDef g")
-@EqualsAndHashCode(callSuper = true)
-public @Data class GroupDef extends BaseEntity implements Serializable {
+public class GroupDef extends BaseEntity implements Serializable {
 
 	public final static String QUERY_FINDALL = "GroupDef.findAll";
-
-	private static final long serialVersionUID = -2827542956463449518L;
 
 	private String name;
 
@@ -38,8 +32,64 @@ public @Data class GroupDef extends BaseEntity implements Serializable {
 		persongroups.add(persongroup);
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<Person> getPersongroups() {
+		return persongroups;
+	}
+
+	public void setPersongroups(List<Person> persongroups) {
+		this.persongroups = persongroups;
+	}
+
 	public void removePersongroup(Person persongroup) {
 		getPersongroups().remove(persongroup);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((persongroups == null) ? 0 : persongroups.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		GroupDef other = (GroupDef) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		}
+		else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (persongroups == null) {
+			if (other.persongroups != null) {
+				return false;
+			}
+		}
+		else if (!persongroups.equals(other.persongroups)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

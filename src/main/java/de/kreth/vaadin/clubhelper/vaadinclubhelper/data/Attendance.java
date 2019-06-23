@@ -13,9 +13,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * The persistent class for the attendance database table.
  * 
@@ -24,8 +21,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "attendance")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = "Attendance.findAll", query = "SELECT a FROM Attendance a")
-@EqualsAndHashCode(callSuper = true)
-public @Data class Attendance extends BaseEntity implements Serializable {
+public class Attendance extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 2385033161272078335L;
 
@@ -39,6 +35,63 @@ public @Data class Attendance extends BaseEntity implements Serializable {
 
 	public Date getOnDate() {
 		return new Date(this.onDate.getTime());
+	}
+
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	public void setOnDate(Date onDate) {
+		this.onDate = onDate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((onDate == null) ? 0 : onDate.hashCode());
+		result = prime * result + ((person == null) ? 0 : person.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Attendance other = (Attendance) obj;
+		if (onDate == null) {
+			if (other.onDate != null) {
+				return false;
+			}
+		}
+		else if (!onDate.equals(other.onDate)) {
+			return false;
+		}
+		if (person == null) {
+			if (other.person != null) {
+				return false;
+			}
+		}
+		else if (!person.equals(other.person)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Attendance [person=" + person + ", onDate=" + onDate + "]";
 	}
 
 }

@@ -298,7 +298,7 @@ public class HeadView extends HorizontalLayout implements ApplicationContextAwar
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.context = applicationContext;
+		HeadView.context = applicationContext;
 	}
 
 }

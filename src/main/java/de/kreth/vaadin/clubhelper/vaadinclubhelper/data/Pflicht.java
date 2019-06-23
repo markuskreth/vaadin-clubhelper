@@ -8,17 +8,11 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 @Entity
 @Table(name = "pflichten")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NamedQuery(name = "Pflicht.findAll", query = "SELECT p FROM Pflicht p")
-@EqualsAndHashCode(callSuper = true)
-public @Data class Pflicht extends BaseEntity implements Serializable, Comparable<Pflicht> {
-
-	private static final long serialVersionUID = -1309514158086518524L;
+public class Pflicht extends BaseEntity implements Serializable, Comparable<Pflicht> {
 
 	private String name;
 
@@ -36,6 +30,86 @@ public @Data class Pflicht extends BaseEntity implements Serializable, Comparabl
 		this.fixed = fixed;
 		this.ordered = ordered;
 		this.comment = comment;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isFixed() {
+		return fixed;
+	}
+
+	public void setFixed(boolean fixed) {
+		this.fixed = fixed;
+	}
+
+	public int getOrdered() {
+		return ordered;
+	}
+
+	public void setOrdered(int ordered) {
+		this.ordered = ordered;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+		result = prime * result + (fixed ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ordered;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Pflicht other = (Pflicht) obj;
+		if (comment == null) {
+			if (other.comment != null) {
+				return false;
+			}
+		}
+		else if (!comment.equals(other.comment)) {
+			return false;
+		}
+		if (fixed != other.fixed) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		}
+		else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (ordered != other.ordered) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

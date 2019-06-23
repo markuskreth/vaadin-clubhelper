@@ -18,8 +18,6 @@ import javax.persistence.Transient;
 import org.vaadin.addon.calendar.item.BasicItem;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType.Type;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 // Entity must not be used, this class is persisted by ClubEvent.hbm.xml
 @Entity
@@ -28,8 +26,7 @@ import lombok.EqualsAndHashCode;
  * @author markus
  *
  */
-@EqualsAndHashCode(callSuper = true)
-public @Data class ClubEvent extends BasicItem implements EntityAccessor {
+public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	private static final long serialVersionUID = -3600971939167437577L;
 
@@ -151,6 +148,120 @@ public @Data class ClubEvent extends BasicItem implements EntityAccessor {
 	@Override
 	public void setCreated(Date created) {
 		// noCreateDateStored
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public String getiCalUID() {
+		return iCalUID;
+	}
+
+	public void setiCalUID(String iCalUID) {
+		this.iCalUID = iCalUID;
+	}
+
+	public String getOrganizerDisplayName() {
+		return organizerDisplayName;
+	}
+
+	public void setOrganizerDisplayName(String organizerDisplayName) {
+		this.organizerDisplayName = organizerDisplayName;
+	}
+
+	public Set<Person> getPersons() {
+		return persons;
+	}
+
+	public void setPersons(Set<Person> persons) {
+		this.persons = persons;
+	}
+
+	public Set<Altersgruppe> getAltersgruppen() {
+		return altersgruppen;
+	}
+
+	public void setAltersgruppen(Set<Altersgruppe> altersgruppen) {
+		this.altersgruppen = altersgruppen;
+	}
+
+	public CompetitionType getCompetitionType() {
+		return competitionType;
+	}
+
+	public void setCompetitionType(CompetitionType competitionType) {
+		this.competitionType = competitionType;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((competitionType == null) ? 0 : competitionType.hashCode());
+		result = prime * result + ((iCalUID == null) ? 0 : iCalUID.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		ClubEvent other = (ClubEvent) obj;
+		if (competitionType == null) {
+			if (other.competitionType != null) {
+				return false;
+			}
+		}
+		else if (!competitionType.equals(other.competitionType)) {
+			return false;
+		}
+		if (iCalUID == null) {
+			if (other.iCalUID != null) {
+				return false;
+			}
+		}
+		else if (!iCalUID.equals(other.iCalUID)) {
+			return false;
+		}
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		}
+		else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (location == null) {
+			if (other.location != null) {
+				return false;
+			}
+		}
+		else if (!location.equals(other.location)) {
+			return false;
+		}
+		return true;
 	}
 
 }

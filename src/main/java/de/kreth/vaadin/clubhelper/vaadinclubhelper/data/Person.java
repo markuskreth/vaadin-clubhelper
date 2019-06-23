@@ -20,9 +20,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 /**
  * The persistent class for the person database table.
  * 
@@ -33,8 +30,7 @@ import lombok.EqualsAndHashCode;
 @NamedQuery(name = Person.QUERY_FINDALL, query = "SELECT p FROM Person p WHERE p.deleted is  null")
 @NamedQuery(name = Person.QUERY_FINDLOGIN, query = "FROM Person WHERE username = :username AND password = :password AND deleted is"
 		+ " null")
-@EqualsAndHashCode(callSuper = true)
-public @Data class Person extends BaseEntity implements Serializable {
+public class Person extends BaseEntity implements Serializable {
 
 	public static final String SESSION_LOGIN = "SESSION_LOGIN_USER";
 
@@ -129,6 +125,110 @@ public @Data class Person extends BaseEntity implements Serializable {
 
 	public void remove(ClubEvent clubEvent) {
 		events.remove(clubEvent);
+	}
+
+	public LocalDate getBirth() {
+		return birth;
+	}
+
+	public void setBirth(LocalDate birth) {
+		this.birth = birth;
+	}
+
+	public String getPrename() {
+		return prename;
+	}
+
+	public void setPrename(String prename) {
+		this.prename = prename;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<Adress> getAdresses() {
+		return adresses;
+	}
+
+	public void setAdresses(List<Adress> adresses) {
+		this.adresses = adresses;
+	}
+
+	public List<Attendance> getAttendances() {
+		return attendances;
+	}
+
+	public void setAttendances(List<Attendance> attendances) {
+		this.attendances = attendances;
+	}
+
+	public List<Contact> getContacts() {
+		return contacts;
+	}
+
+	public void setContacts(List<Contact> contacts) {
+		this.contacts = contacts;
+	}
+
+	public Set<GroupDef> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Set<GroupDef> groups) {
+		this.groups = groups;
+	}
+
+	public List<Relative> getRelatives1() {
+		return relatives1;
+	}
+
+	public void setRelatives1(List<Relative> relatives1) {
+		this.relatives1 = relatives1;
+	}
+
+	public List<Relative> getRelatives2() {
+		return relatives2;
+	}
+
+	public void setRelatives2(List<Relative> relatives2) {
+		this.relatives2 = relatives2;
+	}
+
+	public Set<ClubEvent> getEvents() {
+		return events;
+	}
+
+	public void setEvents(Set<ClubEvent> events) {
+		this.events = events;
+	}
+
+	public Startpass getStartpass() {
+		return startpass;
+	}
+
+	public void setGender(Integer gender) {
+		this.gender = gender;
 	}
 
 	public Adress addAdress(Adress adress) {
@@ -236,6 +336,154 @@ public @Data class Person extends BaseEntity implements Serializable {
 			this.startpass.setPerson(this);
 		}
 		this.startpass.setStartpassNr(startpass);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((adresses == null) ? 0 : adresses.hashCode());
+		result = prime * result + ((attendances == null) ? 0 : attendances.hashCode());
+		result = prime * result + ((birth == null) ? 0 : birth.hashCode());
+		result = prime * result + ((contacts == null) ? 0 : contacts.hashCode());
+		result = prime * result + ((events == null) ? 0 : events.hashCode());
+		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((prename == null) ? 0 : prename.hashCode());
+		result = prime * result + ((relatives1 == null) ? 0 : relatives1.hashCode());
+		result = prime * result + ((relatives2 == null) ? 0 : relatives2.hashCode());
+		result = prime * result + ((startpass == null) ? 0 : startpass.hashCode());
+		result = prime * result + ((surname == null) ? 0 : surname.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Person other = (Person) obj;
+		if (adresses == null) {
+			if (other.adresses != null) {
+				return false;
+			}
+		}
+		else if (!adresses.equals(other.adresses)) {
+			return false;
+		}
+		if (attendances == null) {
+			if (other.attendances != null) {
+				return false;
+			}
+		}
+		else if (!attendances.equals(other.attendances)) {
+			return false;
+		}
+		if (birth == null) {
+			if (other.birth != null) {
+				return false;
+			}
+		}
+		else if (!birth.equals(other.birth)) {
+			return false;
+		}
+		if (contacts == null) {
+			if (other.contacts != null) {
+				return false;
+			}
+		}
+		else if (!contacts.equals(other.contacts)) {
+			return false;
+		}
+		if (events == null) {
+			if (other.events != null) {
+				return false;
+			}
+		}
+		else if (!events.equals(other.events)) {
+			return false;
+		}
+		if (gender == null) {
+			if (other.gender != null) {
+				return false;
+			}
+		}
+		else if (!gender.equals(other.gender)) {
+			return false;
+		}
+		if (groups == null) {
+			if (other.groups != null) {
+				return false;
+			}
+		}
+		else if (!groups.equals(other.groups)) {
+			return false;
+		}
+		if (password == null) {
+			if (other.password != null) {
+				return false;
+			}
+		}
+		else if (!password.equals(other.password)) {
+			return false;
+		}
+		if (prename == null) {
+			if (other.prename != null) {
+				return false;
+			}
+		}
+		else if (!prename.equals(other.prename)) {
+			return false;
+		}
+		if (relatives1 == null) {
+			if (other.relatives1 != null) {
+				return false;
+			}
+		}
+		else if (!relatives1.equals(other.relatives1)) {
+			return false;
+		}
+		if (relatives2 == null) {
+			if (other.relatives2 != null) {
+				return false;
+			}
+		}
+		else if (!relatives2.equals(other.relatives2)) {
+			return false;
+		}
+		if (startpass == null) {
+			if (other.startpass != null) {
+				return false;
+			}
+		}
+		else if (!startpass.equals(other.startpass)) {
+			return false;
+		}
+		if (surname == null) {
+			if (other.surname != null) {
+				return false;
+			}
+		}
+		else if (!surname.equals(other.surname)) {
+			return false;
+		}
+		if (username == null) {
+			if (other.username != null) {
+				return false;
+			}
+		}
+		else if (!username.equals(other.username)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
