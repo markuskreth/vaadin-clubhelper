@@ -2,9 +2,9 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.csv.CSVFormat;
@@ -32,7 +32,8 @@ public class CsvExporter {
 
 	public void export(List<ClubEvent> items, Writer out) throws IOException {
 		CSVPrinter printer = format.print(out);
-		printer.printRecords(Arrays.asList(HEAD));
+		items.sort(this::sortEvent);
+//		printer.printRecord(Arrays.asList(HEAD));
 
 		for (ClubEvent event : items) {
 			String start = FORMATTER.format(event.getStart());
@@ -51,5 +52,20 @@ public class CsvExporter {
 			}
 			printer.printRecord(start, event.getCaption(), event.getLocation(), competitors.toString());
 		}
+	}
+
+	int sortEvent(ClubEvent e1, ClubEvent e2) {
+		ZonedDateTime start1 = e1.getStart();
+		ZonedDateTime start2 = e2.getStart();
+		if (start1.compareTo(start2) != 0) {
+			return start1.compareTo(start2);
+		}
+		ZonedDateTime end1 = e1.getEnd();
+		ZonedDateTime end2 = e2.getEnd();
+
+		if (end1.compareTo(end2) != 0) {
+			return end1.compareTo(end2);
+		}
+		return e1.getCaption().compareTo(e2.getCaption());
 	}
 }
