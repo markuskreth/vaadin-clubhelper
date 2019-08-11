@@ -31,8 +31,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.grid.GridMultiSelect;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -42,29 +42,40 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 public class PersonGrid extends VerticalLayout {
 
 	private static final long serialVersionUID = -8148097982839343673L;
+
 	private final transient Logger log = LoggerFactory.getLogger(getClass());
 
 	private final transient DateTimeFormatter birthFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+
 	private final ListDataProvider<Person> dataProvider;
 
 	private final Grid<Person> grid;
+
 	private final CheckBox checkIncluded;
+
 	private final ComboBox<GroupDef> comboGroups;
+
 	private final TextField textFilter;
 
-	private final PersonDao personDao;
+	private final PersonBusiness personDao;
 
 	private List<GroupDef> allGroups;
+
 	private PersonFilter filter;
+
 	private ClubEvent currentEvent;
+
 	private Column<Person, String> startpassColumn;
+
 	private Layout filters;
+
 	private SelectionMode currentSelectionMode;
+
 	private Column<Person, ?> genderColumn;
 
 	private Column<Person, ? extends Component> deleteButtonColumn;
 
-	public PersonGrid(GroupDao groupDao, PersonDao personDao) {
+	public PersonGrid(GroupDao groupDao, PersonBusiness personDao) {
 
 		setId("main.person");
 		setCaption("Teilnehmer");
@@ -101,6 +112,7 @@ public class PersonGrid extends VerticalLayout {
 		grid.setDataProvider(dataProvider);
 		grid.setId("person.grid");
 		grid.setSizeFull();
+		grid.setSelectionMode(SelectionMode.SINGLE);
 
 		grid.addColumn(Person::getPrename).setCaption("Vorname");
 		grid.addColumn(Person::getSurname).setCaption("Nachname");
@@ -111,7 +123,8 @@ public class PersonGrid extends VerticalLayout {
 			Startpass startpass = p.getStartpass();
 			if (startpass != null) {
 				return startpass.getStartpassNr();
-			} else {
+			}
+			else {
 				return null;
 			}
 		}).setCaption("Startpass Nr.");
@@ -124,7 +137,8 @@ public class PersonGrid extends VerticalLayout {
 
 			if (gender == null) {
 				icon = VaadinIcons.QUESTION;
-			} else {
+			}
+			else {
 				switch (gender) {
 				case FEMALE:
 					icon = VaadinIcons.FEMALE;
@@ -161,7 +175,8 @@ public class PersonGrid extends VerticalLayout {
 
 		if (gender == null) {
 			icon = VaadinIcons.QUESTION;
-		} else {
+		}
+		else {
 			switch (gender) {
 			case FEMALE:
 				icon = VaadinIcons.FEMALE;
@@ -228,7 +243,8 @@ public class PersonGrid extends VerticalLayout {
 		if (value != null && value.length() >= 2) {
 			filter.setNameFilter(value);
 			dataProvider.refreshAll();
-		} else {
+		}
+		else {
 			filter.setNameFilter(null);
 			dataProvider.refreshAll();
 		}
@@ -249,7 +265,8 @@ public class PersonGrid extends VerticalLayout {
 	private void updateSelectedOnlyFilter(Boolean selectedOnly) {
 		if (selectedOnly != null && selectedOnly.equals(Boolean.TRUE)) {
 			filter.setSelectedPersons(grid.getSelectedItems());
-		} else {
+		}
+		else {
 			filter.setSelectedPersons(null);
 		}
 		dataProvider.refreshAll();
@@ -269,7 +286,8 @@ public class PersonGrid extends VerticalLayout {
 			asMultiSelect.deselectAll();
 			if (items == null || items.length == 0) {
 				log.debug("No Persons selected.");
-			} else {
+			}
+			else {
 				log.debug("Selecting Persons: {}", Arrays.asList(items));
 				asMultiSelect.selectItems(items);
 			}
@@ -312,10 +330,12 @@ public class PersonGrid extends VerticalLayout {
 		if (currentSelectionMode == SelectionMode.MULTI) {
 			if (ev != null) {
 				updateSelection(ev);
-			} else {
+			}
+			else {
 				selectItems(new Person[0]);
 			}
-		} else if (ev != null) {
+		}
+		else if (ev != null) {
 			Collection<Person> items = dataProvider.getItems();
 			items.clear();
 			items.addAll(ev.getPersons());
@@ -327,7 +347,8 @@ public class PersonGrid extends VerticalLayout {
 		Set<Person> persons = ev.getPersons();
 		if (persons != null) {
 			selectItems(persons.toArray(new Person[0]));
-		} else {
+		}
+		else {
 			selectItems(new Person[0]);
 		}
 	}

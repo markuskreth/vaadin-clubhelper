@@ -17,8 +17,8 @@ import com.vaadin.ui.UI;
 
 import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
@@ -29,9 +29,6 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClubhelperNavigation.class);
 
 	private ApplicationContext context;
-
-	@Autowired
-	PersonDao personDao;
 
 	@Autowired
 	GroupDao groupDao;
@@ -50,6 +47,9 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 	private ClubNavigator navi;
 
+	@Autowired
+	PersonBusiness personBusiness;
+
 	public void configure(UI mainUI) {
 
 		navi = new ClubNavigator().init(mainUI);
@@ -63,10 +63,10 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
-		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personDao, securityGroupVerifier));
+		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personBusiness, securityGroupVerifier));
 		navi.addView(ClubhelperViews.PersonEditView.name(), factory.createPersonEdit());
 		navi.addView(ClubhelperViews.EventDetails.name(),
-				new EventDetails(personDao, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
+				new EventDetails(personBusiness, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
 
 		page.addBrowserWindowResizeListener(ev -> {
 			int width = ev.getWidth();
@@ -90,15 +90,15 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		public MainView createMain() {
 
 			if (page.getBrowserWindowWidth() < 1000) {
-				return new MainViewMobile(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
+				return new MainViewMobile(context, personBusiness, groupDao, eventBusiness, securityGroupVerifier);
 			}
 			else {
-				return new MainViewDesktop(context, personDao, groupDao, eventBusiness, securityGroupVerifier);
+				return new MainViewDesktop(context, personBusiness, groupDao, eventBusiness, securityGroupVerifier);
 			}
 		}
 
 		public PersonEditView createPersonEdit() {
-			return new PersonEditView(groupDao, personDao, (page.getBrowserWindowWidth() >= 1000));
+			return new PersonEditView(groupDao, personBusiness, (page.getBrowserWindowWidth() >= 1000));
 		}
 	}
 

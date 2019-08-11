@@ -13,8 +13,8 @@ import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ClubhelperException;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
@@ -29,8 +29,6 @@ public abstract class MainView extends VerticalLayout implements View {
 
 	protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-	private final PersonDao personDao;
-
 	private final GroupDao groupDao;
 
 	protected final EventBusiness eventBusiness;
@@ -43,9 +41,11 @@ public abstract class MainView extends VerticalLayout implements View {
 
 	protected ClubNavigator navigator;
 
-	public MainView(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness,
+	private final PersonBusiness personBusiness;
+
+	public MainView(GroupDao groupDao, EventBusiness eventBusiness, PersonBusiness personBusiness,
 			SecurityVerifier securityGroupVerifier) {
-		this.personDao = personDao;
+		this.personBusiness = personBusiness;
 		this.groupDao = groupDao;
 		this.eventBusiness = eventBusiness;
 		this.securityVerifier = securityGroupVerifier;
@@ -79,7 +79,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		eventView.setId(eventView.getClass().getName());
 		eventView.setVisible(false);
 
-		personGrid = new PersonGrid(groupDao, personDao);
+		personGrid = new PersonGrid(groupDao, personBusiness);
 		personGrid.setCaption("Personen");
 		personGrid.setSelectionMode(SelectionMode.MULTI);
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));

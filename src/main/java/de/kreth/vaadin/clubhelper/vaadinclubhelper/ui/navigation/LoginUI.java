@@ -11,7 +11,7 @@ import com.vaadin.ui.LoginForm;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.VerticalLayout;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 
@@ -25,7 +25,7 @@ public class LoginUI extends VerticalLayout implements View {
 
 	private String parameters;
 
-	public LoginUI(PersonDao personDao, SecurityVerifier securityGroupVerifier) {
+	public LoginUI(PersonBusiness personBusiness, SecurityVerifier securityGroupVerifier) {
 
 		LoginForm lf = new LoginForm();
 		lf.addLoginListener(e -> {
@@ -34,7 +34,7 @@ public class LoginUI extends VerticalLayout implements View {
 			String password = e.getLoginParameter("password");
 
 			try {
-				Person loggedin = personDao.findLoginUser(username, password);
+				Person loggedin = personBusiness.findLoginUser(username, password);
 				securityGroupVerifier.setLoggedinPerson(loggedin);
 				navigator.navigateTo(ClubhelperViews.MainView.name() + '/' + parameters);
 			}

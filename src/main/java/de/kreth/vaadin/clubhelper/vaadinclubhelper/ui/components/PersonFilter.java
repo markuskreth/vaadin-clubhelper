@@ -11,7 +11,7 @@ import com.vaadin.data.provider.DataChangeEvent;
 import com.vaadin.data.provider.DataProviderListener;
 import com.vaadin.server.SerializablePredicate;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DataUpdatedEvent;
@@ -20,16 +20,22 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.events.DefaultDataUpdateHa
 public class PersonFilter implements SerializablePredicate<Person>, DataProviderListener<Person> {
 
 	private static final long serialVersionUID = -8481035921020651601L;
+
 	private Set<Integer> selectedPersons = null;
+
 	private Set<GroupDef> selectedGroups = null;
+
 	private final List<Person> publishedList;
-	private final PersonDao personDao;
+
+	private final PersonBusiness personDao;
+
 	private final DefaultDataUpdateHandler updateHandler;
+
 	private String nameFilter;
 
-	public PersonFilter(PersonDao personDao) {
-		this.personDao = personDao;
-		publishedList = new ArrayList<>(personDao.listAll());
+	public PersonFilter(PersonBusiness personDao2) {
+		this.personDao = personDao2;
+		publishedList = new ArrayList<>(personDao2.listAll());
 		this.updateHandler = new DefaultDataUpdateHandler();
 	}
 
@@ -102,7 +108,8 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	public void setNameFilter(String value) {
 		if (value != null) {
 			this.nameFilter = value.toLowerCase();
-		} else {
+		}
+		else {
 			this.nameFilter = value;
 		}
 	}

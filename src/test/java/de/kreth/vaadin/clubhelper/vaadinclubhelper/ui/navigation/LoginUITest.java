@@ -18,7 +18,7 @@ import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.LoginForm;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 
 @RunWith(SpringRunner.class)
@@ -26,7 +26,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 public class LoginUITest {
 
 	@Autowired
-	PersonDao personDao;
+	PersonBusiness personDao;
 
 	@Autowired
 	SecurityVerifier securityGroupVerifier;

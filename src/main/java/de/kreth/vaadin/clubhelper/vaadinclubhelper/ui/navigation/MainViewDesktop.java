@@ -14,8 +14,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
@@ -40,10 +40,10 @@ public class MainViewDesktop extends MainView {
 
 	private ApplicationContext context;
 
-	public MainViewDesktop(ApplicationContext context, PersonDao personDao, GroupDao groupDao,
+	public MainViewDesktop(ApplicationContext context, PersonBusiness personDao, GroupDao groupDao,
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
-		super(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		super(groupDao, eventBusiness, personDao, securityGroupVerifier);
 		this.context = context;
 	}
 

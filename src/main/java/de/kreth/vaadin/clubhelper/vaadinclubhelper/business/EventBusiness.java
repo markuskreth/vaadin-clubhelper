@@ -87,6 +87,7 @@ public class EventBusiness {
 	public void storeAltersgruppe(Altersgruppe edited) {
 		altersgruppeDao.save(edited);
 		clubEventDao.save(current);
+		log.info("Stored {}", edited);
 	}
 
 	public EventMeldung createMeldung() {

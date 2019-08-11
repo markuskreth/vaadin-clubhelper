@@ -133,4 +133,5 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 		Person person = a.getPerson();
 		person.getAdresses().remove(a);
 	}
+
 }

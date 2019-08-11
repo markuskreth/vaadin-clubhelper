@@ -30,17 +30,24 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 	private static final long serialVersionUID = -3404971410481135696L;
 
 	private final Grid<T> grid;
+
 	private final List<T> source;
+
 	private final ListDataProvider<T> dataProvider;
+
 	private boolean hasChanges;
+
 	private Column<T, Component> deleteButtonColumn;
+
 	private Consumer<T> deleteConsumer;
+
 	private final List<Consumer<T>> successConsumers;
 
 	private final HorizontalLayout buttonLayout;
+
 	private final Button addButton;
 
-	public AbstractDataGrid() {
+	protected AbstractDataGrid() {
 		this.grid = new Grid<>();
 		this.source = new ArrayList<>();
 		successConsumers = new ArrayList<>();
@@ -110,7 +117,8 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 		this.deleteConsumer = deleteConsumer;
 		if (deleteConsumer != null) {
 			deleteButtonColumn.setHidden(false);
-		} else {
+		}
+		else {
 			deleteButtonColumn.setHidden(true);
 		}
 	}

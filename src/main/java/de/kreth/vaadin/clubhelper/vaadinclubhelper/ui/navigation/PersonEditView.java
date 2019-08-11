@@ -8,12 +8,15 @@ import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
@@ -23,11 +26,12 @@ public class PersonEditView extends VerticalLayout implements View {
 	private static final long serialVersionUID = 1770993670570422036L;
 
 	private PersonGrid personGrid;
+
 	private PersonEditDetails personDetails;
 
 	private Navigator navigator;
 
-	public PersonEditView(GroupDao groupDao, PersonDao personDao, boolean horizontalLayout) {
+	public PersonEditView(GroupDao groupDao, PersonBusiness personDao, boolean horizontalLayout) {
 		setMargin(true);
 
 		personGrid = new PersonGrid(groupDao, personDao);
@@ -42,7 +46,8 @@ public class PersonEditView extends VerticalLayout implements View {
 
 		if (horizontalLayout) {
 			addComponent(createHorizontalLayout());
-		} else {
+		}
+		else {
 			addComponent(createVerticalLayout());
 		}
 		Button addPerson = new Button("Hinzufügen");
@@ -81,8 +86,36 @@ public class PersonEditView extends VerticalLayout implements View {
 	}
 
 	void selectedPerson(SelectionEvent<Person> p) {
-		Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
-		personDetails.setBean(firstSelectedItem.orElse(null));
+		if (personDetails.hasChanges()) {
+			VerticalLayout content = new VerticalLayout();
+			Window dlg = new Window("Änderungen verwerfen?", content);
+			dlg.setClosable(false);
+			dlg.setModal(true);
+
+			Label message = new Label(
+					"Die Personendaten wurden geändert.<br />Sollen diese Änderungen verworfen werden?",
+					ContentMode.HTML);
+			content.addComponent(message);
+			HorizontalLayout buttons = new HorizontalLayout();
+			Button ok = new Button("Ja", ev -> {
+				dlg.setVisible(false);
+				PersonEditView.this.getUI().removeWindow(dlg);
+				Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
+				personDetails.setBean(firstSelectedItem.orElse(null));
+			});
+			Button cancel = new Button("Nein", ev -> {
+				dlg.setVisible(false);
+				PersonEditView.this.getUI().removeWindow(dlg);
+			});
+			buttons.addComponents(ok, cancel);
+
+			content.addComponent(buttons);
+			getUI().addWindow(dlg);
+		}
+		else {
+			Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
+			personDetails.setBean(firstSelectedItem.orElse(null));
+		}
 	}
 
 	@Override

@@ -4,9 +4,15 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
-        <File name="MyFile" fileName="all.log" immediateFlush="false" append="false">
-            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-        </File>
+        <RollingFile name="MyFile" fileName="${catalina.base}/logs/vaadin_clubhelper.log" immediateFlush="false" append="true">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %logger %m%n </Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+        </RollingFile>
     </Appenders>
     <Loggers>
         <Root level="error">

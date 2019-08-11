@@ -24,8 +24,8 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
@@ -42,10 +42,10 @@ public class MainViewMobile extends MainView {
 
 	private ApplicationContext context;
 
-	public MainViewMobile(ApplicationContext context, PersonDao personDao, GroupDao groupDao,
+	public MainViewMobile(ApplicationContext context, PersonBusiness personDao, GroupDao groupDao,
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
-		super(personDao, groupDao, eventBusiness, securityGroupVerifier);
+		super(groupDao, eventBusiness, personDao, securityGroupVerifier);
 		this.context = context;
 	}
 

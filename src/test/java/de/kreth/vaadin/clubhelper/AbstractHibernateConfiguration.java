@@ -1,5 +1,6 @@
 package de.kreth.vaadin.clubhelper;
 
+import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +29,8 @@ public abstract class AbstractHibernateConfiguration implements HibernateConfigu
 			configuration.addAnnotatedClass(entityClass);
 		}
 
-		configuration.addInputStream(getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml"));
+		InputStream resourceAsStream = getClass().getResourceAsStream("/schema/ClubEvent.hbm.xml");
+		configuration.addInputStream(resourceAsStream);
 
 		configuration.setProperty("hibernate.hbm2ddl.auto", "update");
 		configuration.setProperty("spring.jpa.hibernate.ddl-auto", "update");

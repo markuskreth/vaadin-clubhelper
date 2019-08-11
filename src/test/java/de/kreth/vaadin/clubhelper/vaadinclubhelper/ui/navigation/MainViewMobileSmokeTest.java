@@ -27,8 +27,8 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -50,7 +50,7 @@ public class MainViewMobileSmokeTest {
 	ApplicationContext context;
 
 	@Autowired
-	PersonDao personDao;
+	PersonBusiness personDao;
 
 	SecurityVerifier securityGroupVerifier;
 

@@ -24,8 +24,8 @@ import com.vaadin.ui.HasComponents;
 import com.vaadin.ui.TextField;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEventBuilder;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
@@ -41,7 +41,7 @@ public class MainViewDesktopSmokeTest {
 	ApplicationContext context;
 
 	@Autowired
-	PersonDao personDao;
+	PersonBusiness personDao;
 
 	@Autowired
 	SecurityVerifier securityGroupVerifier;

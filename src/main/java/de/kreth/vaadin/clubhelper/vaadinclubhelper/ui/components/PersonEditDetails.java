@@ -1,12 +1,18 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
+import com.vaadin.data.Binder.BindingBuilder;
 import com.vaadin.data.BinderValidationStatus;
+import com.vaadin.data.HasValue.ValueChangeEvent;
+import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
@@ -18,7 +24,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Gender;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
@@ -34,9 +40,11 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	private final DateField birthday;
 
-	private final PersonDao dao;
+	private final PersonBusiness dao;
 
 	private final Binder<Person> binder;
+
+	private final Binder<Set<GroupDef>> binderGroups;
 
 	private Consumer<Person> personChangeHandler;
 
@@ -48,11 +56,11 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	private AdressComponent adressLayout;
 
-	public PersonEditDetails(List<GroupDef> groups, PersonDao dao) {
+	public PersonEditDetails(List<GroupDef> groups, PersonBusiness dao) {
 		this(groups, dao, true);
 	}
 
-	public PersonEditDetails(List<GroupDef> groups, PersonDao dao, boolean showCloseButton) {
+	public PersonEditDetails(List<GroupDef> groups, PersonBusiness dao, boolean showCloseButton) {
 
 		this.dao = dao;
 
@@ -122,6 +130,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		VerticalLayout layout = new VerticalLayout(textPrename, textSureName, birthday, genderBox, textStartPass, close,
 				okButton);
 
+		binderGroups = new Binder<Set<GroupDef>>();
 		Component groupLayout = createGroupPanel(groups);
 		contactLayout = new ContactGrid();
 		contactLayout.setDeleteConsumer(c -> {
@@ -175,18 +184,46 @@ public class PersonEditDetails extends HorizontalLayout {
 
 		for (GroupDef g : groups) {
 			Switch sw = new Switch(g.getName());
+			sw.setId("Group_" + g.getName());
 			sw.setData(g);
 			layout.addComponent(sw);
 
-			binder.forField(sw).bind(p -> p.getGroups().contains(g), (bean, fieldvalue) -> {
+			BindingBuilder<Set<GroupDef>, Boolean> forField = binderGroups.forField(sw);
+			forField.bind(p -> p.contains(g), (bean, fieldvalue) -> {
 				if (fieldvalue) {
-					bean.getGroups().add(g);
+					bean.add(g);
 				}
 				else {
-					bean.getGroups().remove(g);
+					bean.remove(g);
 				}
 			});
 		}
+		binder.addValueChangeListener(new ValueChangeListener<Object>() {
+
+			transient Logger log = LoggerFactory.getLogger(PersonEditDetails.this.getClass());
+
+			@Override
+			public void valueChange(ValueChangeEvent<Object> event) {
+				Component comp = event.getComponent();
+				Object oldGroups = event.getOldValue();
+				Object newGroups = event.getValue();
+				log.warn("Changed value in {}, old size={}, new size={}, hasChanges={}", comp.getId(), oldGroups,
+						newGroups, binder.hasChanges());
+			}
+		});
+		binderGroups.addValueChangeListener(new ValueChangeListener<Object>() {
+
+			transient Logger log = LoggerFactory.getLogger(PersonEditDetails.this.getClass());
+
+			@Override
+			public void valueChange(ValueChangeEvent<Object> event) {
+				Component comp = event.getComponent();
+				Object oldGroups = event.getOldValue();
+				Object newGroups = event.getValue();
+				log.warn("Changed value in {}, old size={}, new size={}, hasChanges={}", comp.getId(), oldGroups,
+						newGroups, binderGroups.hasChanges());
+			}
+		});
 		return layout;
 	}
 
@@ -197,6 +234,12 @@ public class PersonEditDetails extends HorizontalLayout {
 	public void setBean(Person person) {
 		closeWithoutSave();
 		binder.setBean(person);
+		if (person != null) {
+			binderGroups.setBean(person.getGroups());
+		}
+		else {
+			binderGroups.setBean(null);
+		}
 		contactLayout.setPerson(person);
 		relationshipLayout.setPerson(person);
 		adressLayout.setPerson(person);
@@ -212,7 +255,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		}
 	}
 
-	void closeWithoutSave() {
+	public void closeWithoutSave() {
 		if (hasChanges()) {
 
 			final Person current = binder.getBean();
@@ -234,6 +277,7 @@ public class PersonEditDetails extends HorizontalLayout {
 	public boolean hasChanges() {
 		return binder.getBean() != null
 				&& (binder.hasChanges()
+						|| binderGroups.hasChanges()
 						|| contactLayout.hasChanges()
 						|| relationshipLayout.hasChanges()
 						|| adressLayout.hasChanges());

@@ -6,16 +6,17 @@ import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
 import com.vaadin.data.ValueContext;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
 
 public class RelationComponent extends AbstractDataGrid<Relation> {
 
 	private static final long serialVersionUID = 7813969695936351799L;
-	private PersonDao dao;
 
-	public RelationComponent(PersonDao dao) {
+	private PersonBusiness dao;
+
+	public RelationComponent(PersonBusiness dao) {
 		this.dao = dao;
 		setEditorEnabled(false);
 	}

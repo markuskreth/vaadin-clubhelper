@@ -13,9 +13,9 @@ import com.vaadin.ui.Window;
 
 import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
@@ -25,17 +25,25 @@ public class EventDetails extends GridLayout implements View {
 	private static final long serialVersionUID = 8290150079638390995L;
 
 	private final EventBusiness eventBusiness;
-	private final PersonDao personDao;
+
+	private final PersonBusiness personDao;
+
 	private final GroupDao groupDao;
+
 	private final PflichtenDao pflichtenDao;
 
 	private ClubEvent currentEvent;
+
 	private SingleEventView eventView;
+
 	private PersonGrid personGrid;
+
 	private EventAltersgruppen eventAltersgruppen;
+
 	private CalendarAdapter calendarAdapter;
 
-	public EventDetails(PersonDao personDao, GroupDao groupDao, EventBusiness eventBusiness, PflichtenDao pflichtenDao,
+	public EventDetails(PersonBusiness personDao, GroupDao groupDao, EventBusiness eventBusiness,
+			PflichtenDao pflichtenDao,
 			CalendarAdapter calendarAdapter) {
 		super(3, 5);
 		this.eventBusiness = eventBusiness;
@@ -81,7 +89,8 @@ public class EventDetails extends GridLayout implements View {
 			addComponent(personGrid, 2, 0);
 			addComponent(buttonLayout, 0, 4, 2, 4);
 			setSizeFull();
-		} else {
+		}
+		else {
 			eventAltersgruppen.updateData();
 		}
 		eventView.setEvent(currentEvent);

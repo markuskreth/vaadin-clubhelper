@@ -28,4 +28,5 @@ public interface PersonDao extends IDao<Person> {
 	void delete(Person p);
 
 	void delete(Adress a);
+
 }

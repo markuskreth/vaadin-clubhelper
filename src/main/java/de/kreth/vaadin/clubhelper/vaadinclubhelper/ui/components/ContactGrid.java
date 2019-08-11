@@ -24,6 +24,7 @@ public class ContactGrid extends AbstractDataGrid<Contact> {
 	 * 
 	 */
 	private static final long serialVersionUID = -2573761302198992085L;
+
 	private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
 
 	@Override
@@ -40,17 +41,21 @@ public class ContactGrid extends AbstractDataGrid<Contact> {
 	protected ValidationResult validate(Contact obj, ValueContext context) {
 		if (obj.getType().equalsIgnoreCase("email")) {
 			return new EmailValidator("Emailformat nicht gültig!").apply(obj.getValue(), context);
-		} else if (obj.getType().equalsIgnoreCase("Telefon") || obj.getType().equalsIgnoreCase("Mobile")) {
+		}
+		else if (obj.getType().equalsIgnoreCase("Telefon") || obj.getType().equalsIgnoreCase("Mobile")) {
 			try {
 				PhoneNumber phone = phoneUtil.parse(obj.getValue(), "DE");
+
 				if (phoneUtil.isValidNumber(phone)) {
 					obj.setValue(phoneUtil.format(phone,
 							com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL));
 					return ValidationResult.ok();
-				} else {
-					return ValidationResult.error("Fehler beim Validieren von Telefonnummer: " + obj.getValue());
 				}
-			} catch (NumberParseException e) {
+				else {
+					return ValidationResult.error("Ungültige Telefonnummer: " + obj.getValue());
+				}
+			}
+			catch (NumberParseException e) {
 				return ValidationResult.error("Fehler beim Validieren von Telefonnummer: " + obj.getValue());
 			}
 		}
