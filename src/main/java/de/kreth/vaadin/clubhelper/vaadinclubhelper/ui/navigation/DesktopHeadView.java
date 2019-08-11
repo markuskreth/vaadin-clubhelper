@@ -19,6 +19,7 @@ public class DesktopHeadView extends HeadView {
 			Function<Component, ZonedDateTime> startTime,
 			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
 			SecurityVerifier securityVerifier) {
+
 		super(context, navigator, startTime, endTime, dataProvider, securityVerifier);
 
 	}

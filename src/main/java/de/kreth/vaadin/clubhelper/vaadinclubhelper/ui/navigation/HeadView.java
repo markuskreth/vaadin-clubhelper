@@ -1,32 +1,19 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.vaadin.contextmenu.ContextMenu;
-import com.vaadin.data.provider.Query;
 import com.vaadin.icons.VaadinIcons;
-import com.vaadin.server.FileDownloader;
 import com.vaadin.server.StreamResource;
 import com.vaadin.ui.AbstractComponent;
 import com.vaadin.ui.Alignment;
@@ -36,20 +23,19 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.MenuBar.MenuItem;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.CsvExporter;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ClubCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCalendarMonthCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCalendarYearCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCsvCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.LoginCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.LogoutCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.OpenPersonEditorCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -62,8 +48,6 @@ public class HeadView extends HorizontalLayout {
 	protected transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private final ClubEventProvider dataProvider;
-
-	private int monthItemId;
 
 	private final Button personLabel;
 
@@ -79,12 +63,13 @@ public class HeadView extends HorizontalLayout {
 
 	private ApplicationContext context;
 
-	public HeadView(ApplicationContext context, ClubNavigator navigator, Function<Component, ZonedDateTime> startTime,
+	public HeadView(ApplicationContext context, ClubNavigator navigator2,
+			Function<Component, ZonedDateTime> startTime,
 			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
 			SecurityVerifier securityVerifier) {
 
 		this.context = context;
-		this.navigator = navigator;
+		this.navigator = navigator2;
 		this.securityVerifier = securityVerifier;
 		this.startTime = startTime;
 		this.endTime = endTime;
@@ -133,27 +118,44 @@ public class HeadView extends HorizontalLayout {
 
 		switch (button.getId()) {
 		case "head.menu":
-			MenuItem menuItem = contextMenu.addItem("Export Monat", ev1 -> calendarExport(button, ev1));
-			monthItemId = menuItem.getId();
-			contextMenu.addItem("Export Jahr", ev1 -> calendarExport(button, ev1));
-			contextMenu.addItem("Export Termintaabelle", ev1 -> calendarCsv(button, ev1));
+
+			Supplier<ZonedDateTime> start = () -> startTime.apply(button);
+			Supplier<ZonedDateTime> end = () -> endTime.apply(button);
+
+			ClubCommand exportCalendarMonthCommand = new ExportCalendarMonthCommand(start, end,
+					dataProvider, this::showPrint);
+			contextMenu.addItem(exportCalendarMonthCommand.getLabel(),
+					ev1 -> exportCalendarMonthCommand.execute());
+
+			ClubCommand exportCalendarYearCommand = new ExportCalendarYearCommand(start, end,
+					dataProvider, this::showPrint);
+			contextMenu.addItem(exportCalendarYearCommand.getLabel(), ev1 -> exportCalendarYearCommand.execute());
+
+			ClubCommand exportCsvCommand = new ExportCsvCommand(button, context);
+			contextMenu.addItem(exportCsvCommand.getLabel(), ev1 -> exportCsvCommand.execute());
+
 			if (securityVerifier.isLoggedin()
 					&& securityVerifier.isPermitted(SecurityGroups.ADMIN, SecurityGroups.UEBUNGSLEITER)) {
-				contextMenu.addItem("Personen verwalten",
-						ev1 -> navigator.navigateTo(ClubhelperViews.PersonEditView.name()));
+
+				ClubCommand openPersonEditor = new OpenPersonEditorCommand(navigator);
+				contextMenu.addItem(openPersonEditor.getLabel(),
+						ev1 -> openPersonEditor.execute());
 			}
 			contextMenu.open(50, 50);
 			break;
 		case "head.user":
 			if (securityVerifier.isLoggedin()) {
 
-				contextMenu.addItem("Abmelden", ev1 -> {
-					securityVerifier.setLoggedinPerson(null);
-					navigator.navigateTo(ClubhelperViews.MainView.name());
+				LogoutCommand logoutCommand = new LogoutCommand(navigator, securityVerifier);
+				contextMenu.addItem(logoutCommand.getLabel(), ev1 -> {
+					logoutCommand.execute();
 				});
 			}
 			else {
-				contextMenu.addItem("Anmelden", ev1 -> navigator.navigateTo(ClubhelperViews.LoginUI.name()));
+				LoginCommand loginCommand = new LoginCommand(navigator);
+				contextMenu.addItem(loginCommand.getLabel(), ev1 -> {
+					loginCommand.execute();
+				});
 			}
 			int width = getUI().getPage().getBrowserWindowWidth();
 
@@ -165,136 +167,25 @@ public class HeadView extends HorizontalLayout {
 
 	}
 
-	private void calendarCsv(Button button, MenuItem ev1) {
-
-		EventBusiness eventBusiness = context.getBean(EventBusiness.class);
-		EventGrid grid = new EventGrid(eventBusiness, true);
-
-		HorizontalLayout head = new HorizontalLayout();
-		Button downloadButton = new Button("Download", VaadinIcons.DOWNLOAD);
-
-		FileDownloader downloader = new FileDownloader(csvDownload(grid));
-		downloader.extend(downloadButton);
-
-		head.addComponents(new Label("Veranstaltungen"), downloadButton);
-
-		VerticalLayout layout = new VerticalLayout();
-		layout.addComponents(head, grid);
-
+	private void showPrint(String calendarMonth, JasperPrint print) {
 		Window window = new Window();
-		window.setCaption("Veranstaltungen");
-		window.setContent(layout);
+		window.setCaption("View PDF");
+		AbstractComponent e;
+		try {
+			e = createEmbedded(calendarMonth, print);
+		}
+		catch (Exception e1) {
+
+			return;
+		}
+		window.setContent(e);
 		window.setModal(true);
 		window.setWidth("50%");
 		window.setHeight("90%");
-
-		button.getUI().addWindow(window);
+		personLabel.getUI().addWindow(window);
 	}
 
-	private StreamResource csvDownload(EventGrid grid) {
-		List<ClubEvent> items = grid.getDataProvider()
-				.fetch(new Query<>())
-				.collect(Collectors.toList());
-		CsvExporter exporter = new CsvExporter();
-		StringWriter writer = new StringWriter();
-
-		try {
-			exporter.export(items, writer);
-		}
-		catch (IOException e) {
-			Notification.show("Fehler beim Erzeugen der Veranstaltungen");
-			throw new RuntimeException(e);
-		}
-
-		InputStream in = new ByteArrayInputStream(writer.toString().getBytes(StandardCharsets.UTF_8));
-		final StreamResource resource = new StreamResource(() -> in, "Veranstaltungen.csv");
-		resource.setMIMEType("application/pdf");
-
-		return resource;
-
-	}
-
-	private void calendarExport(Button source, MenuItem ev1) {
-
-		boolean monthOnly = ev1.getId() == monthItemId;
-		List<ClubEvent> items;
-		ZonedDateTime start;
-		ZonedDateTime end;
-		if (monthOnly) {
-			start = startTime.apply(source);
-			end = endTime.apply(source);
-			items = dataProvider.getItems(start, end);
-		}
-		else {
-			start = startTime.apply(source).withDayOfYear(1);
-			end = start.withMonth(12).withDayOfMonth(31);
-			items = dataProvider.getItems(start, end);
-		}
-
-		Map<LocalDate, StringBuilder> values = new HashMap<>();
-		List<LocalDate> holidays = CalendarCreator.filterHolidays(items);
-
-		log.debug("exporting Calendar from {} to {}, itemCount = {}", start, end, items.size());
-
-		for (ClubEvent ev : items) {
-
-			ZonedDateTime evStart = ev.getStart();
-			ZonedDateTime evEnd = ev.getEnd();
-
-			log.trace("Added to eventsd: {}", ev);
-
-			CalendarCreator.iterateDays(evStart.toLocalDate(), evEnd.toLocalDate(), day -> {
-
-				StringBuilder content;
-				if (values.containsKey(day)) {
-					content = values.get(day);
-					content.append("\n");
-				}
-				else {
-					content = new StringBuilder();
-					values.put(day, content);
-				}
-				content.append(ev.getCaption());
-				if (ev.getLocation() != null && ev.getLocation().isBlank() == false) {
-					content.append(" (").append(ev.getLocation()).append(")");
-				}
-			});
-		}
-
-		String calendarMonth;
-		if (monthOnly) {
-			calendarMonth = dfMonth.format(start);
-		}
-		else {
-			calendarMonth = "Jahr " + start.getYear();
-		}
-
-		try {
-			JasperPrint print;
-			if (monthOnly) {
-				print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
-			}
-			else {
-				print = CalendarCreator.createYearCalendar(start.getYear(), values, holidays);
-			}
-			log.trace("Created Jasper print for {}", calendarMonth);
-			Window window = new Window();
-			window.setCaption("View PDF");
-			AbstractComponent e = createEmbedded(calendarMonth, print);
-			window.setContent(e);
-			window.setModal(true);
-			window.setWidth("50%");
-			window.setHeight("90%");
-			personLabel.getUI().addWindow(window);
-			log.trace("Added pdf window for {}", calendarMonth);
-		}
-		catch (JRException | IOException | RuntimeException e) {
-			log.error("Error Creating Jasper Report for {}", calendarMonth, e);
-			Notification.show("Fehler bei PDF: " + e);
-		}
-	}
-
-	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException {
+	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException, JRException {
 
 		final PipedInputStream in = new PipedInputStream();
 		final PipedOutputStream out = new PipedOutputStream(in);
@@ -303,20 +194,11 @@ public class HeadView extends HorizontalLayout {
 		resource.setMIMEType("application/pdf");
 
 		BrowserFrame c = new BrowserFrame("PDF invoice", resource);
+
 		c.setSizeFull();
 
-		ExecutorService exec = Executors.newSingleThreadExecutor();
 		try {
-			exec.execute(() -> {
-				try {
-					JasperExportManager.exportReportToPdfStream(print, out);
-				}
-				catch (JRException e) {
-					throw new RuntimeException("Error on Export to Pdf.", e);
-				}
-				finally {
-				}
-			});
+			JasperExportManager.exportReportToPdfStream(print, out);
 		}
 		finally {
 			try {
@@ -328,7 +210,6 @@ public class HeadView extends HorizontalLayout {
 			}
 
 		}
-		exec.shutdown();
 		return c;
 	}
 

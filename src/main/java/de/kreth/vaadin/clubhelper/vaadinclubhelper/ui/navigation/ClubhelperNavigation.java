@@ -79,6 +79,10 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		});
 	}
 
+	public ClubNavigator getNavigator() {
+		return navi;
+	}
+
 	class ViewFactory {
 
 		private Page page;
@@ -111,6 +115,9 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		private static final long serialVersionUID = -6503600786209888296L;
 
 		private final Stack<ClubhelperViews> navigationViewNames = new Stack<>();
+
+		private ClubNavigator() {
+		}
 
 		ClubNavigator init(UI ui) {
 			init(ui, null, new SingleComponentContainerViewDisplay(ui));
