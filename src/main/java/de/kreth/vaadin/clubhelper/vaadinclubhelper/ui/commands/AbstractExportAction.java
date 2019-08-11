@@ -2,8 +2,6 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,15 +15,13 @@ import com.vaadin.ui.Notification;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ClubEventProvider;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 public abstract class AbstractExportAction implements ClubCommand {
 
 	protected final transient Logger log = LoggerFactory.getLogger(getClass());
-
-	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
 	private final Supplier<ZonedDateTime> startTime;
 
@@ -49,20 +45,10 @@ public abstract class AbstractExportAction implements ClubCommand {
 	@Override
 	public void execute() {
 
-		boolean monthOnly = getMonthOnly();
 		List<ClubEvent> items;
-		ZonedDateTime start;
-		ZonedDateTime end;
-		if (monthOnly) {
-			start = startTime.get();
-			end = endTime.get();
-			items = dataProvider.getItems(start, end);
-		}
-		else {
-			start = startTime.get().withDayOfYear(1);
-			end = start.withMonth(12).withDayOfMonth(31);
-			items = dataProvider.getItems(start, end);
-		}
+		ZonedDateTime start = startTime.get();
+		ZonedDateTime end = endTime.get();
+		items = dataProvider.getItems(start, end);
 
 		Map<LocalDate, StringBuilder> values = new HashMap<>();
 		List<LocalDate> holidays = CalendarCreator.filterHolidays(items);
@@ -94,22 +80,10 @@ public abstract class AbstractExportAction implements ClubCommand {
 			});
 		}
 
-		String calendarMonth;
-		if (monthOnly) {
-			calendarMonth = dfMonth.format(start);
-		}
-		else {
-			calendarMonth = "Jahr " + start.getYear();
-		}
+		String calendarMonth = getTitle();
 
 		try {
-			JasperPrint print;
-			if (monthOnly) {
-				print = CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
-			}
-			else {
-				print = CalendarCreator.createYearCalendar(start.getYear(), values, holidays);
-			}
+			JasperPrint print = createPrint(values, holidays);
 			log.trace("Created Jasper print for {}", calendarMonth);
 
 			printConsumer.accept(calendarMonth, print);
@@ -121,6 +95,8 @@ public abstract class AbstractExportAction implements ClubCommand {
 		}
 	}
 
-	protected abstract boolean getMonthOnly();
+	protected abstract String getTitle();
 
+	protected abstract JasperPrint createPrint(Map<LocalDate, StringBuilder> values, List<LocalDate> holidays)
+			throws JRException;
 }

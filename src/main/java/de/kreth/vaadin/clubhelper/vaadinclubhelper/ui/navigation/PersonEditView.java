@@ -20,10 +20,14 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonEditDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
 public class PersonEditView extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 1770993670570422036L;
+
+	private ClubhelperMenuBar menuBar;
 
 	private PersonGrid personGrid;
 
@@ -31,9 +35,15 @@ public class PersonEditView extends VerticalLayout implements View {
 
 	private Navigator navigator;
 
-	public PersonEditView(GroupDao groupDao, PersonBusiness personDao, boolean horizontalLayout) {
-		setMargin(true);
+	private MenuItemStateFactory menuStateFactory;
 
+	public PersonEditView(GroupDao groupDao, PersonBusiness personDao, ClubhelperMenuBar menuBar,
+			MenuItemStateFactory menuStateFactory,
+			boolean horizontalLayout) {
+		setMargin(true);
+		this.menuBar = menuBar;
+		this.menuStateFactory = menuStateFactory;
+		addComponent(menuBar);
 		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setSizeFull();
 		personGrid.onPersonEdit();
@@ -54,9 +64,9 @@ public class PersonEditView extends VerticalLayout implements View {
 		addPerson.addClickListener(ev -> addPerson());
 
 		addComponent(addPerson);
-		Button backButton = new Button("Zurück");
-		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
-		addComponent(backButton);
+//		Button backButton = new Button("Zurück");
+//		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
+//		addComponent(backButton);
 	}
 
 	public HorizontalLayout createHorizontalLayout() {
@@ -121,6 +131,7 @@ public class PersonEditView extends VerticalLayout implements View {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		this.navigator = event.getNavigator();
+		menuBar.applyState(menuStateFactory.currentState());
 	}
 
 }

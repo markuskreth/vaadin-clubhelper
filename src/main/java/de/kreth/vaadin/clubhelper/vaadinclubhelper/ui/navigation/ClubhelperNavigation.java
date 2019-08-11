@@ -1,6 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import java.time.ZonedDateTime;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +24,15 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
 @Component
 public class ClubhelperNavigation implements ApplicationContextAware {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClubhelperNavigation.class);
+
+	private static final int WIDTH_LIMIT_FOR_MOBILE = 1000;
 
 	private ApplicationContext context;
 
@@ -50,21 +56,25 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 	@Autowired
 	PersonBusiness personBusiness;
 
-	public void configure(UI mainUI) {
+	private MainView mainView;
 
-		navi = new ClubNavigator().init(mainUI);
+	private PersonEditView personEdit;
+
+	public void configure(UI mainUI) {
 
 		// Create and register the views
 
 		Page page = mainUI.getPage();
 
 		ViewFactory factory = new ViewFactory(page);
-		MainView mainView = factory.createMain();
+		mainView = factory.createMain();
 
+		navi = new ClubNavigator().init(mainUI);
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personBusiness, securityGroupVerifier));
-		navi.addView(ClubhelperViews.PersonEditView.name(), factory.createPersonEdit());
+		personEdit = factory.createPersonEdit();
+		navi.addView(ClubhelperViews.PersonEditView.name(), personEdit);
 		navi.addView(ClubhelperViews.EventDetails.name(),
 				new EventDetails(personBusiness, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
 
@@ -93,7 +103,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 		public MainView createMain() {
 
-			if (page.getBrowserWindowWidth() < 1000) {
+			if (page.getBrowserWindowWidth() < WIDTH_LIMIT_FOR_MOBILE) {
 				return new MainViewMobile(context, personBusiness, groupDao, eventBusiness, securityGroupVerifier);
 			}
 			else {
@@ -102,7 +112,12 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		}
 
 		public PersonEditView createPersonEdit() {
-			return new PersonEditView(groupDao, personBusiness, (page.getBrowserWindowWidth() >= 1000));
+			MenuItemStateFactory menuItemFactory = context.getBean(MenuItemStateFactory.class);
+			menuItemFactory.setStartDateSupplier(mainView.startDateSupplier());
+			menuItemFactory.setEndDateSupplier(mainView.endDateSupplier());
+			ClubhelperMenuBar menuBar = new ClubhelperMenuBar(menuItemFactory.currentState());
+			return new PersonEditView(groupDao, personBusiness,
+					menuBar, menuItemFactory, (page.getBrowserWindowWidth() >= WIDTH_LIMIT_FOR_MOBILE));
 		}
 	}
 
@@ -141,7 +156,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 			int width = navi.getUI().getPage().getBrowserWindowWidth();
 			boolean loggedIn = securityGroupVerifier.isLoggedin();
-			if (!loggedIn && width < 1000) {
+			if (!loggedIn && width < WIDTH_LIMIT_FOR_MOBILE) {
 				navigationViewNames.clear();
 				navigationViewNames.add(ClubhelperViews.MainView);
 				super.navigateTo(ClubhelperViews.LoginUI.name());
@@ -163,4 +178,13 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.context = applicationContext;
 	}
+
+	public Supplier<ZonedDateTime> startDateSupplier() {
+		return mainView.startDateSupplier();
+	}
+
+	public Supplier<ZonedDateTime> endDateSupplier() {
+		return mainView.endDateSupplier();
+	}
+
 }

@@ -20,6 +20,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PersonDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews;
 
@@ -30,6 +31,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews
 public class MainUi extends UI {
 
 	private static final long serialVersionUID = 7581634188909841919L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(MainUi.class);
 
 	@Autowired
@@ -53,6 +55,9 @@ public class MainUi extends UI {
 	@Autowired
 	ClubhelperNavigation clubhelperNavigation;
 
+	@Autowired
+	MenuItemStateFactory menuStateFactory;
+
 	@Override
 	protected void init(VaadinRequest request) {
 
@@ -67,6 +72,7 @@ public class MainUi extends UI {
 		page.setTitle("Vereinshelfer");
 
 		clubhelperNavigation.configure(this);
+		menuStateFactory.configure(getUI());
 		clubhelperNavigation.navigateTo(ClubhelperViews.MainView.name());
 	}
 

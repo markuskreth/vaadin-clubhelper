@@ -17,7 +17,6 @@ public class LoginCommand implements ClubCommand {
 
 	@Override
 	public void execute() {
-
 		navigator.navigateTo(ClubhelperViews.LoginUI.name());
 	}
 

@@ -15,7 +15,6 @@ import com.vaadin.server.SerializablePredicate;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.renderers.AbstractRenderer;
-import com.vaadin.ui.renderers.Renderer;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -76,10 +75,6 @@ public class EventGrid extends Grid<ClubEvent> {
 			JsonValue encodeed = super.encode(value);
 			return encodeed;
 		}
-	}
-
-	private Renderer<Set<Person>> createRenderer() {
-		return new PersonSetRenderer();
 	}
 
 	private static final Set<Person> set = new HashSet<>();

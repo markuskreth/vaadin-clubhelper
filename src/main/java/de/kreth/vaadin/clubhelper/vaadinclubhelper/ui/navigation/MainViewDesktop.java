@@ -1,8 +1,10 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import org.springframework.context.ApplicationContext;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents;
@@ -19,13 +21,12 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemState;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
 public class MainViewDesktop extends MainView {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -3293470536470926668L;
 
 	private VerticalLayout eastLayout;
@@ -36,30 +37,31 @@ public class MainViewDesktop extends MainView {
 
 	private CalendarComponent calendar;
 
+	private ClubhelperMenuBar menuBar;
+
 	private DesktopHeadView head;
 
-	private ApplicationContext context;
+	private MenuItemStateFactory menuStateFactory;
 
 	public MainViewDesktop(ApplicationContext context, PersonBusiness personDao, GroupDao groupDao,
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
-		super(groupDao, eventBusiness, personDao, securityGroupVerifier);
-		this.context = context;
+		super(context, groupDao, eventBusiness, personDao, securityGroupVerifier);
+		calendar = new CalendarComponent(dataProvider);
+		menuStateFactory = context.getBean(MenuItemStateFactory.class);
 	}
 
 	@Override
 	public void initUI(ViewChangeEvent event) {
 		super.initUI(event);
-
-		ClubEventProvider dataProvider = new ClubEventProvider();
+		MenuItemState state = menuStateFactory.currentState();
+		menuBar = new ClubhelperMenuBar(state);
 		calendar = new CalendarComponent(dataProvider);
 		calendar.setSizeFull();
 		calendar.setId("main.calendar");
 		calendar.setHandler(this::onItemClick);
 
-		head = new DesktopHeadView(context, navigator, component -> calendar.getStartDate(),
-				component -> calendar.getEndDate(),
-				dataProvider, securityVerifier);
+		head = new DesktopHeadView(securityVerifier);
 		head.setWidth("100%");
 		head.updateMonthText(calendar.getStartDate());
 
@@ -87,6 +89,7 @@ public class MainViewDesktop extends MainView {
 		eastLayout = new VerticalLayout();
 		eastLayout.addComponents(eventView, personGrid, eventButtonLayout);
 
+		addComponent(menuBar);
 		addComponent(head);
 		addComponent(mainLayout);
 		setExpandRatio(mainLayout, 1f);
@@ -120,8 +123,9 @@ public class MainViewDesktop extends MainView {
 	@Override
 	public void enter(ViewChangeEvent event) {
 		super.enter(event);
-
 		head.updateLoggedinPerson();
+		MenuItemState state = menuStateFactory.currentState();
+		menuBar.applyState(state);
 		reloadEvents();
 	}
 
@@ -155,6 +159,16 @@ public class MainViewDesktop extends MainView {
 		super.detailClosed();
 		mainLayout.removeComponent(eastLayout);
 		eventButtonLayout.setVisible(false);
+	}
+
+	@Override
+	public Supplier<ZonedDateTime> startDateSupplier() {
+		return () -> calendar.getStartDate();
+	}
+
+	@Override
+	public Supplier<ZonedDateTime> endDateSupplier() {
+		return () -> calendar.getEndDate();
 	}
 
 }

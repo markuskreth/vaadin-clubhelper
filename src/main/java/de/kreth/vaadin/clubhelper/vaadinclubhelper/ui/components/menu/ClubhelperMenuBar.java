@@ -16,6 +16,7 @@ public class ClubhelperMenuBar extends MenuBar {
 	private final MenuItem settingsItem;
 
 	public ClubhelperMenuBar(MenuItemState initialState) {
+		setWidth("100%");
 		fileMenuItem = addItem("Datei");
 		editMenuItem = addItem("Bearbeiten");
 		viewMenuItem = addItem("Ansicht");

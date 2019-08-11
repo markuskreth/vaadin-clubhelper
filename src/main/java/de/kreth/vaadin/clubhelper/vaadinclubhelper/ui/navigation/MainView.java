@@ -1,15 +1,25 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
+import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.StreamResource;
+import com.vaadin.ui.AbstractComponent;
+import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ClubhelperException;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
@@ -19,15 +29,21 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.ClubhelperErrorDialog;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ClubEventProvider;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 public abstract class MainView extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 4831071242146146399L;
 
 	protected final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
+	private ApplicationContext context;
 
 	private final GroupDao groupDao;
 
@@ -43,12 +59,18 @@ public abstract class MainView extends VerticalLayout implements View {
 
 	private final PersonBusiness personBusiness;
 
-	public MainView(GroupDao groupDao, EventBusiness eventBusiness, PersonBusiness personBusiness,
+	protected ClubEventProvider dataProvider;
+
+	public MainView(ApplicationContext context2, GroupDao groupDao, EventBusiness eventBusiness,
+			PersonBusiness personBusiness,
 			SecurityVerifier securityGroupVerifier) {
+		this.context = context2;
 		this.personBusiness = personBusiness;
 		this.groupDao = groupDao;
 		this.eventBusiness = eventBusiness;
 		this.securityVerifier = securityGroupVerifier;
+
+		dataProvider = context2.getBean(ClubEventProvider.class);
 	}
 
 	@Override
@@ -85,6 +107,56 @@ public abstract class MainView extends VerticalLayout implements View {
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
 		personGrid.setVisible(false);
 
+	}
+
+	public ApplicationContext getContext() {
+		return context;
+	}
+
+	protected void showPrint(String calendarMonth, JasperPrint print) {
+		Window window = new Window();
+		window.setCaption("View PDF");
+		AbstractComponent e;
+		try {
+			e = createEmbedded(calendarMonth, print);
+		}
+		catch (Exception e1) {
+
+			return;
+		}
+		window.setContent(e);
+		window.setModal(true);
+		window.setWidth("50%");
+		window.setHeight("90%");
+		eventView.getUI().addWindow(window);
+	}
+
+	private AbstractComponent createEmbedded(String title, JasperPrint print) throws IOException, JRException {
+
+		final PipedInputStream in = new PipedInputStream();
+		final PipedOutputStream out = new PipedOutputStream(in);
+
+		final StreamResource resource = new StreamResource(() -> in, title);
+		resource.setMIMEType("application/pdf");
+
+		BrowserFrame c = new BrowserFrame("PDF invoice", resource);
+
+		c.setSizeFull();
+
+		try {
+			JasperExportManager.exportReportToPdfStream(print, out);
+		}
+		finally {
+			try {
+				out.close();
+				in.close();
+			}
+			catch (IOException e) {
+				LOGGER.warn("Error closing Jasper output stream.", e);
+			}
+
+		}
+		return c;
 	}
 
 	private void personSelectionChange(SelectionEvent<Person> ev) {
@@ -124,4 +196,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		eventBusiness.setSelected(ev);
 	}
 
+	public abstract Supplier<ZonedDateTime> startDateSupplier();
+
+	public abstract Supplier<ZonedDateTime> endDateSupplier();
 }

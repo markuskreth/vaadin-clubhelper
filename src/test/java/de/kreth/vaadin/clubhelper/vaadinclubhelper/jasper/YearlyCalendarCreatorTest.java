@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
@@ -56,6 +57,7 @@ class YearlyCalendarCreatorTest {
 	}
 
 	@Test
+	@Disabled
 	void testJrxmlResource() {
 		creator = new YearlyCalendarCreator(2019, values);
 		InputStream jrxml = creator.jrxmlResource();

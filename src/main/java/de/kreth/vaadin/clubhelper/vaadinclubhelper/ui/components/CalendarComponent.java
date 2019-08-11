@@ -11,7 +11,6 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vaadin.addon.calendar.Calendar;
-import org.vaadin.addon.calendar.item.BasicItemProvider;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.BackwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ForwardEvent;
 import org.vaadin.addon.calendar.ui.CalendarComponentEvents.ItemClickHandler;
@@ -81,24 +80,6 @@ public class CalendarComponent extends CustomComponent implements CalendarView {
 	public void setItems(Collection<ClubEvent> items) {
 		dataProvider.setItems(items);
 		calendar.markAsDirty();
-	}
-
-	/**
-	 * {@link ClubEvent} provider for vaadin calendar addon.
-	 * @author markus
-	 *
-	 */
-	public static class ClubEventProvider extends BasicItemProvider<ClubEvent> {
-
-		private static final long serialVersionUID = -5415397258827236704L;
-
-		@Override
-		public void setItems(Collection<ClubEvent> items) {
-			super.itemList.clear();
-			super.setItems(items);
-			fireItemSetChanged();
-		}
-
 	}
 
 	@Override

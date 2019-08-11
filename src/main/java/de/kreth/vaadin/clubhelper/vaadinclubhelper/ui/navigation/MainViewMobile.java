@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.basilbourque.timecolumnrenderers.ZonedDateTimeRenderer;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +29,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
 
 public class MainViewMobile extends MainView {
 
@@ -40,13 +40,10 @@ public class MainViewMobile extends MainView {
 
 	ConfigurableFilterDataProvider<ClubEvent, Void, SerializablePredicate<ClubEvent>> eventDataProvider;
 
-	private ApplicationContext context;
-
 	public MainViewMobile(ApplicationContext context, PersonBusiness personDao, GroupDao groupDao,
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
-		super(groupDao, eventBusiness, personDao, securityGroupVerifier);
-		this.context = context;
+		super(context, groupDao, eventBusiness, personDao, securityGroupVerifier);
 	}
 
 	@Override
@@ -57,8 +54,7 @@ public class MainViewMobile extends MainView {
 			return;
 		}
 
-		head = new HeadView(context, navigator, component -> showDateTimeDialog(component, "Startdatum"),
-				component -> showDateTimeDialog(component, "Endedatum"), new ClubEventProvider(), securityVerifier);
+		head = new HeadView(securityVerifier);
 		head.setWidth("100%");
 		head.updateLoggedinPerson();
 
@@ -113,6 +109,16 @@ public class MainViewMobile extends MainView {
 		addComponent(eventGrid);
 		addComponent(eventButtonLayout);
 		addComponent(personGrid);
+	}
+
+	@Override
+	public Supplier<ZonedDateTime> startDateSupplier() {
+		return () -> showDateTimeDialog(this.head, "Startdatum");
+	}
+
+	@Override
+	public Supplier<ZonedDateTime> endDateSupplier() {
+		return () -> showDateTimeDialog(this.head, "Endedatum");
 	}
 
 	private ZonedDateTime showDateTimeDialog(Component source, String caption) {

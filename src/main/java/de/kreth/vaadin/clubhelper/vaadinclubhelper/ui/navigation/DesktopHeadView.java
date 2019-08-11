@@ -1,27 +1,15 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.time.ZonedDateTime;
-import java.util.function.Function;
-
-import org.springframework.context.ApplicationContext;
-
-import com.vaadin.ui.Component;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent.ClubEventProvider;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 
 public class DesktopHeadView extends HeadView {
 
 	private static final long serialVersionUID = 1596573215389558000L;
 
-	public DesktopHeadView(ApplicationContext context, ClubNavigator navigator,
-			Function<Component, ZonedDateTime> startTime,
-			Function<Component, ZonedDateTime> endTime, ClubEventProvider dataProvider,
-			SecurityVerifier securityVerifier) {
-
-		super(context, navigator, startTime, endTime, dataProvider, securityVerifier);
-
+	public DesktopHeadView(SecurityVerifier securityVerifier) {
+		super(securityVerifier);
 	}
 
 	public void updateMonthText(ZonedDateTime startDate) {
