@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -31,6 +32,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestConfiguration;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfiguration.class)
 @Tag("spring")
+@Disabled
 class PersonFilterTest {
 
 	private PersonFilter filter;

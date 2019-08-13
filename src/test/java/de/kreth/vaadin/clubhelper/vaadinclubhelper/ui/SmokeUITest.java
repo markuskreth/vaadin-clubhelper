@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavig
 																// "spring.main.web-application-type=reactive"
 @AutoConfigureWebTestClient
 @Tag("spring")
+@Disabled
 public class SmokeUITest {
 
 	@Autowired

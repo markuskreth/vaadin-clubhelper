@@ -11,6 +11,7 @@ import javax.persistence.EntityManager;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.tests.TestPersonGenerator;
 @SpringBootTest
 @ContextConfiguration(classes = TestConfiguration.class)
 @Tag("spring")
+@Disabled
 public class PersonDaoRelativeTest {
 
 	@Autowired
