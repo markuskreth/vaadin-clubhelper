@@ -1,6 +1,8 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.function.Supplier;
 
@@ -23,7 +25,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.PersonBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.PflichtenDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.EventDetails;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
@@ -33,6 +34,8 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ClubhelperNavigation.class);
 
 	private static final int WIDTH_LIMIT_FOR_MOBILE = 1000;
+
+	private final List<NavigationListener> naviListeners = new ArrayList<>();
 
 	private ApplicationContext context;
 
@@ -75,8 +78,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personBusiness, securityGroupVerifier));
 		personEdit = factory.createPersonEdit();
 		navi.addView(ClubhelperViews.PersonEditView.name(), personEdit);
-		navi.addView(ClubhelperViews.EventDetails.name(),
-				new EventDetails(personBusiness, groupDao, eventBusiness, pflichtenDao, calendarAdapter));
+		navi.addView(ClubhelperViews.EventDetails.name(), new EventDetails(context));
 
 		page.addBrowserWindowResizeListener(ev -> {
 			int width = ev.getWidth();
@@ -125,6 +127,14 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		navi.navigateTo(navigationState);
 	}
 
+	public void add(NavigationListener e) {
+		naviListeners.add(e);
+	}
+
+	public void remove(NavigationListener o) {
+		naviListeners.remove(o);
+	}
+
 	public class ClubNavigator extends Navigator {
 
 		private static final long serialVersionUID = -6503600786209888296L;
@@ -165,12 +175,20 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 				navigationViewNames.add(byState);
 				super.navigateTo(navigationState);
 			}
-
+			NavigationEvent event = new NavigationEvent(byState);
+			for (NavigationListener navigationListener : naviListeners) {
+				navigationListener.navigation(event);
+			}
 		}
 
 		public void back() {
 			navigationViewNames.pop();
-			navigateTo(navigationViewNames.pop().name());
+			ClubhelperViews pop = navigationViewNames.pop();
+			navigateTo(pop.name());
+			NavigationEvent event = new NavigationEvent(pop);
+			for (NavigationListener navigationListener : naviListeners) {
+				navigationListener.navigation(event);
+			}
 		}
 	}
 

@@ -52,11 +52,10 @@ public class MenuItemStateFactory implements ApplicationContextAware {
 		View currentView = clubhelperNavigation.getNavigator().getCurrentView();
 		ClubhelperViews current = ClubhelperViews.byView(currentView);
 		if (ClubhelperViews.PersonEditView == current) {
-			state = new LoggedinMenuitemState(context, startDateSupplier, endDateSupplier, this::showPrint);
+			state = new LoggedinMenuitemState(context, ui, startDateSupplier, endDateSupplier, this::showPrint);
 		}
 		else if (securityGroupVerifier.isLoggedin()) {
-
-			state = new LoggedinMenuitemState(context, startDateSupplier, endDateSupplier, this::showPrint);
+			state = new LoggedinMenuitemState(context, ui, startDateSupplier, endDateSupplier, this::showPrint);
 		}
 		else {
 			state = new LoggedOffState(context, startDateSupplier, endDateSupplier, this::showPrint);

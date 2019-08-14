@@ -1,6 +1,7 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.business;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +24,8 @@ public class EventBusiness {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	private final List<SelectionListener<ClubEvent>> selectionListener = new ArrayList<>();
+
 	@Autowired
 	ClubEventDao clubEventDao;
 
@@ -42,7 +45,12 @@ public class EventBusiness {
 	}
 
 	public void setSelected(ClubEvent ev) {
+		ClubEvent old = current;
 		this.current = ev;
+		SelectEvent<ClubEvent> event = new SelectEvent<>(old, ev);
+		for (SelectionListener<ClubEvent> l : selectionListener) {
+			l.selectionChanged(event);
+		}
 	}
 
 	public void changePersons(Set<Person> selected) throws ClubhelperException {
@@ -102,4 +110,13 @@ public class EventBusiness {
 		clubEventDao.delete(bean);
 		current = null;
 	}
+
+	public void add(SelectionListener<ClubEvent> e) {
+		selectionListener.add(e);
+	}
+
+	public void remove(SelectionListener<ClubEvent> o) {
+		selectionListener.remove(o);
+	}
+
 }
