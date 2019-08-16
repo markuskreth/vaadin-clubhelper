@@ -51,20 +51,23 @@ class LoggedOffState implements MenuItemState {
 		}
 		MenuItem fileMenu = menuBar.getFileMenuItem();
 		fileMenu.setVisible(true);
-		LoginCommand loginCommand = new LoginCommand(navigator);
-		fileMenu.addItem(loginCommand.getLabel(), new CommandWrapper(loginCommand));
-		MenuItem editMenu = menuBar.getEditMenuItem();
-		editMenu.setVisible(true);
 
 		CommandWrapper exportCalendarMonthCommand = new CommandWrapper(
 				new ExportCalendarMonthCommand(startProvider, endProvider, dataProvider, printConsumer));
-		editMenu.addItem(exportCalendarMonthCommand.getLabel(), exportCalendarMonthCommand);
+		fileMenu.addItem(exportCalendarMonthCommand.getLabel(), exportCalendarMonthCommand);
 		ClubCommand exportCalendarYearCommand = new ExportCalendarYearCommand(startProvider, endProvider, dataProvider,
 				printConsumer);
-		editMenu.addItem(exportCalendarYearCommand.getLabel(), new CommandWrapper(exportCalendarYearCommand));
+		fileMenu.addItem(exportCalendarYearCommand.getLabel(), new CommandWrapper(exportCalendarYearCommand));
 		ClubCommand exportCsvCommand = new ExportCsvCommand(menuBar, context);
-		editMenu.addItem(exportCsvCommand.getLabel(), ev -> exportCsvCommand.execute());
+		fileMenu.addItem(exportCsvCommand.getLabel(), ev -> exportCsvCommand.execute());
+
+		fileMenu.addSeparator();
+		ClubCommand loginCommand = loginOutCommand();
+		fileMenu.addItem(loginCommand.getLabel(), new CommandWrapper(loginCommand));
 
 	}
 
+	protected ClubCommand loginOutCommand() {
+		return new LoginCommand(navigator);
+	}
 }

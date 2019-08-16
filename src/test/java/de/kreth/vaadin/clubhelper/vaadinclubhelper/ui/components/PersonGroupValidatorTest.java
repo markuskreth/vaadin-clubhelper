@@ -3,8 +3,6 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +32,6 @@ class PersonGroupValidatorTest {
 	@Test
 	void testOk() {
 		GroupDef group = new GroupDef();
-		group.setPersongroups(new ArrayList<>());
 		person.add(group);
 		ValidationResult result = validator.apply(person, null);
 		assertFalse(result.isError());

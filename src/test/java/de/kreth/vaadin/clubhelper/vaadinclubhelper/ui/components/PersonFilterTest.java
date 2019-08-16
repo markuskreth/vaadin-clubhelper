@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -52,22 +51,18 @@ class PersonFilterTest {
 		GroupDef adminGroup = new GroupDef();
 		adminGroup.setId(1);
 		adminGroup.setName("ADMIN");
-		adminGroup.setPersongroups(new ArrayList<>());
 
 		GroupDef competitorGroup = new GroupDef();
 		competitorGroup.setName("Wettkämpfer");
 		competitorGroup.setId(2);
-		competitorGroup.setPersongroups(new ArrayList<>());
 
 		GroupDef participantGroup = new GroupDef();
 		participantGroup.setName("ACTIVE");
 		participantGroup.setId(3);
-		participantGroup.setPersongroups(new ArrayList<>());
 
 		GroupDef judgesGroup = new GroupDef();
 		judgesGroup.setName("Kampfrichter");
 		judgesGroup.setId(4);
-		judgesGroup.setPersongroups(new ArrayList<>());
 
 		return Collections.unmodifiableList(Arrays.asList(adminGroup, competitorGroup, participantGroup, judgesGroup));
 

@@ -26,19 +26,15 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ClubCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.CreateMeldungCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.DeleteEventCommand;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCalendarMonthCommand;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCalendarYearCommand;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ExportCsvCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.LogoutCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.SwitchViewCommand;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ClubEventProvider;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ConfirmDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews;
 import net.sf.jasperreports.engine.JasperPrint;
 
-class LoggedinMenuitemState implements MenuItemState {
+class LoggedinMenuitemState extends LoggedOffState {
 
 	private ClubNavigator navigator2;
 
@@ -47,14 +43,6 @@ class LoggedinMenuitemState implements MenuItemState {
 	private ClubhelperNavigation navigator;
 
 	private ApplicationContext context;
-
-	private ClubEventProvider dataProvider;
-
-	private Supplier<ZonedDateTime> startProvider;
-
-	private Supplier<ZonedDateTime> endProvider;
-
-	private BiConsumer<String, JasperPrint> printConsumer;
 
 	private MenuItem openPersonMenuItem;
 
@@ -72,14 +60,10 @@ class LoggedinMenuitemState implements MenuItemState {
 
 	public LoggedinMenuitemState(ApplicationContext context, UI ui, Supplier<ZonedDateTime> startProvider,
 			Supplier<ZonedDateTime> endProvider, BiConsumer<String, JasperPrint> printConsumer) {
-		super();
+		super(context, startProvider, endProvider, printConsumer);
 		this.ui = ui;
 		this.context = context;
-		this.startProvider = startProvider;
-		this.endProvider = endProvider;
-		this.printConsumer = printConsumer;
 		this.navigator = context.getBean(ClubhelperNavigation.class);
-		this.dataProvider = context.getBean(ClubEventProvider.class);
 		this.eventBusiness = context.getBean(EventBusiness.class);
 		navigator.add(ev -> setSelectedMenuItem(ev.getNewView()));
 
@@ -91,13 +75,7 @@ class LoggedinMenuitemState implements MenuItemState {
 
 	@Override
 	public void applyMenuStates(ClubhelperMenuBar menuBar) {
-
-		menuBar.getAllMainMenus().forEach(m -> m.setVisible(false));
-
-		MenuItem fileMenuItem = menuBar.getFileMenuItem();
-		fileMenuItem.setVisible(true);
-		CommandWrapper logout = new CommandWrapper(new LogoutCommand(navigator2, securityVerifier));
-		fileMenuItem.addItem(logout.getLabel(), logout);
+		super.applyMenuStates(menuBar);
 
 		prepareEditMenu(menuBar);
 
@@ -108,6 +86,11 @@ class LoggedinMenuitemState implements MenuItemState {
 		View current = navigator.getNavigator().getCurrentView();
 		ClubhelperViews view = ClubhelperViews.byView(current);
 		setSelectedMenuItem(view);
+	}
+
+	@Override
+	protected ClubCommand loginOutCommand() {
+		return new LogoutCommand(navigator2, securityVerifier);
 	}
 
 	private void prepareViewMenu(ClubhelperMenuBar menuBar) {
@@ -133,15 +116,6 @@ class LoggedinMenuitemState implements MenuItemState {
 	private void prepareEditMenu(ClubhelperMenuBar menuBar) {
 		MenuItem editMenu = menuBar.getEditMenuItem();
 		editMenu.setVisible(true);
-
-		CommandWrapper exportCalendarMonthCommand = new CommandWrapper(
-				new ExportCalendarMonthCommand(startProvider, endProvider, dataProvider, printConsumer));
-		editMenu.addItem(exportCalendarMonthCommand.getLabel(), exportCalendarMonthCommand);
-		ClubCommand exportCalendarYearCommand = new ExportCalendarYearCommand(startProvider, endProvider, dataProvider,
-				printConsumer);
-		editMenu.addItem(exportCalendarYearCommand.getLabel(), new CommandWrapper(exportCalendarYearCommand));
-		ClubCommand exportCsvCommand = new ExportCsvCommand(menuBar, context);
-		editMenu.addItem(exportCsvCommand.getLabel(), ev -> exportCsvCommand.execute());
 
 		CreateMeldungCommand createMeldungCommand = new CreateMeldungCommand(context, this::show);
 		createMeldungMenuItem = editMenu.addItem(createMeldungCommand.getLabel(),

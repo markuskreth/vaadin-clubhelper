@@ -68,7 +68,7 @@ public class Person extends BaseEntity implements Serializable {
 	private List<Contact> contacts;
 
 	// bi-directional many-to-many association to Persongroup
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER)
 	@JoinTable(name = "persongroup", joinColumns = { @JoinColumn(name = "person_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "group_id") })
 	private Set<GroupDef> groups;
@@ -104,7 +104,6 @@ public class Person extends BaseEntity implements Serializable {
 		if (this.groups == null) {
 			this.groups = new HashSet<>();
 		}
-		group.addPersongroup(this);
 		this.groups.add(group);
 	}
 

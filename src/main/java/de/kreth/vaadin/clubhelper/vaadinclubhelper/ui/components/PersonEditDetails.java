@@ -1,7 +1,6 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -9,11 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
-import com.vaadin.data.Binder.BindingBuilder;
 import com.vaadin.data.BinderValidationStatus;
 import com.vaadin.data.HasValue.ValueChangeEvent;
 import com.vaadin.data.HasValue.ValueChangeListener;
 import com.vaadin.data.ValidationResult;
+import com.vaadin.data.ValueProvider;
+import com.vaadin.server.Setter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Component;
@@ -43,8 +43,6 @@ public class PersonEditDetails extends HorizontalLayout {
 	private final PersonBusiness dao;
 
 	private final Binder<Person> binder;
-
-	private final Binder<Set<GroupDef>> binderGroups;
 
 	private Consumer<Person> personChangeHandler;
 
@@ -130,7 +128,6 @@ public class PersonEditDetails extends HorizontalLayout {
 		VerticalLayout layout = new VerticalLayout(textPrename, textSureName, birthday, genderBox, textStartPass, close,
 				okButton);
 
-		binderGroups = new Binder<Set<GroupDef>>();
 		Component groupLayout = createGroupPanel(groups);
 		contactLayout = new ContactGrid();
 		contactLayout.setDeleteConsumer(c -> {
@@ -178,6 +175,21 @@ public class PersonEditDetails extends HorizontalLayout {
 		iterator().forEachRemaining(comp -> comp.setEnabled(false));
 	}
 
+	static boolean containsGroup(Person p, GroupDef g) {
+		return p != null
+				&& p.getGroups() != null
+				&& p.getGroups().contains(g);
+	}
+
+	static void changeGroupContent(Person p, GroupDef g, boolean schouldBeContained) {
+		if (schouldBeContained) {
+			p.getGroups().add(g);
+		}
+		else {
+			p.getGroups().remove(g);
+		}
+	}
+
 	public Component createGroupPanel(List<GroupDef> groups) {
 
 		VerticalLayout layout = new VerticalLayout();
@@ -186,17 +198,11 @@ public class PersonEditDetails extends HorizontalLayout {
 			Switch sw = new Switch(g.getName());
 			sw.setId("Group_" + g.getName());
 			sw.setData(g);
-			layout.addComponent(sw);
 
-			BindingBuilder<Set<GroupDef>, Boolean> forField = binderGroups.forField(sw);
-			forField.bind(p -> p.contains(g), (bean, fieldvalue) -> {
-				if (fieldvalue) {
-					bean.add(g);
-				}
-				else {
-					bean.remove(g);
-				}
-			});
+			ValueProvider<Person, Boolean> getter = p -> containsGroup(p, g);
+			Setter<Person, Boolean> setter = (p, b) -> changeGroupContent(p, g, b);
+			binder.forField(sw).bind(getter, setter);
+			layout.addComponent(sw);
 		}
 		binder.addValueChangeListener(new ValueChangeListener<Object>() {
 
@@ -211,19 +217,6 @@ public class PersonEditDetails extends HorizontalLayout {
 						newGroups, binder.hasChanges());
 			}
 		});
-		binderGroups.addValueChangeListener(new ValueChangeListener<Object>() {
-
-			transient Logger log = LoggerFactory.getLogger(PersonEditDetails.this.getClass());
-
-			@Override
-			public void valueChange(ValueChangeEvent<Object> event) {
-				Component comp = event.getComponent();
-				Object oldGroups = event.getOldValue();
-				Object newGroups = event.getValue();
-				log.warn("Changed value in {}, old size={}, new size={}, hasChanges={}", comp.getId(), oldGroups,
-						newGroups, binderGroups.hasChanges());
-			}
-		});
 		return layout;
 	}
 
@@ -234,12 +227,6 @@ public class PersonEditDetails extends HorizontalLayout {
 	public void setBean(Person person) {
 		closeWithoutSave();
 		binder.setBean(person);
-		if (person != null) {
-			binderGroups.setBean(person.getGroups());
-		}
-		else {
-			binderGroups.setBean(null);
-		}
 		contactLayout.setPerson(person);
 		relationshipLayout.setPerson(person);
 		adressLayout.setPerson(person);
@@ -277,7 +264,6 @@ public class PersonEditDetails extends HorizontalLayout {
 	public boolean hasChanges() {
 		return binder.getBean() != null
 				&& (binder.hasChanges()
-						|| binderGroups.hasChanges()
 						|| contactLayout.hasChanges()
 						|| relationshipLayout.hasChanges()
 						|| adressLayout.hasChanges());

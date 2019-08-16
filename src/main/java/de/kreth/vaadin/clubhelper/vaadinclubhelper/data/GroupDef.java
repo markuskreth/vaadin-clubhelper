@@ -1,13 +1,10 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.data;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
@@ -25,31 +22,12 @@ public class GroupDef extends BaseEntity implements Serializable {
 
 	private String name;
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
-	private List<Person> persongroups;
-
-	public void addPersongroup(Person persongroup) {
-		persongroups.add(persongroup);
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Person> getPersongroups() {
-		return persongroups;
-	}
-
-	public void setPersongroups(List<Person> persongroups) {
-		this.persongroups = persongroups;
-	}
-
-	public void removePersongroup(Person persongroup) {
-		getPersongroups().remove(persongroup);
 	}
 
 	@Override

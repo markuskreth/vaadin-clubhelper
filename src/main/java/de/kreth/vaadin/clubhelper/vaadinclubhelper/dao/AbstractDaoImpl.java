@@ -9,6 +9,7 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
@@ -34,12 +35,19 @@ public abstract class AbstractDaoImpl<T extends EntityAccessor> implements IDao<
 	public void save(T obj) {
 		Date now = new Date();
 		obj.setChanged(now);
-		if (entityManager.contains(obj) || obj.hasValidId()) {
-			entityManager.merge(obj);
+
+		try {
+			if (entityManager.contains(obj) || obj.hasValidId()) {
+				entityManager.merge(obj);
+			}
+			else {
+				obj.setCreated(now);
+				entityManager.persist(obj);
+			}
 		}
-		else {
-			obj.setCreated(now);
-			entityManager.persist(obj);
+		catch (DataAccessException e) {
+			entityManager.refresh(obj);
+			throw e;
 		}
 	}
 

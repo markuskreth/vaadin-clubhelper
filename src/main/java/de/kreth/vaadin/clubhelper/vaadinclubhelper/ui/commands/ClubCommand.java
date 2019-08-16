@@ -1,8 +1,10 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands;
 
+import java.io.Serializable;
+
 import com.vaadin.server.Resource;
 
-public interface ClubCommand {
+public interface ClubCommand extends Serializable {
 
 	String getLabel();
 
