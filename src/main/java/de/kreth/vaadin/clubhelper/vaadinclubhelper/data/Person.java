@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -52,33 +53,38 @@ public class Person extends BaseEntity implements Serializable {
 
 	private Integer gender;
 
-	@OneToOne(mappedBy = "person")
+	@OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Startpass startpass;
 
 	// bi-directional many-to-one association to Adress
-	@OneToMany(mappedBy = "person")
+	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Adress> adresses;
 
 	// bi-directional many-to-one association to Attendance
-	@OneToMany(mappedBy = "person")
+	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Attendance> attendances;
 
 	// bi-directional many-to-one association to Contact
-	@OneToMany(mappedBy = "person")
+	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Contact> contacts;
 
 	// bi-directional many-to-many association to Persongroup
-	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER)
+	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH })
 	@JoinTable(name = "persongroup", joinColumns = { @JoinColumn(name = "person_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "group_id") })
 	private Set<GroupDef> groups;
 
 	// bi-directional many-to-one association to Relative
-	@OneToMany(mappedBy = "person1Bean")
+	@OneToMany(mappedBy = "person1Bean", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Relative> relatives1;
 
 	// bi-directional many-to-one association to Relative
-	@OneToMany(mappedBy = "person2Bean")
+	@OneToMany(mappedBy = "person2Bean", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
 	private List<Relative> relatives2;
 
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "persons")

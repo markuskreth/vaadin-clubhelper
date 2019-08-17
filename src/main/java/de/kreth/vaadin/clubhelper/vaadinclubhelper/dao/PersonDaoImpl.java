@@ -12,10 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Adress;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Contact;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.EntityAccessor;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Relation;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Startpass;
 
 @Repository
 public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao {
@@ -24,46 +22,6 @@ public class PersonDaoImpl extends AbstractDaoImpl<Person> implements PersonDao 
 
 	public PersonDaoImpl() {
 		super(Person.class);
-	}
-
-	@Override
-	@Transactional
-	public void save(Person obj) {
-		checkSubEntities(obj);
-		super.save(obj);
-	}
-
-	@Transactional
-	public void checkSubEntities(Person obj) {
-		Startpass startPass = obj.getStartpass();
-		if (startPass != null) {
-			persistOrUpdate(startPass);
-		}
-		List<Contact> contacts = obj.getContacts();
-		if (contacts != null) {
-			for (Contact c : contacts) {
-				persistOrUpdate(c);
-			}
-		}
-		List<Adress> adresses = obj.getAdresses();
-		if (adresses != null) {
-			for (Adress a : adresses) {
-				persistOrUpdate(a);
-			}
-		}
-	}
-
-	@Transactional
-	public void persistOrUpdate(EntityAccessor c) {
-		Date now = new Date();
-		c.setChanged(now);
-		if (entityManager.contains(c) || c.hasValidId()) {
-			entityManager.merge(c);
-		}
-		else {
-			c.setCreated(now);
-			entityManager.persist(c);
-		}
 	}
 
 	@Override
