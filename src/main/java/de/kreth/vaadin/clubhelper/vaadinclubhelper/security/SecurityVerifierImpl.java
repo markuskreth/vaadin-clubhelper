@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import com.vaadin.server.VaadinSession;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 @Service
@@ -29,10 +28,8 @@ public class SecurityVerifierImpl implements SecurityVerifier {
 		if (person != null) {
 
 			for (SecurityGroups g : groups) {
-				for (GroupDef def : person.getGroups()) {
-					if (g.getValue().equalsIgnoreCase(def.getName())) {
-						return true;
-					}
+				if (person.hasGroup(g.getValue())) {
+					return true;
 				}
 			}
 		}
@@ -41,7 +38,7 @@ public class SecurityVerifierImpl implements SecurityVerifier {
 
 	@Override
 	public boolean isLoggedin() {
-		return person != null && person.getGroups() != null && person.getGroups().isEmpty() == false;
+		return person != null && person.hasAnyGroup();
 	}
 
 }

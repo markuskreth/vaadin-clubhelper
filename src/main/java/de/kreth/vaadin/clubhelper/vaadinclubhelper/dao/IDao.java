@@ -10,4 +10,5 @@ public interface IDao<T> extends Serializable {
 	List<T> listAll();
 
 	T get(Object primaryKey);
+
 }

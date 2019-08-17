@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationResult;
@@ -33,9 +34,9 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 
 	private final List<T> source;
 
-	private final ListDataProvider<T> dataProvider;
+	private final Supplier<Boolean> hasChanges;
 
-	private boolean hasChanges;
+	private final ListDataProvider<T> dataProvider;
 
 	private Column<T, Component> deleteButtonColumn;
 
@@ -62,7 +63,6 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 		grid.addSelectionListener(ev -> editedListener.editObject = null);
 		Binder<T> binder = editor.getBinder();
 		editor.addSaveListener(ev -> {
-			hasChanges = true;
 			if (editedListener.editObject != null) {
 				for (Consumer<T> consumer : successConsumers) {
 					consumer.accept(ev.getBean());
@@ -75,6 +75,8 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 		createColumnAndBinding(binder);
 
 		binder.withValidator((obj, context) -> validate(obj, context));
+
+		this.hasChanges = () -> binder.hasChanges();
 
 		deleteButtonColumn = grid.addComponentColumn(c -> {
 			Button deleteButton = new Button(VaadinIcons.TRASH);
@@ -124,7 +126,6 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 	}
 
 	public final void setPerson(Person person) {
-		hasChanges = false;
 		source.clear();
 		if (person != null) {
 			source.addAll(readValues(person));
@@ -135,7 +136,7 @@ public abstract class AbstractDataGrid<T> extends VerticalLayout {
 	protected abstract Collection<? extends T> readValues(Person person);
 
 	public final boolean hasChanges() {
-		return hasChanges;
+		return hasChanges.get().booleanValue();
 	}
 
 	class EditedListener implements EditorCancelListener<T> {

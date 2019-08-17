@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.vaadin.event.selection.SelectionEvent;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
@@ -26,6 +29,8 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemSt
 public class PersonEditView extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 1770993670570422036L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(PersonEditView.class);
 
 	private ClubhelperMenuBar menuBar;
 
@@ -64,9 +69,6 @@ public class PersonEditView extends VerticalLayout implements View {
 		addPerson.addClickListener(ev -> addPerson());
 
 		addComponent(addPerson);
-//		Button backButton = new Button("Zurück");
-//		backButton.addClickListener(ev -> navigator.navigateTo(ClubhelperViews.MainView.name()));
-//		addComponent(backButton);
 	}
 
 	public HorizontalLayout createHorizontalLayout() {
@@ -97,6 +99,7 @@ public class PersonEditView extends VerticalLayout implements View {
 
 	void selectedPerson(SelectionEvent<Person> p) {
 		if (personDetails.hasChanges()) {
+			LOG.info("Current Person has changed - selection suspended for question");
 			VerticalLayout content = new VerticalLayout();
 			Window dlg = new Window("Änderungen verwerfen?", content);
 			dlg.setClosable(false);
@@ -108,6 +111,7 @@ public class PersonEditView extends VerticalLayout implements View {
 			content.addComponent(message);
 			HorizontalLayout buttons = new HorizontalLayout();
 			Button ok = new Button("Ja", ev -> {
+				LOG.warn("Discating changes in " + personDetails.currentBean());
 				dlg.setVisible(false);
 				PersonEditView.this.getUI().removeWindow(dlg);
 				Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
@@ -115,6 +119,7 @@ public class PersonEditView extends VerticalLayout implements View {
 			});
 			Button cancel = new Button("Nein", ev -> {
 				dlg.setVisible(false);
+				LOG.info("Canceling new Person selection");
 				PersonEditView.this.getUI().removeWindow(dlg);
 			});
 			buttons.addComponents(ok, cancel);
@@ -124,7 +129,9 @@ public class PersonEditView extends VerticalLayout implements View {
 		}
 		else {
 			Optional<Person> firstSelectedItem = p.getFirstSelectedItem();
-			personDetails.setBean(firstSelectedItem.orElse(null));
+			Person selection = firstSelectedItem.orElse(null);
+			personDetails.setBean(selection);
+			LOG.info("Changed selection to " + selection);
 		}
 	}
 
@@ -132,6 +139,7 @@ public class PersonEditView extends VerticalLayout implements View {
 	public void enter(ViewChangeEvent event) {
 		this.navigator = event.getNavigator();
 		menuBar.applyState(menuStateFactory.currentState());
+		LOG.debug("opened {}", getClass().getName());
 	}
 
 }

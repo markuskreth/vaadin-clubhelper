@@ -68,18 +68,16 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 
 	private boolean personInGroup(Person t) {
 		if (selectedGroups != null) {
-			return t.getGroups() != null && haveCommonGroup(t.getGroups(), selectedGroups);
+			return t.hasAnyGroup() == false && haveCommonGroup(t, selectedGroups);
 		}
 		return true;
 	}
 
-	private boolean haveCommonGroup(Set<GroupDef> groups, Set<GroupDef> selectedGroups2) {
+	private boolean haveCommonGroup(Person p, Set<GroupDef> selectedGroups2) {
 
-		for (GroupDef g1 : groups) {
-			for (GroupDef g2 : selectedGroups2) {
-				if (g1.getId() == g2.getId()) {
-					return true;
-				}
+		for (GroupDef g2 : selectedGroups2) {
+			if (p.hasGroup(g2)) {
+				return true;
 			}
 		}
 		return false;

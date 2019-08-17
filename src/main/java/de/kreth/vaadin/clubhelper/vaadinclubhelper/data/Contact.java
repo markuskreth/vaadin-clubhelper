@@ -57,7 +57,6 @@ public class Contact extends BaseEntity implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((person == null) ? 0 : person.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
@@ -75,14 +74,6 @@ public class Contact extends BaseEntity implements Serializable {
 			return false;
 		}
 		Contact other = (Contact) obj;
-		if (person == null) {
-			if (other.person != null) {
-				return false;
-			}
-		}
-		else if (!person.equals(other.person)) {
-			return false;
-		}
 		if (type == null) {
 			if (other.type != null) {
 				return false;

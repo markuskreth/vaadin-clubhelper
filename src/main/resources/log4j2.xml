@@ -4,7 +4,16 @@
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
         </Console>
-        <RollingFile name="MyFile" fileName="${catalina.base}/logs/vaadin_clubhelper.log" immediateFlush="false" append="true">
+        <RollingFile name="MyFile" fileName="E:/Markus/eclipse_workspace/logs/vaadin_clubhelper.log" immediateFlush="false" append="true">
+			<PatternLayout>
+				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %logger %m%n </Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1"/>
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+        </RollingFile>
+        <RollingFile name="SqlFile" fileName="E:/Markus/eclipse_workspace/logs/logs/vaadin_clubhelper_sql.log" immediateFlush="true" append="false">
 			<PatternLayout>
 				<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %logger %m%n </Pattern>
 			</PatternLayout>
@@ -23,6 +32,15 @@
         <Logger name="de.kreth.vaadin.clubhelper" additivity="false" level="warn">
             <AppenderRef ref="Console" />
             <AppenderRef ref="MyFile"/>
+        </Logger>
+         
+        <Logger name="org.hibernate.SQL" additivity="false" level="debug">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="SqlFile"/>
+        </Logger>
+        <Logger name="org.hibernate.type.descriptor.sql" additivity="false" level="trace">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="SqlFile"/>
         </Logger>
          
     </Loggers>

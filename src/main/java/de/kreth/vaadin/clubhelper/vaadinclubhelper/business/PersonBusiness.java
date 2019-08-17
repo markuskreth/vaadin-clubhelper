@@ -57,4 +57,8 @@ public class PersonBusiness {
 		return dao.findLoginUser(username, password);
 	}
 
+	public Person getById(int id) {
+		return dao.get(id);
+	}
+
 }

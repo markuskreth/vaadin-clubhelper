@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.vaadin.teemu.switchui.Switch;
 
 import com.vaadin.data.Binder;
@@ -86,7 +87,7 @@ public class PersonEditDetails extends HorizontalLayout {
 			return startpass.getStartpassNr();
 		}, (p, value) -> p.setStartpass(value));
 
-		binder.withValidator(p -> (p.getGroups() != null && p.getGroups().isEmpty() == false),
+		binder.withValidator(p -> (p.hasAnyGroup()),
 				"Mind. eine Gruppe muss gewählt sein!");
 
 		Button close = new Button("Schließen");
@@ -99,16 +100,22 @@ public class PersonEditDetails extends HorizontalLayout {
 
 		okButton = new Button("Speichern");
 		okButton.addClickListener(ev -> {
+			okButton.setComponentError(null);
 			BinderValidationStatus<Person> validate = binder.validate();
 			if (validate.isOk()) {
 				Person edited = binder.getBean();
-				dao.save(edited);
+				try {
+					dao.save(edited);
+				}
+				catch (DataAccessException e) {
+					edited = dao.getById(edited.getId());
+					updateBean(edited);
+					throw e;
+				}
 				if (personChangeHandler != null) {
 					personChangeHandler.accept(binder.getBean());
 				}
-				contactLayout.setPerson(edited);
-				relationshipLayout.setPerson(edited);
-				adressLayout.setPerson(edited);
+				updateBean(edited);
 			}
 			else {
 				List<ValidationResult> errors = validate.getBeanValidationErrors();
@@ -177,16 +184,15 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	static boolean containsGroup(Person p, GroupDef g) {
 		return p != null
-				&& p.getGroups() != null
-				&& p.getGroups().contains(g);
+				&& p.hasGroup(g);
 	}
 
 	static void changeGroupContent(Person p, GroupDef g, boolean schouldBeContained) {
 		if (schouldBeContained) {
-			p.getGroups().add(g);
+			p.add(g);
 		}
 		else {
-			p.getGroups().remove(g);
+			p.remove(g);
 		}
 	}
 
@@ -226,10 +232,10 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	public void setBean(Person person) {
 		closeWithoutSave();
-		binder.setBean(person);
-		contactLayout.setPerson(person);
-		relationshipLayout.setPerson(person);
-		adressLayout.setPerson(person);
+
+		okButton.setComponentError(null);
+
+		updateBean(person);
 
 		if (person != null) {
 			iterator().forEachRemaining(comp -> comp.setEnabled(true));
@@ -240,6 +246,17 @@ public class PersonEditDetails extends HorizontalLayout {
 			iterator().forEachRemaining(comp -> comp.setEnabled(false));
 			okButton.setEnabled(false);
 		}
+	}
+
+	public Person currentBean() {
+		return binder.getBean();
+	}
+
+	private void updateBean(Person person) {
+		contactLayout.setPerson(person);
+		relationshipLayout.setPerson(person);
+		adressLayout.setPerson(person);
+		binder.setBean(person);
 	}
 
 	public void closeWithoutSave() {

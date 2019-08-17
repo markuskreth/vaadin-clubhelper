@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,21 +59,25 @@ public class Person extends BaseEntity implements Serializable {
 
 	// bi-directional many-to-one association to Adress
 	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REMOVE,
 			CascadeType.REFRESH })
 	private List<Adress> adresses;
 
 	// bi-directional many-to-one association to Attendance
 	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REMOVE,
 			CascadeType.REFRESH })
 	private List<Attendance> attendances;
 
 	// bi-directional many-to-one association to Contact
 	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REMOVE,
 			CascadeType.REFRESH })
 	private List<Contact> contacts;
 
 	// bi-directional many-to-many association to Persongroup
-	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER, cascade = { CascadeType.REFRESH })
+	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
+			CascadeType.REFRESH })
 	@JoinTable(name = "persongroup", joinColumns = { @JoinColumn(name = "person_id") }, inverseJoinColumns = {
 			@JoinColumn(name = "group_id") })
 	private Set<GroupDef> groups;
@@ -111,6 +116,12 @@ public class Person extends BaseEntity implements Serializable {
 			this.groups = new HashSet<>();
 		}
 		this.groups.add(group);
+	}
+
+	public void remove(GroupDef g) {
+		if (this.groups != null) {
+			this.groups.remove(g);
+		}
 	}
 
 	public void add(ClubEvent ev) {
@@ -173,6 +184,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public List<Adress> getAdresses() {
+		if (adresses == null) {
+			return Collections.emptyList();
+		}
 		return adresses;
 	}
 
@@ -181,6 +195,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public List<Attendance> getAttendances() {
+		if (attendances == null) {
+			return Collections.emptyList();
+		}
 		return attendances;
 	}
 
@@ -189,6 +206,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public List<Contact> getContacts() {
+		if (contacts == null) {
+			return Collections.emptyList();
+		}
 		return contacts;
 	}
 
@@ -197,6 +217,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public Set<GroupDef> getGroups() {
+		if (groups == null) {
+			return Collections.emptySet();
+		}
 		return groups;
 	}
 
@@ -205,6 +228,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public List<Relative> getRelatives1() {
+		if (relatives1 == null) {
+			return Collections.emptyList();
+		}
 		return relatives1;
 	}
 
@@ -213,6 +239,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public List<Relative> getRelatives2() {
+		if (relatives2 == null) {
+			return Collections.emptyList();
+		}
 		return relatives2;
 	}
 
@@ -221,6 +250,9 @@ public class Person extends BaseEntity implements Serializable {
 	}
 
 	public Set<ClubEvent> getEvents() {
+		if (events == null) {
+			return Collections.emptySet();
+		}
 		return events;
 	}
 
@@ -494,6 +526,23 @@ public class Person extends BaseEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "Person [id=" + getId() + ", prename=" + prename + ", surname=" + surname + "]";
+	}
+
+	public boolean hasGroup(GroupDef g) {
+		return groups != null && groups.contains(g);
+	}
+
+	public boolean hasAnyGroup() {
+		return groups != null && !groups.isEmpty();
+	}
+
+	public boolean hasGroup(String value) {
+		for (GroupDef g : groups) {
+			if (g.getName().equalsIgnoreCase(value)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

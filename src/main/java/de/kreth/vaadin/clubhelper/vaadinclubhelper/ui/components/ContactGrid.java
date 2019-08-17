@@ -20,9 +20,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 
 public class ContactGrid extends AbstractDataGrid<Contact> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -2573761302198992085L;
 
 	private static final PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
