@@ -12,7 +12,7 @@ public class PersonGroupValidator implements Validator<Person> {
 
 	@Override
 	public ValidationResult apply(Person value, ValueContext context) {
-		if (value.hasAnyGroup()) {
+		if (!value.hasAnyGroup()) {
 			return ValidationResult.error("Es müssen Gruppen gesetzt sein!");
 		}
 

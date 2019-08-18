@@ -26,7 +26,7 @@ class PersonGroupValidatorTest {
 	@Test
 	void testError() {
 		ValidationResult result = validator.apply(person, null);
-		assertTrue(result.isError());
+		assertTrue("Error expected on empty groups", result.isError());
 	}
 
 	@Test
