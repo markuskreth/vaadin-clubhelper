@@ -296,6 +296,9 @@
 	<build>
 		<resources>
 			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
 				<directory>src/packaging</directory>
 				<filtering>true</filtering>
 			</resource>
