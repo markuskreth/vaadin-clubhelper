@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.vaadin.ui.BrowserFrame;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews;
@@ -47,12 +49,16 @@ public class MenuItemStateFactory implements ApplicationContextAware {
 
 	private Supplier<ZonedDateTime> endDateSupplier;
 
+	private Consumer<Person> newPersonConsumer;
+
 	public MenuItemState currentState() {
 		MenuItemState state;
 		View currentView = clubhelperNavigation.getNavigator().getCurrentView();
 		ClubhelperViews current = ClubhelperViews.byView(currentView);
 		if (ClubhelperViews.PersonEditView == current) {
-			state = new LoggedinMenuitemState(context, ui, startDateSupplier, endDateSupplier, this::showPrint);
+			state = new LoggedinEditPersonViewMenuitemState(context, ui, startDateSupplier, endDateSupplier,
+					this::showPrint,
+					newPersonConsumer);
 		}
 		else if (securityGroupVerifier.isLoggedin()) {
 			state = new LoggedinMenuitemState(context, ui, startDateSupplier, endDateSupplier, this::showPrint);
@@ -111,6 +117,10 @@ public class MenuItemStateFactory implements ApplicationContextAware {
 
 	public void configure(UI ui) {
 		this.ui = ui;
+	}
+
+	public void setNewPersonConsumer(Consumer<Person> newPersonConsumer) {
+		this.newPersonConsumer = newPersonConsumer;
 	}
 
 }

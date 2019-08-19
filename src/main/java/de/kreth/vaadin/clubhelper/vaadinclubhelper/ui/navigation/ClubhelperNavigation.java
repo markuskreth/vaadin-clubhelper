@@ -71,12 +71,19 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 		ViewFactory factory = new ViewFactory(page);
 		mainView = factory.createMain();
+		personEdit = factory.createPersonEdit();
+
+		MenuItemStateFactory menuItemFactory = context.getBean(MenuItemStateFactory.class);
+		setupMenuItemStateFactory(menuItemFactory);
 
 		navi = new ClubNavigator().init(mainUI);
+		ClubhelperMenuBar menuBar = new ClubhelperMenuBar(menuItemFactory.currentState());
+		personEdit.setMenuBar(menuBar);
+		personEdit.setMenuStateFactory(menuItemFactory);
+
 		navi.addView("", mainView);
 		navi.addView(ClubhelperViews.MainView.name(), mainView);
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personBusiness, securityGroupVerifier));
-		personEdit = factory.createPersonEdit();
 		navi.addView(ClubhelperViews.PersonEditView.name(), personEdit);
 		navi.addView(ClubhelperViews.EventDetails.name(), new EventDetails(context));
 
@@ -89,6 +96,15 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 						Notification.Type.TRAY_NOTIFICATION);
 			}
 		});
+	}
+
+	private void setupMenuItemStateFactory(MenuItemStateFactory menuItemFactory) {
+
+		menuItemFactory.setStartDateSupplier(mainView.startDateSupplier());
+		menuItemFactory.setEndDateSupplier(mainView.endDateSupplier());
+
+		menuItemFactory.setNewPersonConsumer(personEdit::setNewPerson);
+
 	}
 
 	public ClubNavigator getNavigator() {
@@ -114,12 +130,9 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		}
 
 		public PersonEditView createPersonEdit() {
-			MenuItemStateFactory menuItemFactory = context.getBean(MenuItemStateFactory.class);
-			menuItemFactory.setStartDateSupplier(mainView.startDateSupplier());
-			menuItemFactory.setEndDateSupplier(mainView.endDateSupplier());
-			ClubhelperMenuBar menuBar = new ClubhelperMenuBar(menuItemFactory.currentState());
-			return new PersonEditView(groupDao, personBusiness,
-					menuBar, menuItemFactory, (page.getBrowserWindowWidth() >= WIDTH_LIMIT_FOR_MOBILE));
+			PersonEditView personEditView = new PersonEditView(groupDao, personBusiness,
+					(page.getBrowserWindowWidth() >= WIDTH_LIMIT_FOR_MOBILE));
+			return personEditView;
 		}
 	}
 

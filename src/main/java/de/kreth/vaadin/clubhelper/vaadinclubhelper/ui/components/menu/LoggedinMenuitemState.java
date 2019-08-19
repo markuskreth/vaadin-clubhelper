@@ -30,13 +30,15 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.LogoutCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.SwitchViewCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ConfirmDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperViews;
 import net.sf.jasperreports.engine.JasperPrint;
 
+/**
+ * Status für authentifizierte User mit Menuitems für jedes View
+ * @author markus
+ *
+ */
 class LoggedinMenuitemState extends LoggedOffState {
-
-	private ClubNavigator navigator2;
 
 	private SecurityVerifier securityVerifier;
 
@@ -90,7 +92,7 @@ class LoggedinMenuitemState extends LoggedOffState {
 
 	@Override
 	protected ClubCommand loginOutCommand() {
-		return new LogoutCommand(navigator2, securityVerifier);
+		return new LogoutCommand(navigator.getNavigator(), securityVerifier);
 	}
 
 	private void prepareViewMenu(ClubhelperMenuBar menuBar) {
@@ -123,6 +125,7 @@ class LoggedinMenuitemState extends LoggedOffState {
 
 		CommandWrapper deleeteEvent = new CommandWrapper(new DeleteEventCommand(this::deleteEvent));
 		deleteMenuItem = editMenu.addItem(deleeteEvent.getLabel(), deleeteEvent);
+
 	}
 
 	protected void setSelectedMenuItem(ClubhelperViews view) {

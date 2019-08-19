@@ -1,14 +1,11 @@
 package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaadin.event.selection.SelectionEvent;
-import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.ContentMode;
@@ -38,17 +35,11 @@ public class PersonEditView extends VerticalLayout implements View {
 
 	private PersonEditDetails personDetails;
 
-	private Navigator navigator;
-
 	private MenuItemStateFactory menuStateFactory;
 
-	public PersonEditView(GroupDao groupDao, PersonBusiness personDao, ClubhelperMenuBar menuBar,
-			MenuItemStateFactory menuStateFactory,
+	public PersonEditView(GroupDao groupDao, PersonBusiness personDao,
 			boolean horizontalLayout) {
 		setMargin(true);
-		this.menuBar = menuBar;
-		this.menuStateFactory = menuStateFactory;
-		addComponent(menuBar);
 		personGrid = new PersonGrid(groupDao, personDao);
 		personGrid.setSizeFull();
 		personGrid.onPersonEdit();
@@ -65,10 +56,6 @@ public class PersonEditView extends VerticalLayout implements View {
 		else {
 			addComponent(createVerticalLayout());
 		}
-		Button addPerson = new Button("Hinzufügen");
-		addPerson.addClickListener(ev -> addPerson());
-
-		addComponent(addPerson);
 	}
 
 	public HorizontalLayout createHorizontalLayout() {
@@ -87,13 +74,8 @@ public class PersonEditView extends VerticalLayout implements View {
 		return layout;
 	}
 
-	private void addPerson() {
-		Person person = new Person();
-		person.setGroups(new HashSet<>());
-		person.setAdresses(new ArrayList<>());
-		person.setEvents(new HashSet<>());
-		person.setRelatives1(new ArrayList<>());
-		personDetails.setBean(person);
+	public void setNewPerson(Person p) {
+		personDetails.setBean(p);
 		personGrid.deselectAll();
 	}
 
@@ -137,9 +119,16 @@ public class PersonEditView extends VerticalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
-		this.navigator = event.getNavigator();
 		menuBar.applyState(menuStateFactory.currentState());
 		LOG.debug("opened {}", getClass().getName());
 	}
 
+	public void setMenuBar(ClubhelperMenuBar menuBar) {
+		this.menuBar = menuBar;
+		addComponentAsFirst(menuBar);
+	}
+
+	public void setMenuStateFactory(MenuItemStateFactory menuStateFactory) {
+		this.menuStateFactory = menuStateFactory;
+	}
 }
