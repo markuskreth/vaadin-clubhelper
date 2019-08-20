@@ -47,7 +47,7 @@ public class ExportCsvCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return null;
+		return VaadinIcons.FILE_TEXT;
 	}
 
 	@Override

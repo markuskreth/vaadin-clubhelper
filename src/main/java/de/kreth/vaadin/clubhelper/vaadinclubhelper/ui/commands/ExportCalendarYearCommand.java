@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.jasper.CalendarCreator;
@@ -32,7 +33,7 @@ public class ExportCalendarYearCommand extends AbstractExportAction {
 
 	@Override
 	public Resource getIcon() {
-		return null;
+		return VaadinIcons.FILE_TABLE;
 	}
 
 	@Override
