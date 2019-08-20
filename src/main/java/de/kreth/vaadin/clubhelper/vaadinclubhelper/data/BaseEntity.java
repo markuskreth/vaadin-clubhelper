@@ -60,7 +60,8 @@ public abstract class BaseEntity implements EntityAccessor {
 		this.deleted = new Date(deleted.getTime());
 	}
 
-	public int getId() {
+	@Override
+	public Integer getId() {
 		return id;
 	}
 

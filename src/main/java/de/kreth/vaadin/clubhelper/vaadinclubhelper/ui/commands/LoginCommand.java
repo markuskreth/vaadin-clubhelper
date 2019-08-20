@@ -27,7 +27,7 @@ public class LoginCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return VaadinIcons.USER;
+		return VaadinIcons.SIGN_IN;
 	}
 
 }

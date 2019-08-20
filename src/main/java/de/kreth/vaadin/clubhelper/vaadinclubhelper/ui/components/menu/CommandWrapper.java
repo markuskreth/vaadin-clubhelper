@@ -35,4 +35,7 @@ public class CommandWrapper implements Command, ClubCommand {
 		command.execute();
 	}
 
+	MenuItem addTo(MenuItem parent) {
+		return parent.addItem(getLabel(), getIcon(), this);
+	}
 }

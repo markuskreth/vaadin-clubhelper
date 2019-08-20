@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import org.springframework.context.ApplicationContext;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
@@ -27,7 +28,7 @@ public class CreateMeldungCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return null;
+		return VaadinIcons.NEWSPAPER;
 	}
 
 	@Override

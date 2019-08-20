@@ -54,16 +54,18 @@ class LoggedOffState implements MenuItemState {
 
 		CommandWrapper exportCalendarMonthCommand = new CommandWrapper(
 				new ExportCalendarMonthCommand(startProvider, endProvider, dataProvider, printConsumer));
-		fileMenu.addItem(exportCalendarMonthCommand.getLabel(), exportCalendarMonthCommand);
+		exportCalendarMonthCommand.addTo(fileMenu);
+
 		ClubCommand exportCalendarYearCommand = new ExportCalendarYearCommand(startProvider, endProvider, dataProvider,
 				printConsumer);
-		fileMenu.addItem(exportCalendarYearCommand.getLabel(), new CommandWrapper(exportCalendarYearCommand));
-		ClubCommand exportCsvCommand = new ExportCsvCommand(menuBar, context);
-		fileMenu.addItem(exportCsvCommand.getLabel(), ev -> exportCsvCommand.execute());
+		new CommandWrapper(exportCalendarYearCommand).addTo(fileMenu);
+
+		CommandWrapper exportCsvCommand = new CommandWrapper(new ExportCsvCommand(menuBar, context));
+		exportCsvCommand.addTo(fileMenu);
 
 		fileMenu.addSeparator();
-		ClubCommand loginCommand = loginOutCommand();
-		fileMenu.addItem(loginCommand.getLabel(), new CommandWrapper(loginCommand));
+		CommandWrapper loginCommand = new CommandWrapper(loginOutCommand());
+		loginCommand.addTo(fileMenu);
 
 	}
 

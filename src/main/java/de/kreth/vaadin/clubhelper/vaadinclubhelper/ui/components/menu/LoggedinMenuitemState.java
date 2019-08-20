@@ -101,17 +101,17 @@ class LoggedinMenuitemState extends LoggedOffState {
 
 		CommandWrapper calendarView = new CommandWrapper(
 				new SwitchViewCommand(context, "Hauptansicht", VaadinIcons.CALENDAR, ClubhelperViews.MainView));
-		calendarMenuItem = viewMenu.addItem(calendarView.getLabel(), calendarView);
+		calendarMenuItem = calendarView.addTo(viewMenu);
 		calendarMenuItem.setCheckable(true);
 
 		CommandWrapper openPersonEditor = new CommandWrapper(
 				new SwitchViewCommand(context, "Personen verwalten", VaadinIcons.EDIT, ClubhelperViews.PersonEditView));
-		openPersonMenuItem = viewMenu.addItem(openPersonEditor.getLabel(), openPersonEditor);
+		openPersonMenuItem = openPersonEditor.addTo(viewMenu);
 		openPersonMenuItem.setCheckable(true);
 
 		CommandWrapper detailViewCommand = new CommandWrapper(
 				new SwitchViewCommand(context, "Veranstaltung Detail", null, ClubhelperViews.EventDetails));
-		eventDetailItem = viewMenu.addItem(detailViewCommand.getLabel(), detailViewCommand);
+		eventDetailItem = detailViewCommand.addTo(viewMenu);
 		eventDetailItem.setCheckable(true);
 	}
 
@@ -119,12 +119,11 @@ class LoggedinMenuitemState extends LoggedOffState {
 		MenuItem editMenu = menuBar.getEditMenuItem();
 		editMenu.setVisible(true);
 
-		CreateMeldungCommand createMeldungCommand = new CreateMeldungCommand(context, this::show);
-		createMeldungMenuItem = editMenu.addItem(createMeldungCommand.getLabel(),
-				new CommandWrapper(createMeldungCommand));
+		CommandWrapper createMeldungCommand = new CommandWrapper(new CreateMeldungCommand(context, this::show));
+		createMeldungMenuItem = createMeldungCommand.addTo(editMenu);
 
 		CommandWrapper deleeteEvent = new CommandWrapper(new DeleteEventCommand(this::deleteEvent));
-		deleteMenuItem = editMenu.addItem(deleeteEvent.getLabel(), deleeteEvent);
+		deleteMenuItem = deleeteEvent.addTo(editMenu);
 
 	}
 

@@ -150,6 +150,7 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 		// noCreateDateStored
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}

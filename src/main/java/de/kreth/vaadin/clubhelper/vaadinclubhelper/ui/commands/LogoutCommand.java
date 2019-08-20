@@ -26,7 +26,7 @@ public class LogoutCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return VaadinIcons.USER;
+		return VaadinIcons.SIGN_OUT;
 	}
 
 	@Override

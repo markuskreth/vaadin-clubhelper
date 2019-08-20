@@ -4,6 +4,8 @@ import java.util.Date;
 
 public interface EntityAccessor {
 
+	Object getId();
+
 	boolean hasValidId();
 
 	void setChanged(Date changed);

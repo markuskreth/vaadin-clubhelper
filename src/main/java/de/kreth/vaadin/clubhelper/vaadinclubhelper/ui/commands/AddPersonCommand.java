@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Consumer;
 
+import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
@@ -28,7 +29,7 @@ public class AddPersonCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return null;
+		return VaadinIcons.USER_STAR;
 	}
 
 	@Override

@@ -44,7 +44,7 @@ class LoggedinEditPersonViewMenuitemState extends LoggedinMenuitemState {
 
 		GroupDef defaultGroup = groupDao.get(1);
 		editMenu.addSeparator();
-		AddPersonCommand addPersonCommand = new AddPersonCommand(newPersonConsumer, defaultGroup);
-		editMenu.addItem(addPersonCommand.getLabel(), new CommandWrapper(addPersonCommand));
+		CommandWrapper addPersonCommand = new CommandWrapper(new AddPersonCommand(newPersonConsumer, defaultGroup));
+		addPersonCommand.addTo(editMenu);
 	}
 }
