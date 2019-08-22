@@ -17,13 +17,13 @@ import net.sf.jasperreports.engine.JasperPrint;
 
 public class ExportCalendarYearCommand extends AbstractExportAction {
 
-	private ZonedDateTime start;
+	private Supplier<ZonedDateTime> startTime;
 
 	public ExportCalendarYearCommand(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider, BiConsumer<String, JasperPrint> printConsumer) {
 		super(() -> startTime.get().withDayOfYear(1), () -> startTime.get().withMonth(12).withDayOfMonth(31),
 				dataProvider, printConsumer);
-		this.start = startTime.get().withDayOfYear(1);
+		this.startTime = startTime;
 	}
 
 	@Override
@@ -38,12 +38,12 @@ public class ExportCalendarYearCommand extends AbstractExportAction {
 
 	@Override
 	protected String getTitle() {
-		return "Jahr " + start.getYear();
+		return "Jahr " + startTime.get().getYear();
 	}
 
 	@Override
 	protected JasperPrint createPrint(Map<LocalDate, StringBuilder> values, List<LocalDate> holidays)
 			throws JRException {
-		return CalendarCreator.createYearCalendar(start.getYear(), values, holidays);
+		return CalendarCreator.createYearCalendar(startTime.get().getYear(), values, holidays);
 	}
 }

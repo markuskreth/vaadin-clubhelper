@@ -21,12 +21,12 @@ public class ExportCalendarMonthCommand extends AbstractExportAction {
 
 	private transient DateTimeFormatter dfMonth = DateTimeFormatter.ofPattern("MMMM uuuu");
 
-	private ZonedDateTime start;
+	private Supplier<ZonedDateTime> startTime;
 
 	public ExportCalendarMonthCommand(Supplier<ZonedDateTime> startTime, Supplier<ZonedDateTime> endTime,
 			ClubEventProvider dataProvider, BiConsumer<String, JasperPrint> printConsumer) {
 		super(startTime, endTime, dataProvider, printConsumer);
-		this.start = startTime.get();
+		this.startTime = startTime;
 	}
 
 	@Override
@@ -41,12 +41,12 @@ public class ExportCalendarMonthCommand extends AbstractExportAction {
 
 	@Override
 	protected String getTitle() {
-		return dfMonth.format(start);
+		return dfMonth.format(startTime.get());
 	}
 
 	@Override
 	protected JasperPrint createPrint(Map<LocalDate, StringBuilder> values, List<LocalDate> holidays)
 			throws JRException {
-		return CalendarCreator.createCalendar(new Date(start.toInstant().toEpochMilli()), values, holidays);
+		return CalendarCreator.createCalendar(new Date(startTime.get().toInstant().toEpochMilli()), values, holidays);
 	}
 }
