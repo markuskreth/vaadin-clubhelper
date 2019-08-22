@@ -21,9 +21,6 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.dao.GroupDao;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.CalendarComponent;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemState;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
 public class MainViewDesktop extends MainView {
 
@@ -37,25 +34,18 @@ public class MainViewDesktop extends MainView {
 
 	private CalendarComponent calendar;
 
-	private ClubhelperMenuBar menuBar;
-
 	private DesktopHeadView head;
-
-	private MenuItemStateFactory menuStateFactory;
 
 	public MainViewDesktop(ApplicationContext context, PersonBusiness personDao, GroupDao groupDao,
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		super(context, groupDao, eventBusiness, personDao, securityGroupVerifier);
 		calendar = new CalendarComponent(dataProvider);
-		menuStateFactory = context.getBean(MenuItemStateFactory.class);
 	}
 
 	@Override
 	public void initUI(ViewChangeEvent event) {
 		super.initUI(event);
-		MenuItemState state = menuStateFactory.currentState();
-		menuBar = new ClubhelperMenuBar(state);
 		calendar = new CalendarComponent(dataProvider);
 		calendar.setSizeFull();
 		calendar.setId("main.calendar");
@@ -89,7 +79,6 @@ public class MainViewDesktop extends MainView {
 		eastLayout = new VerticalLayout();
 		eastLayout.addComponents(eventView, personGrid, eventButtonLayout);
 
-		addComponent(menuBar);
 		addComponent(head);
 		addComponent(mainLayout);
 		setExpandRatio(mainLayout, 1f);
@@ -124,8 +113,6 @@ public class MainViewDesktop extends MainView {
 	public void enter(ViewChangeEvent event) {
 		super.enter(event);
 		head.updateLoggedinPerson();
-		MenuItemState state = menuStateFactory.currentState();
-		menuBar.applyState(state);
 		reloadEvents();
 	}
 

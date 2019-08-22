@@ -22,6 +22,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
@@ -44,6 +45,7 @@ public class MainViewMobile extends MainView {
 			EventBusiness eventBusiness,
 			SecurityVerifier securityGroupVerifier) {
 		super(context, groupDao, eventBusiness, personDao, securityGroupVerifier);
+
 	}
 
 	@Override
@@ -128,7 +130,8 @@ public class MainViewMobile extends MainView {
 
 		DateField dateField = new DateField();
 		window.setContent(dateField);
-		source.getUI().addWindow(window);
+		UI ui = source.getUI();
+		ui.addWindow(window);
 		LocalDate value = dateField.getValue();
 		return ZonedDateTime.from(value);
 

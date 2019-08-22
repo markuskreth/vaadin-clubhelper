@@ -32,6 +32,9 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.ClubhelperErrorDialog;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.ClubEventProvider;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.PersonGrid;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.SingleEventView;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemState;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.navigation.ClubhelperNavigation.ClubNavigator;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -61,6 +64,10 @@ public abstract class MainView extends VerticalLayout implements View {
 
 	protected ClubEventProvider dataProvider;
 
+	private ClubhelperMenuBar menuBar;
+
+	private MenuItemStateFactory menuStateFactory;
+
 	public MainView(ApplicationContext context2, GroupDao groupDao, EventBusiness eventBusiness,
 			PersonBusiness personBusiness,
 			SecurityVerifier securityGroupVerifier) {
@@ -71,6 +78,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		this.securityVerifier = securityGroupVerifier;
 
 		dataProvider = context2.getBean(ClubEventProvider.class);
+		menuStateFactory = context.getBean(MenuItemStateFactory.class);
 	}
 
 	@Override
@@ -91,9 +99,14 @@ public abstract class MainView extends VerticalLayout implements View {
 			}
 		}
 
+		MenuItemState state = menuStateFactory.currentState();
+		menuBar.applyState(state);
 	}
 
 	public void initUI(ViewChangeEvent event) {
+
+		MenuItemState state = menuStateFactory.currentState();
+		menuBar = new ClubhelperMenuBar(state);
 
 		navigator = (ClubNavigator) event.getNavigator();
 
@@ -107,6 +120,7 @@ public abstract class MainView extends VerticalLayout implements View {
 		personGrid.onPersonSelect(ev -> personSelectionChange(ev));
 		personGrid.setVisible(false);
 
+		addComponent(menuBar);
 	}
 
 	public ApplicationContext getContext() {
