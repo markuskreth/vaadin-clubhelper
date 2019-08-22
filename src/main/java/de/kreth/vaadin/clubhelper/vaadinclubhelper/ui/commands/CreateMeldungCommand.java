@@ -28,7 +28,7 @@ public class CreateMeldungCommand implements ClubCommand {
 
 	@Override
 	public Resource getIcon() {
-		return VaadinIcons.NEWSPAPER;
+		return VaadinIcons.OUTBOX;
 	}
 
 	@Override
