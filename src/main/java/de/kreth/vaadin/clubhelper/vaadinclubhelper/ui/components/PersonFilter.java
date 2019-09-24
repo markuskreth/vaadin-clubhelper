@@ -2,7 +2,6 @@ package de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -68,7 +67,7 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 
 	private boolean personInGroup(Person t) {
 		if (selectedGroups != null) {
-			return t.hasAnyGroup() == false && haveCommonGroup(t, selectedGroups);
+			return t.hasAnyGroup() && haveCommonGroup(t, selectedGroups);
 		}
 		return true;
 	}
@@ -84,7 +83,7 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 	}
 
 	private boolean personSelected(Person t) {
-		if (selectedPersons != null) {
+		if (selectedPersons != null) { // && !selectedPersons.isEmpty()
 			if (selectedPersons.contains(t.getId()) == false) {
 				return false;
 			}
@@ -97,10 +96,7 @@ public class PersonFilter implements SerializablePredicate<Person>, DataProvider
 			selectedPersons = null;
 			return;
 		}
-		selectedPersons = new HashSet<>();
-		for (Person p : selected) {
-			selectedPersons.add(p.getId());
-		}
+		selectedPersons = selected.stream().map(p -> p.getId()).collect(Collectors.toSet());
 	}
 
 	public void setNameFilter(String value) {
