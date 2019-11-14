@@ -50,7 +50,8 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 				}
 			}
 			added.removeAll(current);
-		} else {
+		}
+		else {
 			current = new HashSet<>();
 			event.setPersons(current);
 			for (Person p : updated) {
@@ -95,7 +96,8 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 				type.setId(obj.getId());
 				query = entityManager.createNativeQuery(
 						"INSERT INTO clubevent_addon (id, competition_type) VALUES (:eventId,:eventtype)");
-			} else {
+			}
+			else {
 				query = entityManager
 						.createNativeQuery("UPDATE clubevent_addon SET competition_type=:eventtype WHERE id=:eventId");
 			}
@@ -109,7 +111,8 @@ public class ClubEventDaoImpl extends AbstractDaoImpl<ClubEvent> implements Club
 	@Override
 	@Transactional
 	public void delete(ClubEvent entity) {
-		entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
+		entity.setDeleted(true);
+		super.save(entity);
 	}
 
 }

@@ -39,6 +39,8 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	private String organizerDisplayName;
 
+	private boolean deleted;
+
 	@ManyToMany
 	private Set<Person> persons;
 
@@ -205,6 +207,14 @@ public class ClubEvent extends BasicItem implements EntityAccessor {
 
 	public void setCompetitionType(CompetitionType competitionType) {
 		this.competitionType = competitionType;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override

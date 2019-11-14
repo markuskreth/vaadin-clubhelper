@@ -22,6 +22,10 @@
 			name="allDay">
 			<column sql-type="BOOLEAN" not-null="true" name="allDay" />
 		</property>
+		<property generated="never" lazy="false"
+			name="deleted">
+			<column sql-type="BOOLEAN" not-null="true" name="deleted" />
+		</property>
 		<property column="organizerDisplayName" generated="never"
 			lazy="false" name="organizerDisplayName" type="string" />
         <set name="persons" table="clubevent_has_person" lazy="false">
@@ -38,6 +42,6 @@
 			 foreign-key="id" cascade="save-update"></one-to-one>
 	</class>
 	<query name="ClubEvent.findAll">
-        <![CDATA[from ClubEvent]]>
+        <![CDATA[from ClubEvent where deleted=false]]>
 	</query>
 </hibernate-mapping>
