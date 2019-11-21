@@ -9,6 +9,7 @@ public enum ClubhelperViews {
 	MainView,
 	EventDetails,
 	PersonEditView,
+	ExportEmails,
 	LoginUI;
 
 	public static ClubhelperViews byState(String state) {

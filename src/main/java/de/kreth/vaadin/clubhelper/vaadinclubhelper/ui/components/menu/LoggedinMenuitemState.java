@@ -20,7 +20,6 @@ import com.vaadin.ui.Window;
 
 import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ClubCommand;
@@ -59,6 +58,8 @@ class LoggedinMenuitemState extends LoggedOffState {
 	private MenuItem createMeldungMenuItem;
 
 	private MenuItem deleteMenuItem;
+
+	private MenuItem exportEmailsMenuItem;
 
 	public LoggedinMenuitemState(ApplicationContext context, UI ui, Supplier<ZonedDateTime> startProvider,
 			Supplier<ZonedDateTime> endProvider, BiConsumer<String, JasperPrint> printConsumer) {
@@ -122,6 +123,10 @@ class LoggedinMenuitemState extends LoggedOffState {
 		CommandWrapper createMeldungCommand = new CommandWrapper(new CreateMeldungCommand(context, this::show));
 		createMeldungMenuItem = createMeldungCommand.addTo(editMenu);
 
+		CommandWrapper exportEmails = new CommandWrapper(new SwitchViewCommand(context, "Emails exportieren",
+				VaadinIcons.CALENDAR, ClubhelperViews.ExportEmails));
+		exportEmailsMenuItem = exportEmails.addTo(editMenu);
+
 		CommandWrapper deleeteEvent = new CommandWrapper(new DeleteEventCommand(this::deleteEvent));
 		deleteMenuItem = deleeteEvent.addTo(editMenu);
 
@@ -144,6 +149,9 @@ class LoggedinMenuitemState extends LoggedOffState {
 			item.setChecked(false);
 			item.setEnabled(true);
 		}
+
+		exportEmailsMenuItem.setEnabled(false);
+
 		if (ClubhelperViews.PersonEditView == view) {
 			openPersonMenuItem.setChecked(true);
 			openPersonMenuItem.setEnabled(false);
@@ -151,6 +159,7 @@ class LoggedinMenuitemState extends LoggedOffState {
 		else if (ClubhelperViews.MainView == view) {
 			calendarMenuItem.setChecked(true);
 			calendarMenuItem.setEnabled(false);
+			exportEmailsMenuItem.setEnabled(true);
 		}
 		else if (ClubhelperViews.EventDetails.equals(view)) {
 			eventDetailItem.setChecked(true);
@@ -158,9 +167,9 @@ class LoggedinMenuitemState extends LoggedOffState {
 		}
 	}
 
-	private void show(EventMeldung createMeldung) {
+	private void show(String preformattedText) {
 		VerticalLayout content = new VerticalLayout();
-		content.addComponent(new Label(createMeldung.toString(), ContentMode.PREFORMATTED));
+		content.addComponent(new Label(preformattedText, ContentMode.PREFORMATTED));
 		Window dlg = new Window("Meldung für " + eventBusiness.getCurrent().getCaption());
 		dlg.setContent(content);
 		dlg.center();

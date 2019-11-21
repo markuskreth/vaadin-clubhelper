@@ -86,6 +86,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		navi.addView(ClubhelperViews.LoginUI.name(), new LoginUI(personBusiness, securityGroupVerifier));
 		navi.addView(ClubhelperViews.PersonEditView.name(), personEdit);
 		navi.addView(ClubhelperViews.EventDetails.name(), new EventDetails(context));
+		navi.addView(ClubhelperViews.ExportEmails.name(), new ExportEmails(context));
 
 		page.addBrowserWindowResizeListener(ev -> {
 			int width = ev.getWidth();

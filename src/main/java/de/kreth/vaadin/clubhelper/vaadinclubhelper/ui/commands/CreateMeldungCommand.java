@@ -8,15 +8,14 @@ import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.Resource;
 
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.meldung.EventMeldung;
 
 public class CreateMeldungCommand implements ClubCommand {
 
 	private EventBusiness business;
 
-	private Consumer<EventMeldung> showMeldungCommand;
+	private Consumer<String> showMeldungCommand;
 
-	public CreateMeldungCommand(ApplicationContext context, Consumer<EventMeldung> showMeldungCommand) {
+	public CreateMeldungCommand(ApplicationContext context, Consumer<String> showMeldungCommand) {
 		this.business = context.getBean(EventBusiness.class);
 		this.showMeldungCommand = showMeldungCommand;
 	}
@@ -33,7 +32,7 @@ public class CreateMeldungCommand implements ClubCommand {
 
 	@Override
 	public void execute() {
-		showMeldungCommand.accept(business.createMeldung());
+		showMeldungCommand.accept(business.createMeldung().toString());
 	}
 
 }
