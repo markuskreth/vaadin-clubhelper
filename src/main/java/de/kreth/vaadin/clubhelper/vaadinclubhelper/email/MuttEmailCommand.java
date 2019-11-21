@@ -18,7 +18,7 @@ public class MuttEmailCommand implements EmailCommand {
 		final List<String> arguments = createArguments(email);
 		final List<String> errors = new ArrayList<>();
 
-		File log = new File("email.log");
+		File log = File.createTempFile("email_output", ".log");
 		List<String> adresses = email.getEmails();
 		for (String adress : adresses) {
 			List<ProcessBuilder> builders = new ArrayList<>();
@@ -50,7 +50,7 @@ public class MuttEmailCommand implements EmailCommand {
 		}
 
 		if (errors.isEmpty() == false) {
-			throw new RuntimeException("Errors: " + errors);
+			throw new EmailException("Fehler beim Senden. Log File: " + log.getAbsolutePath(), errors);
 		}
 	}
 

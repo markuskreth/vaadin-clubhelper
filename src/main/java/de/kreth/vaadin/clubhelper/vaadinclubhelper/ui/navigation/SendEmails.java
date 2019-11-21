@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.vaadin.data.HasValue.ValueChangeEvent;
@@ -36,10 +38,13 @@ import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.GroupDef;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.Person;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.email.Email;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.email.EmailCommand;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.email.EmailException;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
 
 public class SendEmails extends VerticalLayout implements View {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SendEmails.class);
 
 	private PersonBusiness personBusiness;
 
@@ -141,6 +146,7 @@ public class SendEmails extends VerticalLayout implements View {
 					.setMessage(body.getValue())
 					.addEmails(adresses)
 					.build();
+			LOGGER.info("Versende an {}: {}", adresses, email);
 			try {
 				emailCommand.send(email);
 			}
@@ -149,6 +155,15 @@ public class SendEmails extends VerticalLayout implements View {
 				PrintWriter writer = new PrintWriter(out);
 				e.printStackTrace(writer);
 				errorMessage.setValue(errorMessage.getValue() + "\n" + e.getMessage() + "\n" + out.toString());
+				LOGGER.error("Fehler beim Versenden an " + adresses, e);
+			}
+			catch (EmailException e) {
+
+				StringWriter out = new StringWriter();
+				PrintWriter writer = new PrintWriter(out);
+				e.printStackTrace(writer);
+				errorMessage.setValue(errorMessage.getValue() + "\n" + e.getMessage() + "\n" + out.toString());
+				LOGGER.error("Fehler beim Versenden an diese Andressen: " + e.getFailedEmails(), e);
 			}
 		});
 
