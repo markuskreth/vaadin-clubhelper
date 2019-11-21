@@ -10,7 +10,8 @@ public enum ClubhelperViews {
 	EventDetails,
 	PersonEditView,
 	ExportEmails,
-	LoginUI;
+	LoginUI,
+	SendEmails;
 
 	public static ClubhelperViews byState(String state) {
 		if (state.isBlank()) {

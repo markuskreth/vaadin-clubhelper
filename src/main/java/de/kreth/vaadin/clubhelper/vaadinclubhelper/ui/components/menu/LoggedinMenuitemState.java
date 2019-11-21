@@ -61,6 +61,8 @@ class LoggedinMenuitemState extends LoggedOffState {
 
 	private MenuItem exportEmailsMenuItem;
 
+	private MenuItem sendEmailsMenuItem;
+
 	public LoggedinMenuitemState(ApplicationContext context, UI ui, Supplier<ZonedDateTime> startProvider,
 			Supplier<ZonedDateTime> endProvider, BiConsumer<String, JasperPrint> printConsumer) {
 		super(context, startProvider, endProvider, printConsumer);
@@ -124,8 +126,13 @@ class LoggedinMenuitemState extends LoggedOffState {
 		createMeldungMenuItem = createMeldungCommand.addTo(editMenu);
 
 		CommandWrapper exportEmails = new CommandWrapper(new SwitchViewCommand(context, "Emails exportieren",
-				VaadinIcons.CALENDAR, ClubhelperViews.ExportEmails));
+				VaadinIcons.ENVELOPE_O, ClubhelperViews.ExportEmails));
 		exportEmailsMenuItem = exportEmails.addTo(editMenu);
+
+		CommandWrapper sendMail = new CommandWrapper(new SwitchViewCommand(context, "Emails senden",
+				VaadinIcons.ENVELOPE_O, ClubhelperViews.SendEmails));
+
+		sendEmailsMenuItem = sendMail.addTo(editMenu);
 
 		CommandWrapper deleeteEvent = new CommandWrapper(new DeleteEventCommand(this::deleteEvent));
 		deleteMenuItem = deleeteEvent.addTo(editMenu);
@@ -151,6 +158,7 @@ class LoggedinMenuitemState extends LoggedOffState {
 		}
 
 		exportEmailsMenuItem.setEnabled(false);
+		sendEmailsMenuItem.setEnabled(false);
 
 		if (ClubhelperViews.PersonEditView == view) {
 			openPersonMenuItem.setChecked(true);
@@ -160,6 +168,7 @@ class LoggedinMenuitemState extends LoggedOffState {
 			calendarMenuItem.setChecked(true);
 			calendarMenuItem.setEnabled(false);
 			exportEmailsMenuItem.setEnabled(true);
+			sendEmailsMenuItem.setEnabled(true);
 		}
 		else if (ClubhelperViews.EventDetails.equals(view)) {
 			eventDetailItem.setChecked(true);
