@@ -21,6 +21,7 @@ import com.vaadin.ui.Window;
 import de.kreth.googleconnectors.calendar.CalendarAdapter;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.business.EventBusiness;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubEvent;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityGroups;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.security.SecurityVerifier;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.ClubCommand;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.commands.CreateMeldungCommand;
@@ -63,6 +64,8 @@ class LoggedinMenuitemState extends LoggedOffState {
 
 	private MenuItem sendEmailsMenuItem;
 
+	private MenuItem systeminfoItem;
+
 	public LoggedinMenuitemState(ApplicationContext context, UI ui, Supplier<ZonedDateTime> startProvider,
 			Supplier<ZonedDateTime> endProvider, BiConsumer<String, JasperPrint> printConsumer) {
 		super(context, startProvider, endProvider, printConsumer);
@@ -70,6 +73,8 @@ class LoggedinMenuitemState extends LoggedOffState {
 		this.context = context;
 		this.navigator = context.getBean(ClubhelperNavigation.class);
 		this.eventBusiness = context.getBean(EventBusiness.class);
+		this.securityVerifier = context.getBean(SecurityVerifier.class);
+
 		navigator.add(ev -> setSelectedMenuItem(ev.getNewView()));
 
 		View current = navigator.getNavigator().getCurrentView();
@@ -116,6 +121,15 @@ class LoggedinMenuitemState extends LoggedOffState {
 				new SwitchViewCommand(context, "Veranstaltung Detail", null, ClubhelperViews.EventDetails));
 		eventDetailItem = detailViewCommand.addTo(viewMenu);
 		eventDetailItem.setCheckable(true);
+
+		if (securityVerifier.isPermitted(SecurityGroups.ADMIN)) {
+
+			CommandWrapper systeminfoViewCommand = new CommandWrapper(
+					new SwitchViewCommand(context, "Systeminformation", null, ClubhelperViews.Systeminfo));
+			systeminfoItem = systeminfoViewCommand.addTo(viewMenu);
+			systeminfoItem.setCheckable(true);
+
+		}
 	}
 
 	private void prepareEditMenu(ClubhelperMenuBar menuBar) {

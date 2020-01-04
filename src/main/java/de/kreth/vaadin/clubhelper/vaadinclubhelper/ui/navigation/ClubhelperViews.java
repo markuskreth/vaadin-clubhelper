@@ -11,6 +11,7 @@ public enum ClubhelperViews {
 	PersonEditView,
 	ExportEmails,
 	LoginUI,
+	Systeminfo,
 	SendEmails;
 
 	public static ClubhelperViews byState(String state) {

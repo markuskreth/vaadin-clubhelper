@@ -63,6 +63,8 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 
 	private PersonEditView personEdit;
 
+	private SysteminfoView systemInfo;
+
 	public void configure(UI mainUI) {
 
 		// Create and register the views
@@ -72,6 +74,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		ViewFactory factory = new ViewFactory(page);
 		mainView = factory.createMain();
 		personEdit = factory.createPersonEdit();
+		systemInfo = factory.createSystemInfo();
 
 		MenuItemStateFactory menuItemFactory = context.getBean(MenuItemStateFactory.class);
 		setupMenuItemStateFactory(menuItemFactory);
@@ -88,6 +91,7 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		navi.addView(ClubhelperViews.EventDetails.name(), new EventDetails(context));
 		navi.addView(ClubhelperViews.SendEmails.name(), new SendEmails(context, true));
 		navi.addView(ClubhelperViews.ExportEmails.name(), new ExportEmails(context));
+		navi.addView(ClubhelperViews.Systeminfo.name(), systemInfo);
 
 		page.addBrowserWindowResizeListener(ev -> {
 			int width = ev.getWidth();
@@ -121,9 +125,13 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 			this.page = page;
 		}
 
+		public SysteminfoView createSystemInfo() {
+			return new SysteminfoView(isMobileSize());
+		}
+
 		public MainView createMain() {
 
-			if (page.getBrowserWindowWidth() < WIDTH_LIMIT_FOR_MOBILE) {
+			if (isMobileSize()) {
 				return new MainViewMobile(context, personBusiness, groupDao, eventBusiness, securityGroupVerifier);
 			}
 			else {
@@ -131,9 +139,12 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 			}
 		}
 
+		private boolean isMobileSize() {
+			return page.getBrowserWindowWidth() < WIDTH_LIMIT_FOR_MOBILE;
+		}
+
 		public PersonEditView createPersonEdit() {
-			PersonEditView personEditView = new PersonEditView(groupDao, personBusiness,
-					(page.getBrowserWindowWidth() >= WIDTH_LIMIT_FOR_MOBILE));
+			PersonEditView personEditView = new PersonEditView(groupDao, personBusiness, isMobileSize());
 			return personEditView;
 		}
 	}
