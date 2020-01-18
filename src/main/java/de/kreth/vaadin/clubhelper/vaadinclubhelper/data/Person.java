@@ -77,6 +77,11 @@ public class Person extends BaseEntity implements Serializable {
 			CascadeType.REFRESH })
 	private List<Contact> contacts;
 
+	// bi-directional many-to-one association to Contact
+	@OneToMany(mappedBy = "person", cascade = { CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REFRESH })
+	private List<PersonNote> notes;
+
 	// bi-directional many-to-many association to Persongroup
 	@ManyToMany(targetEntity = GroupDef.class, fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
 			CascadeType.REFRESH })
@@ -375,6 +380,13 @@ public class Person extends BaseEntity implements Serializable {
 			this.startpass.setPerson(this);
 		}
 		this.startpass.setStartpassNr(startpass);
+	}
+
+	public List<PersonNote> getNotes() {
+		if (notes == null) {
+			notes = new ArrayList<>();
+		}
+		return notes;
 	}
 
 	@Override

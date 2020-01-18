@@ -55,6 +55,8 @@ public class PersonEditDetails extends HorizontalLayout {
 
 	private AdressComponent adressLayout;
 
+	private NotesComponent notes;
+
 	public PersonEditDetails(List<GroupDef> groups, PersonBusiness dao) {
 		this(groups, dao, true);
 	}
@@ -170,11 +172,15 @@ public class PersonEditDetails extends HorizontalLayout {
 		});
 		adressLayout.addSuccessConsumer(newAdress -> binder.getBean().addAdress(newAdress));
 
+		notes = new NotesComponent();
+
 		TabSheet sheet = new TabSheet();
 		sheet.addTab(groupLayout, "Gruppen");
 		sheet.addTab(contactLayout, "Kontakte");
 		sheet.addTab(relationshipLayout, "Angehörige");
 		sheet.addTab(adressLayout, "Adresse");
+		sheet.addTab(notes, "Notizen");
+
 		addComponents(layout, sheet);
 		setExpandRatio(layout, 1f);
 		setExpandRatio(sheet, 2f);
@@ -256,6 +262,7 @@ public class PersonEditDetails extends HorizontalLayout {
 		contactLayout.setPerson(person);
 		relationshipLayout.setPerson(person);
 		adressLayout.setPerson(person);
+		notes.setPerson(person);
 		binder.setBean(person);
 	}
 
