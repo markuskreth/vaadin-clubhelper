@@ -21,7 +21,10 @@ public class ClubhelperMenuBar extends MenuBar {
 		editMenuItem = addItem("Bearbeiten");
 		viewMenuItem = addItem("Ansicht");
 		settingsItem = addItem("Einstellungen");
-		applyState(initialState);
+
+		if (initialState != null) {
+			applyState(initialState);
+		}
 	}
 
 	public void applyState(MenuItemState state) {

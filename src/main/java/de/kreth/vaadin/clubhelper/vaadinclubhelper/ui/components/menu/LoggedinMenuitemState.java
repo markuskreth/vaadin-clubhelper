@@ -188,6 +188,10 @@ class LoggedinMenuitemState extends LoggedOffState {
 			eventDetailItem.setChecked(true);
 			eventDetailItem.setEnabled(false);
 		}
+		else if (ClubhelperViews.Systeminfo.equals(view)) {
+			systeminfoItem.setChecked(true);
+			systeminfoItem.setEnabled(false);
+		}
 	}
 
 	private void show(String preformattedText) {

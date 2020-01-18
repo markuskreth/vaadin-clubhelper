@@ -69,14 +69,16 @@ public class PersonDaoTest {
 
 			person.setSurname("surname2");
 			person.setPrename("prename2");
-
+			person.setBirth(LocalDate.of(2018, 8, 8));
 			personDao.save(person);
 
 		});
 		afterCommit(() -> {
-			List<Person> stored = entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class).getResultList();
+			List<Person> stored = entityManager.createNamedQuery(Person.QUERY_FINDALL, Person.class)
+					.getResultList();
 			assertEquals(1, stored.size());
-			assertEquals(person, stored.get(0));
+			Person actual = stored.get(0);
+			assertEquals(person, actual);
 		});
 	}
 

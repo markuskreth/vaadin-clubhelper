@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,6 +43,7 @@ public class Person extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = -8361264400619997123L;
 
+	@Basic
 	private LocalDate birth;
 
 	private String prename;

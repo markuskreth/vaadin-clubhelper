@@ -19,13 +19,23 @@ import com.vaadin.ui.Grid.SelectionMode;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.ClubhelperMenuBar;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemState;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.ui.components.menu.MenuItemStateFactory;
+
 public class SysteminfoView extends VerticalLayout implements View {
 
 	private final Grid<Entry<String, String>> valueGrid;
 
 	private ListDataProvider<Entry<String, String>> entryDataProvider;
 
-	public SysteminfoView(boolean mobile) {
+	private ClubhelperMenuBar menuBar;
+
+	private MenuItemStateFactory menuStateFactory;
+
+	public SysteminfoView(boolean mobile, MenuItemStateFactory menuStateFactory) {
+		this.menuStateFactory = menuStateFactory;
+
 		valueGrid = new Grid<>();
 		valueGrid.addColumn(Entry<String, String>::getKey)
 				.setCaption("Schlüssel")
@@ -41,6 +51,10 @@ public class SysteminfoView extends VerticalLayout implements View {
 
 		entryDataProvider = DataProvider.ofCollection(new ArrayList<Entry<String, String>>());
 		valueGrid.setDataProvider(entryDataProvider);
+
+		menuBar = new ClubhelperMenuBar(null);
+		addComponent(menuBar);
+
 		Label title = new Label("<h1>Systeminformationen</h1>", ContentMode.HTML);
 		addComponent(title);
 		addComponent(valueGrid);
@@ -48,6 +62,9 @@ public class SysteminfoView extends VerticalLayout implements View {
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+
+		MenuItemState state = menuStateFactory.currentState();
+		menuBar.applyState(state);
 
 		Collection<Entry<String, String>> items = entryDataProvider.getItems();
 		items.clear();

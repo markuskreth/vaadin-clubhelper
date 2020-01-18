@@ -74,10 +74,10 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 		ViewFactory factory = new ViewFactory(page);
 		mainView = factory.createMain();
 		personEdit = factory.createPersonEdit();
-		systemInfo = factory.createSystemInfo();
 
 		MenuItemStateFactory menuItemFactory = context.getBean(MenuItemStateFactory.class);
 		setupMenuItemStateFactory(menuItemFactory);
+		systemInfo = factory.createSystemInfo(menuItemFactory);
 
 		navi = new ClubNavigator().init(mainUI);
 		ClubhelperMenuBar menuBar = new ClubhelperMenuBar(menuItemFactory.currentState());
@@ -125,8 +125,8 @@ public class ClubhelperNavigation implements ApplicationContextAware {
 			this.page = page;
 		}
 
-		public SysteminfoView createSystemInfo() {
-			return new SysteminfoView(isMobileSize());
+		public SysteminfoView createSystemInfo(MenuItemStateFactory menuItemFactory) {
+			return new SysteminfoView(isMobileSize(), menuItemFactory);
 		}
 
 		public MainView createMain() {
