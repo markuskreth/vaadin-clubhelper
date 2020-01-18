@@ -77,8 +77,8 @@ public class Person extends BaseEntity implements Serializable {
 			CascadeType.REFRESH })
 	private List<Contact> contacts;
 
-	// bi-directional many-to-one association to Contact
-	@OneToMany(mappedBy = "person", cascade = { CascadeType.MERGE, CascadeType.PERSIST,
+	@OneToMany(mappedBy = "person", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST,
+			CascadeType.REMOVE,
 			CascadeType.REFRESH })
 	private List<PersonNote> notes;
 
