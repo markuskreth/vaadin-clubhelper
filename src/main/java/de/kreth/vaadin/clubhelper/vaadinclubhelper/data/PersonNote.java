@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "notes")
-@NamedQuery(name = PersonNote.QUERY_FINDALL, query = "SELECT p FROM Person p WHERE p.deleted is  null")
+@NamedQuery(name = PersonNote.QUERY_FINDALL, query = "SELECT n FROM PersonNote n")
 public class PersonNote {
 
 	public static final String QUERY_FINDALL = "PersonNote.findAll";
