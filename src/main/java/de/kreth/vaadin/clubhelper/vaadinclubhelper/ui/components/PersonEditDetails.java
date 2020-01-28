@@ -290,7 +290,8 @@ public class PersonEditDetails extends HorizontalLayout {
 				&& (binder.hasChanges()
 						|| contactLayout.hasChanges()
 						|| relationshipLayout.hasChanges()
-						|| adressLayout.hasChanges());
+						|| adressLayout.hasChanges()
+						|| notes.hasChanges());
 	}
 
 }

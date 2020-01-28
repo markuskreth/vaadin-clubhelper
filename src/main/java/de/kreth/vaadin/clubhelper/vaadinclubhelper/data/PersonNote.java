@@ -22,9 +22,9 @@ public class PersonNote {
 	@ManyToOne
 	private Person person;
 
-	private String notekey;
+	private String notekey = "";
 
-	private String notetext;
+	private String notetext = "";
 
 	public PersonNote() {
 	}
