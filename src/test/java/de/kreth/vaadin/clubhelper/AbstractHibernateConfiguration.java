@@ -4,12 +4,14 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Entity;
+
 import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
 
-import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.BaseEntity;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.ClubeventHasPerson;
 import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.CompetitionType;
+import de.kreth.vaadin.clubhelper.vaadinclubhelper.data.PersonNote;
 
 public abstract class AbstractHibernateConfiguration implements HibernateConfiguration {
 
@@ -17,9 +19,11 @@ public abstract class AbstractHibernateConfiguration implements HibernateConfigu
 
 	public AbstractHibernateConfiguration() {
 		Reflections reflections = new Reflections("de.kreth.vaadin.clubhelper.vaadinclubhelper.data");
-		entityClasses = new HashSet<>(reflections.getSubTypesOf(BaseEntity.class));
+		entityClasses = new HashSet<>(reflections.getTypesAnnotatedWith(Entity.class));
 		entityClasses.add(ClubeventHasPerson.class);
 		entityClasses.add(CompetitionType.class);
+		entityClasses.add(PersonNote.class);
+
 	}
 
 	@Override
