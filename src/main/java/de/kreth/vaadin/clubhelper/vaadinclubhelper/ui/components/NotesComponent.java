@@ -18,6 +18,8 @@ public class NotesComponent extends VerticalLayout {
 
 	private boolean hasChanges;
 
+	private boolean isUpdating = false;
+
 	public NotesComponent() {
 		notesComponent = new TextArea();
 		notesComponent.setMaxLength(2000);
@@ -32,7 +34,7 @@ public class NotesComponent extends VerticalLayout {
 	}
 
 	private void textChange(ValueChangeEvent<String> ev) {
-		if (note != null) {
+		if (note != null && !isUpdating) {
 			if (ev.isUserOriginated()) {
 				hasChanges = true;
 			}
@@ -41,6 +43,7 @@ public class NotesComponent extends VerticalLayout {
 	}
 
 	public void setPerson(Person person) {
+		isUpdating = true;
 		notesComponent.clear();
 		hasChanges = false;
 		if (person != null) {
@@ -55,6 +58,7 @@ public class NotesComponent extends VerticalLayout {
 				note.setPerson(person);
 			}
 		}
+		isUpdating = false;
 	}
 
 	public boolean hasChanges() {
