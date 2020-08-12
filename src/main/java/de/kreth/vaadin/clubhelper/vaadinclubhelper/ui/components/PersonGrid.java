@@ -294,30 +294,8 @@ public class PersonGrid extends VerticalLayout {
 		}
 	}
 
-	public void deselectItems(Person... items) {
-		grid.asMultiSelect().deselect(items);
-	}
-
-	public void select(Person item) {
-		grid.select(item);
-	}
-
-	public void deselect(Person item) {
-		grid.deselect(item);
-	}
-
-	public void deselectAll() {
-		grid.deselectAll();
-	}
-
-	private void onGroupSelected(SingleSelectionEvent<GroupDef> ev) {
-
-		Set<GroupDef> groupMemberFilter = ev.getAllSelectedItems();
-		if (groupMemberFilter.isEmpty()) {
-			groupMemberFilter = null;
-		}
-		filter.setSelectedGroups(groupMemberFilter);
-		dataProvider.refreshAll();
+	public void setTitle(String value) {
+		textTitle.setValue(value == null ? "": value);
 	}
 
 	public void onPersonEdit() {
