@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
-		<vaadin.version>8.6.2</vaadin.version>
+		<vaadin.version>19.0.5</vaadin.version>
 		<selenium.version>3.141.59</selenium.version>
 		<start-class>de.kreth.vaadin.clubhelper.vaadinclubhelper.VaadinClubhelperApplication</start-class>
 
